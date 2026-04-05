@@ -10,34 +10,35 @@
 body{
   margin:0;
   font-family:system-ui;
-  background:linear-gradient(135deg,#0f172a,#020617);
-  color:#fff;
+  background:#0b1120;
+  color:#e2e8f0;
 }
 
 /* Header */
 .header{
   position:sticky;
   top:0;
-  backdrop-filter:blur(12px);
-  background:rgba(255,255,255,0.05);
-  border-bottom:1px solid rgba(255,255,255,0.1);
-  padding:15px 20px;
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  gap:10px;
+  padding:15px 20px;
+  backdrop-filter:blur(10px);
+  background:rgba(15,23,42,0.7);
+  border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-/* Back Button */
+/* Back button */
 .back-btn{
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.1);
+  display:none;
+  background:#1e293b;
+  border:none;
   padding:6px 12px;
   border-radius:8px;
+  color:#fff;
   cursor:pointer;
-  font-size:14px;
 }
 .back-btn:hover{
-  background:rgba(255,255,255,0.15);
+  background:#334155;
 }
 
 /* Path */
@@ -60,26 +61,25 @@ body{
 
 /* Card */
 .card{
-  backdrop-filter:blur(10px);
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:14px;
+  background:#0f172a;
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:12px;
   padding:15px;
   cursor:pointer;
   transition:.2s;
 }
 .card:hover{
-  transform:translateY(-4px);
-  background:rgba(255,255,255,0.1);
+  transform:translateY(-3px);
+  border-color:#334155;
 }
 
 /* Icons */
 .icon{
-  font-size:28px;
+  font-size:26px;
   margin-bottom:10px;
 }
-.folder{color:#60a5fa;}
-.file{color:#cbd5f5;}
+.folder{color:#38bdf8;}
+.file{color:#94a3b8;}
 
 .name{
   font-size:14px;
@@ -91,7 +91,7 @@ body{
 <body>
 
 <div class="header">
-  <button class="back-btn" onclick="goBack()">⬅ Back</button>
+  <button class="back-btn" id="backBtn" onclick="goBack()">⬅ Back</button>
   <div class="path" id="path">/</div>
 </div>
 
@@ -114,43 +114,43 @@ async function loadFiles(path=""){
 
   document.getElementById("path").innerText = "/" + path;
 
+  const backBtn = document.getElementById("backBtn");
+  backBtn.style.display = path ? "inline-block" : "none";
+
   const list = document.getElementById("fileList");
   list.innerHTML = "";
 
-  data.forEach(item=>{
-    const div = document.createElement("div");
-    div.className = "card";
+  data
+    .filter(item => item.name !== "index.html") // hide index.html
+    .forEach(item=>{
+      const div = document.createElement("div");
+      div.className = "card";
 
-    const isFolder = item.type === "dir";
+      const isFolder = item.type === "dir";
 
-    div.innerHTML = `
-      <div class="icon ${isFolder?'folder':'file'}">
-        ${isFolder ? '📁' : '📄'}
-      </div>
-      <div class="name">${item.name}</div>
-    `;
+      div.innerHTML = `
+        <div class="icon ${isFolder?'folder':'file'}">
+          ${isFolder ? '📁' : '📄'}
+        </div>
+        <div class="name">${item.name}</div>
+      `;
 
-    div.onclick = ()=>{
-      if(isFolder){
-        historyStack.push(currentPath);
-        loadFiles(item.path);
-      }else{
-        window.open(item.download_url, "_blank");
-      }
-    };
+      div.onclick = ()=>{
+        if(isFolder){
+          historyStack.push(currentPath);
+          loadFiles(item.path);
+        }else{
+          window.open(item.download_url, "_blank");
+        }
+      };
 
-    list.appendChild(div);
-  });
+      list.appendChild(div);
+    });
 }
 
-/* Back function */
 function goBack(){
-  if(historyStack.length > 0){
-    const prev = historyStack.pop();
-    loadFiles(prev);
-  } else {
-    loadFiles("");
-  }
+  const prev = historyStack.pop() || "";
+  loadFiles(prev);
 }
 
 loadFiles();
