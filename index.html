@@ -1,11 +1,102 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coshix CDN</title>
 
-  <head>
-    
-  </head>
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#0d0d0d;
+  color:#fff;
+}
+.header{
+  padding:20px;
+  font-size:20px;
+  font-weight:600;
+  border-bottom:1px solid #222;
+}
+.container{
+  padding:20px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:15px;
+}
+.card{
+  background:#111;
+  border:1px solid #222;
+  border-radius:12px;
+  padding:15px;
+  cursor:pointer;
+  transition:.2s;
+}
+.card:hover{
+  border-color:#444;
+  transform:translateY(-3px);
+}
+.icon{
+  font-size:30px;
+  margin-bottom:10px;
+}
+.name{
+  font-size:14px;
+  word-break:break-all;
+}
+.folder{color:#4da3ff;}
+.file{color:#aaa;}
+</style>
+</head>
 
-  <body>
-    <h2>Hello World</h2>
-  </body>
-  
+<body>
+
+<div class="header">📦 Coshix CDN</div>
+
+<div class="container">
+  <div class="grid" id="fileList"></div>
+</div>
+
+<script>
+const user = "itsshivaes";
+const repo = "coshix";
+
+async function loadFiles(path=""){
+  const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`);
+  const data = await res.json();
+
+  const list = document.getElementById("fileList");
+  list.innerHTML = "";
+
+  data.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "card";
+
+    const isFolder = item.type === "dir";
+
+    div.innerHTML = `
+      <div class="icon ${isFolder?'folder':'file'}">
+        ${isFolder ? '📁' : '📄'}
+      </div>
+      <div class="name">${item.name}</div>
+    `;
+
+    div.onclick = ()=>{
+      if(isFolder){
+        loadFiles(item.path);
+      }else{
+        window.open(item.download_url, "_blank");
+      }
+    };
+
+    list.appendChild(div);
+  });
+}
+
+loadFiles();
+</script>
+
+</body>
 </html>
