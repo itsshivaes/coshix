@@ -6,54 +6,94 @@
 <title>Coshix CDN</title>
 
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:system-ui;
-  background:#0d0d0d;
+  background:linear-gradient(135deg,#0f172a,#020617);
   color:#fff;
 }
+
+/* Header */
 .header{
-  padding:20px;
-  font-size:20px;
-  font-weight:600;
-  border-bottom:1px solid #222;
+  position:sticky;
+  top:0;
+  backdrop-filter:blur(12px);
+  background:rgba(255,255,255,0.05);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
+
+/* Back Button */
+.back-btn{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+}
+.back-btn:hover{
+  background:rgba(255,255,255,0.15);
+}
+
+/* Path */
+.path{
+  font-size:13px;
+  opacity:0.7;
+}
+
+/* Container */
 .container{
   padding:20px;
 }
+
+/* Grid */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
   gap:15px;
 }
+
+/* Card */
 .card{
-  background:#111;
-  border:1px solid #222;
-  border-radius:12px;
+  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:14px;
   padding:15px;
   cursor:pointer;
   transition:.2s;
 }
 .card:hover{
-  border-color:#444;
-  transform:translateY(-3px);
+  transform:translateY(-4px);
+  background:rgba(255,255,255,0.1);
 }
+
+/* Icons */
 .icon{
-  font-size:30px;
+  font-size:28px;
   margin-bottom:10px;
 }
+.folder{color:#60a5fa;}
+.file{color:#cbd5f5;}
+
 .name{
   font-size:14px;
-  word-break:break-all;
+  word-break:break-word;
 }
-.folder{color:#4da3ff;}
-.file{color:#aaa;}
 </style>
 </head>
 
 <body>
 
-<div class="header">📦 Coshix CDN</div>
+<div class="header">
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
+  <div class="path" id="path">/</div>
+</div>
 
 <div class="container">
   <div class="grid" id="fileList"></div>
@@ -63,9 +103,16 @@ body{
 const user = "itsshivaes";
 const repo = "coshix";
 
+let currentPath = "";
+let historyStack = [];
+
 async function loadFiles(path=""){
+  currentPath = path;
+
   const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`);
   const data = await res.json();
+
+  document.getElementById("path").innerText = "/" + path;
 
   const list = document.getElementById("fileList");
   list.innerHTML = "";
@@ -85,6 +132,7 @@ async function loadFiles(path=""){
 
     div.onclick = ()=>{
       if(isFolder){
+        historyStack.push(currentPath);
         loadFiles(item.path);
       }else{
         window.open(item.download_url, "_blank");
@@ -93,6 +141,16 @@ async function loadFiles(path=""){
 
     list.appendChild(div);
   });
+}
+
+/* Back function */
+function goBack(){
+  if(historyStack.length > 0){
+    const prev = historyStack.pop();
+    loadFiles(prev);
+  } else {
+    loadFiles("");
+  }
 }
 
 loadFiles();
