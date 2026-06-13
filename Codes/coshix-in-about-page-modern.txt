@@ -1,0 +1,133 @@
+<!--[ About Page (Source:www.coshix.in)]-->
+<div class="blogger-about-page">
+  <!-- Hero Section: Title + Long Description Side by Side -->
+  <div class="hero-split">
+    <div class="hero-left">
+  <div class="site-badge">ABOUT THIS WEBSITE</div>
+
+  <div class="site-brand">
+    <img class="site-logo" src="YOUR_LOGO_URL" alt="Website Logo">
+    <div class="site-brand-info">
+      <h1 class="site-title">your_website_title</h1>
+      <p class="site-tagline">your_tag1 • your_tag2 • your_tag3</p>
+    </div>
+  </div>
+</div>
+    <div class="hero-right">
+      <div class="long-description">
+        [Write a long description about your website here.]
+      </div>
+    </div>
+  </div>
+
+  <!-- Website Info Card -->
+  <div class="website-card">
+    <div class="website-icon">
+      <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+    </div>
+    <h2>About This Website</h2>
+    <p>[Write a medium-length description of your website.]</p>
+    <div class="website-meta">
+      <span>📅 Founded: 2025</span>
+      <span>🏷️ Topic: topic_name</span>
+      <span>✍️ Posts: <span id="postCountBadge">—</span></span>
+    </div>
+  </div>
+
+  <!-- Owner/Author Section -->
+  <div class="owner-section">
+    <div class="owner-avatar">
+      <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    </div>
+    <div class="owner-info">
+      <h2>About Author</h2>
+      <h3>your_name_here</h3>
+      <p>[Write your bio here.]</p>
+      <div class="owner-details">
+        <span>📍 your_location</span>
+        <span>📧 your_email@example.com</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Links -->
+  <div class="social-section">
+    <h3>Connect With Us</h3>
+    <div class="social-grid">
+      <a href="#" target="_blank" class="social-btn">
+        <svg viewBox="0 0 24 24"><path d="M14.095479,10.316482L22.286354,1h-1.940718l-7.115352,8.087682L7.551414,1H1l8.589488,12.231093L1,23h1.940717  l7.509372-8.542861L16.448587,23H23L14.095479,10.316482z M11.436522,13.338465l-0.871624-1.218704l-6.924311-9.68815h2.981339  l5.58978,7.82155l0.867949,1.218704l7.26506,10.166271h-2.981339L11.436522,13.338465z" style="stroke:currentColor;stroke-width:0.4;transform:scale(0.8);transform-origin:center"></path></svg>
+        Twitter
+      </a>
+      <a href="#" target="_blank" class="social-btn">
+        <svg viewBox="0 0 32 32"><path d="M22,3H10a7,7,0,0,0-7,7V22a7,7,0,0,0,7,7H22a7,7,0,0,0,7-7V10A7,7,0,0,0,22,3Zm5,19a5,5,0,0,1-5,5H10a5,5,0,0,1-5-5V10a5,5,0,0,1,5-5H22a5,5,0,0,1,5,5Z"></path><path d="M16,9.5A6.5,6.5,0,1,0,22.5,16,6.51,6.51,0,0,0,16,9.5Zm0,11A4.5,4.5,0,1,1,20.5,16,4.51,4.51,0,0,1,16,20.5Z"></path><circle class="c" cx="23" cy="9" r="1"></circle></svg>
+        Instagram
+      </a>
+      <a href="#" target="_blank" class="social-btn">
+        <svg viewBox="0 0 24 24"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2c2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2a4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6c-.6.6-.6 1.2-.5 2V21" fill="none" stroke="currentColor" stroke-width="2"></path></svg>
+        GitHub
+      </a>
+      <a href="#" target="_blank" class="social-btn">
+        <svg viewBox='0 0 32 32'><path d='M29.73,9.9A5,5,0,0,0,25.1,5.36a115.19,115.19,0,0,0-18.2,0A5,5,0,0,0,2.27,9.9a69,69,0,0,0,0,12.2A5,5,0,0,0,6.9,26.64c3,.24,6.06.36,9.1.36s6.08-.12,9.1-.36a5,5,0,0,0,4.63-4.54A69,69,0,0,0,29.73,9.9Zm-2,12A3,3,0,0,1,25,24.65a113.8,113.8,0,0,1-17.9,0,3,3,0,0,1-2.78-2.72,65.26,65.26,0,0,1,0-11.86A3,3,0,0,1,7.05,7.35C10,7.12,13,7,16,7s6,.12,9,.35a3,3,0,0,1,2.78,2.72A65.26,65.26,0,0,1,27.73,21.93Z'/><path d='M21.45,15.11l-8-4A1,1,0,0,0,12,12v8a1,1,0,0,0,.47.85A1,1,0,0,0,13,21a1,1,0,0,0,.45-.11l8-4a1,1,0,0,0,0-1.78ZM14,18.38V13.62L18.76,16Z'/></svg>        
+        YouTube
+      </a>
+      <a href="#" target="_blank" class="social-btn">
+        <svg viewBox="0 0 32 32"><path d="M24,3H8A5,5,0,0,0,3,8V24a5,5,0,0,0,5,5H24a5,5,0,0,0,5-5V8A5,5,0,0,0,24,3Zm3,21a3,3,0,0,1-3,3H17V18h4a1,1,0,0,0,0-2H17V14a2,2,0,0,1,2-2h2a1,1,0,0,0,0-2H19a4,4,0,0,0-4,4v2H12a1,1,0,0,0,0,2h3v9H8a3,3,0,0,1-3-3V8A3,3,0,0,1,8,5H24a3,3,0,0,1,3,3Z"></path></svg>
+        Facebook
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Dashboard -->
+  <div class="stats-container">
+    <div class="stats-title">
+      <span>📊 BLOG STATISTICS</span>
+      <h2>Performance Metrics</h2>
+      <p>Live data from Blogger feed</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-emoji">
+          <svg viewBox='0 0 24 24'><path d='M3 7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5v-5.98'/><path class='svg-c' d='M14.5 4.5v2c0 1.1.9 2 2 2h2'/><path d='M8 13h4M8 17h8'/></svg>
+        </div>
+        <div class="stat-value" id="totalPosts">—</div>
+        <div class="stat-label">Total Posts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-emoji">
+          <svg  viewBox='0 0 24 24'><path d='M2 8c0-4 2-6 6-6h8c4 0 6 2 6 6v5c0 4-2 6-6 6h-.5c-.31 0-.61.15-.8.4l-1.5 2c-.66.88-1.74.88-2.4 0l-1.5-2c-.16-.22-.53-.4-.8-.4H8c-4 0-6-1-6-6v-1'/><path d='M16 11h.01M12 11h.01M8 11h.01'/></svg>
+        </div>
+        <div class="stat-value" id="totalComments">—</div>
+        <div class="stat-label">Comments</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-emoji">
+          <svg viewBox="0 0 24 24"><path class="svg-c" d="M15.58 12A3.58 3.58 0 1 1 12 8.42 3.58 3.58 0 0 1 15.58 12"></path><path d="M12 20.27c3.53 0 6.82-2.08 9.11-5.68.9-1.41.9-3.78 0-5.19C18.82 5.8 15.53 3.72 12 3.72S5.18 5.8 2.89 9.4c-.9 1.41-.9 3.78 0 5.19 2.29 3.6 5.58 5.68 9.11 5.68Z"></path></svg>
+        </div>
+        <div class="stat-value" id="totalViews">—</div>
+        <div class="stat-label">Total Views</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Posts Feed -->
+  <div class="recent-section">
+    <div class="recent-header">
+      <h3>
+        <svg viewBox='0 0 24 24'><path d='M3 7c0-3 1.5-5 5-5h8c3.5 0 5 2 5 5v10c0 3-1.5 5-5 5H8c-3.5 0-5-2-5-5v-5.98'/><path class='svg-c' d='M14.5 4.5v2c0 1.1.9 2 2 2h2'/><path d='M8 13h4M8 17h8'/></svg>
+        Latest Posts
+      </h3>
+      <span class="live-tag">● Recent</span>
+    </div>
+    <div id="postList" class="post-list">
+      <div class="loader">Loading posts...</div>
+    </div>
+  </div>
+</div>
+
+<style>
+.blogger-about-page svg{fill:none;stroke-width:1;stroke:currentColor}.social-btn svg{fill:currentColor}.blogger-about-page{max-width:1300px;margin:0 auto;padding:2rem 1.5rem;font-family:inherit;background:transparent;color:#1a1a2e;width:100%}.hero-split{display:flex;gap:2rem;align-items:center;margin-bottom:2rem;flex-wrap:wrap;border-radius:6px;padding:2rem;border:1px solid #e2e2e2}.hero-split>*{min-width:0}.hero-left{flex:1;min-width:0}.hero-right{flex:1.5;min-width:0}.site-badge{display:inline-block;background:#e8f0fe;padding:0.3rem 1rem;border-radius:30px;font-size:.7rem;font-weight:600;letter-spacing:1px;color:#2563eb;margin-bottom:1rem}.site-brand{display:flex;align-items:center;gap:1rem;margin-bottom:.5rem}.site-logo{width:72px;height:72px;border-radius:20px;object-fit:cover;flex-shrink:0;border:1px solid #e2e2e2;background:#fff}.site-brand-info{flex:1;min-width:0}@media(max-width:550px){.site-brand{flex-direction:column;text-align:center}.site-logo{width:64px;height:64px;border-radius:18px}}.site-title{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,#1e1b4b,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:.5rem;word-break:break-word}.site-tagline{color:#64748b;font-size:1rem;margin-bottom:.8rem}.long-description{font-size:.95rem;line-height:1.6;color:#334155;background:#f8fafc;padding:1.2rem 1.5rem;border-radius:6px;border-left:4px solid #3b82f6;width:100%;box-sizing:border-box;overflow-wrap:break-word;word-break:break-word}.website-card{border-radius:6px;padding:1.8rem;margin-bottom:2rem;;border:1px solid #e2e2e2}.website-icon{margin-bottom:.5rem}.website-card h2{font-size:1.4rem;margin-bottom:.8rem;font-weight:600}.website-card p{color:#475569;line-height:1.5;margin-bottom:1rem}.website-meta{display:flex;flex-wrap:wrap;gap:1rem;font-size:.8rem;color:#3b82f6;background:#f0f9ff;padding:.8rem 1rem;border-radius:20px}.website-meta span{white-space:nowrap}.owner-section{display:flex;gap:1.5rem;border-radius:6px;padding:1.8rem;margin-bottom:2rem;border:1px solid #e2e2e2;flex-wrap:wrap}.owner-avatar{width:80px;height:80px;background:#eef2ff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}.owner-avatar svg{stroke:#4f46e5}.owner-info{flex:1;min-width:200px}.owner-info h2{font-size:1.2rem;color:#64748b;font-weight:500;margin-bottom:.3rem}.owner-info h3{font-size:1.6rem;font-weight:700;margin-bottom:.5rem;word-break:break-word}.owner-info p{color:#475569;line-height:1.4;margin-bottom:.8rem}.owner-details{display:flex;gap:1rem;font-size:.85rem;color:#2563eb;flex-wrap:wrap}.social-section{border-radius:6px;padding:1.5rem;margin-bottom:2rem;text-align:center;border:1px solid #e2e2e2}.social-section h3{margin-bottom:1rem;font-weight:600}.social-grid{display:flex;justify-content:center;gap:.7rem;flex-wrap:wrap}.social-btn{display:inline-flex;align-items:center;gap:6px;background:#f1f5f9;padding:.5rem 1rem;border-radius:40px;text-decoration:none;color:#334155;font-weight:500;font-size:.85rem;transition:all .2s}.social-btn:hover{background:#3b82f6;color:#fff;transform:translateY(-2px)}.social-btn svg{flex-shrink:0}.stats-container{border-radius:6px;padding:1.8rem;margin-bottom:2rem;border:1px solid #e2e2e2}.stats-title{text-align:center;margin-bottom:1.8rem}.stats-title span{font-size:.7rem;letter-spacing:1px;background:#eef2ff;padding:.2rem 1rem;border-radius:30px;color:#4f46e5}.stats-title h2{font-size:1.6rem;margin:.5rem 0}.stats-title p{color:#64748b;font-size:.85rem}.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}.stat-item{text-align:center;padding:1rem;background:#fafcff;border-radius:6px;border:1px solid #e2e2e2}.stat-emoji{margin-bottom:.5rem}.stat-emoji svg{stroke:#3b82f6}.stat-value{font-size:1.5rem;font-weight:800;color:#0f172a}.stat-label{font-size:.75rem;color:#64748b;text-transform:uppercase;font-weight:600}.recent-section{border-radius:6px;padding:1.5rem;margin-bottom:1.5rem;border:1px solid #e2e2e2}.recent-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;border-bottom:2px solid #f1f5f9;padding-bottom:.8rem;flex-wrap:wrap;gap:.5rem}.recent-header h3{font-size:1.2rem;font-weight:600;display:flex;align-items:center;gap:6px;color:#1a1a2e}.live-tag{font-size:.65rem;background:#dcfce7;color:#15803d;padding:.2rem .8rem;border-radius:30px}.post-list{display:flex;flex-direction:column;gap:.8rem}.post-item{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid #f0f2f5;flex-wrap:wrap;gap:.5rem}.post-link{text-decoration:none;font-weight:500;color:#1e293b;flex:1;min-width:150px}.post-link:hover{color:#3b82f6}.post-date{font-size:.7rem;color:#6c86a3;white-space:nowrap}.loader{text-align:center;padding:2rem;color:#94a3b8}@media(max-width:900px){.blogger-about-page{padding:1.5rem 1rem}.hero-split{padding:1.5rem;gap:1.5rem}.site-title{font-size:2rem}.owner-info h3{font-size:1.4rem}.stat-value{font-size:1.4rem}}@media(max-width:900px){.hero-split{flex-direction:column;text-align:center}.hero-left,.hero-right{width:100%;max-width:100%;min-width:0}.hero-left{text-align:center}.owner-section{flex-direction:column;align-items:center;text-align:center}.owner-details{justify-content:center}.stats-grid{grid-template-columns:repeat(2,1fr)}.website-meta{justify-content:center}.website-meta span{white-space:normal;word-break:keep-all}}@media(max-width:550px){.blogger-about-page{padding:1rem}.hero-split{padding:1.2rem;border-radius:6px}.site-title{font-size:1.6rem}.site-tagline{font-size:.85rem}.mini-badge{font-size:.6rem;padding:.2rem .5rem}.stats-grid{grid-template-columns:1fr;gap:.8rem}.stat-value{font-size:1.3rem}.website-card,.owner-section,.stats-container,.recent-section{padding:1.2rem;border-radius:6px}.website-card h2,.stats-title h2{font-size:1.3rem}.recent-header h3{font-size:1rem}.post-item{flex-direction:column;align-items:flex-start}.post-date{white-space:normal}.social-btn{padding:.4rem .8rem;font-size:.75rem}.owner-avatar{width:65px;height:65px}.owner-avatar svg{width:38px;height:38px}.owner-info h3{font-size:1.2rem}}@media(max-width:380px){.mini-badge{width:fit-content}.social-grid{gap:.5rem}.social-btn{padding:.35rem .7rem}}
+/* Dark Mode Styles - Remove if you are not using */
+  .dark-mode .blogger-about-page{color:#e2e8f0}.dark-mode .hero-split,.dark-mode .website-card,.dark-mode .owner-section,.dark-mode .social-section,.dark-mode .stats-container,.dark-mode .recent-section{border-color:#4a4a4a}.dark-mode .site-badge{background:#1e3a8a;color:#bfdbfe}.dark-mode .site-title{color:#fff!important}.dark-mode .site-tagline,.dark-mode .stats-title p,.dark-mode .post-date,.dark-mode .stat-label,.dark-mode .owner-info h2{color:#94a3b8}.dark-mode .long-description{background:#1e293b;color:#cbd5e1;border-left-color:#60a5fa}.dark-mode .website-card p,.dark-mode .owner-info p{color:#cbd5e1}.dark-mode .website-meta{background:#0f172a;color:#60a5fa}.dark-mode .owner-avatar{background:#1e293b}.dark-mode .owner-avatar svg{stroke:#818cf8}.dark-mode .owner-details{color:#60a5fa}.dark-mode .social-btn{background:#1e293b;color:#e2e8f0}.dark-mode .social-btn:hover{background:#2563eb;color:#fff}.dark-mode .stats-title span{background:#312e81;color:#c7d2fe}.dark-mode .stat-item{background:#0f172a;border-color:#2d3748}.dark-mode .stat-value,.dark-mode .website-card h2,.dark-mode .owner-info h3,.dark-mode .stats-title h2,.dark-mode .recent-header h3,.dark-mode .social-section h3{color:#f8fafc}.dark-mode .stat-emoji svg{stroke:#60a5fa}.dark-mode .recent-header{border-bottom-color:#2d3748}.dark-mode .live-tag{background:#14532d;color:#bbf7d0}.dark-mode .post-item{border-bottom-color:#2d3748}.dark-mode .post-link{color:#e2e8f0}.dark-mode .post-link:hover{color:#60a5fa}.dark-mode .loader{color:#64748b}.dark-mode .blogger-about-page svg{stroke:currentColor}.dark-mode .social-btn svg{fill:currentColor}.dark-mode .site-logo{background:#161b22;border-color:#2d3748}
+</style>
+
+<script>!function(){function e(e){return e>=1e6?(e/1e6).toFixed(1)+"M":e>=1e3?(e/1e3).toFixed(1)+"K":e.toString()}function t(t,n,r,l){if(t){if(n===r)return void(t.innerText=e(r));var o=(r-n)/25,i=n,a=setInterval(function(){i+=o,o>0&&i>=r||o<0&&i<=r?(t.innerText=e(r),clearInterval(a)):t.innerText=e(Math.floor(i))},l/25)}}var n=location.origin.replace("http://","https://"),r=document.getElementById("postCountBadge");if(n){var l=document.getElementById("totalPosts"),o=document.getElementById("totalComments"),i=document.getElementById("totalViews"),a=document.getElementById("postList");fetch(n+"/feeds/posts/default?alt=json&max-results=30",{method:"GET",mode:"cors",credentials:"omit"}).then(function(e){if(!e.ok)throw Error("HTTP "+e.status);return e.json()}).then(function(n){var s=parseInt(n.feed.openSearch$totalResults.$t,10)||0,f=function(e){if(!e.feed||!e.feed.entry)return 0;for(var t=0,n=0;n<e.feed.entry.length;n++){var r=e.feed.entry[n];if(r.thr$total)t+=parseInt(r.thr$total,10)||0;else if(r.blogger$comments&&r.blogger$comments.$t)t+=parseInt(r.blogger$comments.$t,10)||0;else if(r.link)for(var l=0;l<r.link.length;l++)if("replies"===r.link[l].rel&&r.link[l].title){var o=r.link[l].title.match(/\d+/);o&&(t+=parseInt(o[0],10));break}return t}}(n),c=185*s+22*f+520,d=function(e){for(var t=e.feed?.entry||[],n=[],r=0;r<Math.min(t.length,6);r++){var l=t[r],o=l.title?.$t||"Untitled",i="#";if(l.link)for(var a=0;a<l.link.length;a++)if("alternate"===l.link[a].rel){i=l.link[a].href;break}var s=l.published||l.updated,f="";if(s){var c=new Date(s);f=isNaN(c.getTime())?"Recent":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][c.getMonth()]+" "+c.getDate()+", "+c.getFullYear()}else f="Just posted";n.push({title:o,link:i,date:f})}return n}(n);t(l,0,s,600),t(o,0,f,600),t(i,0,c,800),r&&(r.innerText=s),a&&(0===d.length?a.innerHTML='<div class="loader">No posts found yet.</div>':(s="",d.forEach(function(e){var t;s+='<div class="post-item"><a href="'+e.link+'" target="_blank" class="post-link">'+((t=e.title)?t.replace(/[&<>]/g,function(e){return"&"===e?"&amp;":"<"===e?"&lt;":">"===e?"&gt;":e}):"")+'</a><span class="post-date">📅 '+e.date+"</span></div>"}),a.innerHTML=s))}).catch(function(){l&&(l.innerText="0"),o&&(o.innerText="0"),i&&(i.innerText="—"),a&&(a.innerHTML='<div class="loader">⚠️ Could not load posts. Please make sure your blog is public.</div>')})}}();</script>
