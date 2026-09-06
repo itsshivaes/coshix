@@ -1,0 +1,1342 @@
+---
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("posts");
+const searchData = allPosts.map(post => ({
+  title: post.data.title,
+  url: `/blog/${post.slug || post.id}`,
+  category: post.data.categories?.[0] || "General",
+  date: post.data.date ? new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""
+}));
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { 
+  title = "Coshix", 
+  description = "Coshix is a modern web platform offering tutorials, developer tools, Blogger guides, UI components, and resources to help you build better websites.", 
+  image = "/images/og-image.png" 
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.in");
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#4f46e5" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, canonicalURL)} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, canonicalURL)} />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script is:inline>
+      const savedTheme = localStorage.getItem('theme') || 'system';
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (savedTheme === 'system' && systemPrefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+  </head>
+  <body class="app-body">
+    
+    <header class="top-navbar">
+      <div class="nav-left">
+        <button id="mobileMenuToggle" class="icon-btn mobile-only hamburger-btn" aria-label="Open Menu">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+
+        <a href="/" class="brand-logo">
+          <img src="/images/logo.png" alt="Coshix Logo" class="brand-logo-img" />
+          <span class="brand-name">Coshix</span>
+        </a>
+
+        <button id="searchOpenBtnDesktop" class="search-trigger desktop-only" aria-label="Search">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span class="search-text-label">Looking for something?</span>
+          <kbd class="search-kbd">Ctrl K</kbd>
+        </button>
+      </div>
+
+      <div class="nav-right">
+        <button id="searchOpenBtnMobile" class="icon-btn mobile-only" aria-label="Search">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+
+        <div class="theme-dropdown-container">
+          <button id="themeMenuBtn" class="icon-btn" aria-label="Toggle theme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+
+          <div id="themeMenu" class="theme-menu">
+            <div class="theme-menu-header">Appearance</div>
+            <button class="theme-option" data-theme="light">
+              <svg class="check-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Light
+            </button>
+            <button class="theme-option" data-theme="dark">
+              <svg class="check-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Dark
+            </button>
+            <button class="theme-option" data-theme="system">
+              <svg class="check-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              System
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div id="searchModal" class="search-modal-overlay">
+      <div class="search-modal-box">
+        <div class="search-modal-input-wrapper">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="searchInput" placeholder="Search articles, guides, code..." autocomplete="off" />
+          <button id="searchCloseBtn" class="search-close-kbd">ESC</button>
+        </div>
+        <div id="searchResults" class="search-results-container">
+          <p class="search-placeholder-text">Type a keyword to search posts...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobileDrawerOverlay" class="mobile-drawer-overlay">
+      <div class="mobile-drawer-content">
+        <div class="mobile-drawer-header">
+          <button id="mobileMenuClose" class="drawer-close-btn" aria-label="Close Menu">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span>Close</span>
+          </button>
+        </div>
+        <div class="mobile-drawer-body">
+          <div class="sidebar-section">
+            <a href="/" class="sidebar-link" data-path="/">Home</a>
+            <a href="/tools" class="sidebar-link" data-path="/tools">Awesome Tools</a>
+            <a href="/archive" class="sidebar-link" data-path="/archive">Blog Archive</a>
+            <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-title">INFORMATION</div>
+            <a href="/about" class="sidebar-link" data-path="/about">About</a>
+            <a href="/contact" class="sidebar-link" data-path="/contact">Contact</a>
+            <a href="/privacy-policy" class="sidebar-link" data-path="/privacy-policy">Privacy Policy</a>
+          </div>
+
+          <div class="sidebar-social-section">
+            <div class="social-icons-grid">
+              <a href="https://www.threads.com/@coshix.in" target="_blank" rel="noopener noreferrer" aria-label="Threads" class="social-icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-threads" viewBox="0 0 16 16"><path d="M6.321 6.016c-.27-.18-1.166-.802-1.166-.802.756-1.081 1.753-1.502 3.132-1.502.975 0 1.803.327 2.394.948s.928 1.509 1.005 2.644q.492.207.905.484c1.109.745 1.719 1.86 1.719 3.137 0 2.716-2.226 5.075-6.256 5.075C4.594 16 1 13.987 1 7.994 1 2.034 4.482 0 8.044 0 9.69 0 13.55.243 15 5.036l-1.36.353C12.516 1.974 10.163 1.43 8.006 1.43c-3.565 0-5.582 2.171-5.582 6.79 0 4.143 2.254 6.343 5.63 6.343 2.777 0 4.847-1.443 4.847-3.556 0-1.438-1.208-2.127-1.27-2.127-.236 1.234-.868 3.31-3.644 3.31-1.618 0-3.013-1.118-3.013-2.582 0-2.09 1.984-2.847 3.55-2.847.586 0 1.294.04 1.663.114 0-.637-.54-1.728-1.9-1.728-1.25 0-1.566.405-1.967.868ZM8.716 8.19c-2.04 0-2.304.87-2.304 1.416 0 .878 1.043 1.168 1.6 1.168 1.02 0 2.067-.282 2.232-2.423a6.2 6.2 0 0 0-1.528-.161"/></svg>
+              </a>
+              <a href="https://www.instagram.com/coshix.in" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </a>
+              <a href="https://t.me/teorzo" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="social-icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+              </a>
+              <a href="https://github.com/itsshivaes" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="social-icon-link">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-container">
+      
+      <aside class="sidebar desktop-sidebar">
+        <div class="sidebar-inner">
+          <div class="sidebar-section">
+            <a href="/" class="sidebar-link" data-path="/">Home</a>
+            <a href="/categories/blogger" class="sidebar-link" data-path="/blogger">Blogger</a>
+            <a href="/categories/common" class="sidebar-link" data-path="/common">Common</a>
+            <a href="/archive" class="sidebar-link" data-path="/archive">Blog Archive</a>
+            <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
+          </div>
+
+          <div class="sidebar-section">
+            <a href="/about" class="sidebar-link" data-path="/about">About</a>
+            <a href="/contact" class="sidebar-link" data-path="/contact">Contact</a>
+          </div>
+
+          <div class="sidebar-social-section">
+            <div class="social-icons-grid">
+              <a href="https://www.threads.com/@coshix.in" target="_blank" rel="noopener noreferrer" aria-label="Threads" class="social-icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-threads" viewBox="0 0 16 16"><path d="M6.321 6.016c-.27-.18-1.166-.802-1.166-.802.756-1.081 1.753-1.502 3.132-1.502.975 0 1.803.327 2.394.948s.928 1.509 1.005 2.644q.492.207.905.484c1.109.745 1.719 1.86 1.719 3.137 0 2.716-2.226 5.075-6.256 5.075C4.594 16 1 13.987 1 7.994 1 2.034 4.482 0 8.044 0 9.69 0 13.55.243 15 5.036l-1.36.353C12.516 1.974 10.163 1.43 8.006 1.43c-3.565 0-5.582 2.171-5.582 6.79 0 4.143 2.254 6.343 5.63 6.343 2.777 0 4.847-1.443 4.847-3.556 0-1.438-1.208-2.127-1.27-2.127-.236 1.234-.868 3.31-3.644 3.31-1.618 0-3.013-1.118-3.013-2.582 0-2.09 1.984-2.847 3.55-2.847.586 0 1.294.04 1.663.114 0-.637-.54-1.728-1.9-1.728-1.25 0-1.566.405-1.967.868ZM8.716 8.19c-2.04 0-2.304.87-2.304 1.416 0 .878 1.043 1.168 1.6 1.168 1.02 0 2.067-.282 2.232-2.423a6.2 6.2 0 0 0-1.528-.161"/></svg>
+              </a>
+              <a href="https://www.instagram.com/coshix.in" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </a>
+              <a href="https://t.me/teorzo" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="social-icon-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+              </a>
+              <a href="https://github.com/itsshivaes" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="social-icon-link">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="content-wrapper">
+        <main class="main-content">
+          <slot />
+        </main>
+
+        <footer class="site-footer">
+          <div class="footer-content">
+            <p>&copy; {new Date().getFullYear()} Coshix. All rights reserved.</p>
+            <div class="footer-links">
+              <a href="/privacy-policy">Privacy Policy</a>
+              <a href="/disclaimer">Disclaimer</a>
+            </div>
+          </div>
+        </footer>
+      </div>
+
+    </div>
+
+    <button id="backToTopBtn" aria-label="Back to top" class="back-to-top-btn">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg>
+    </button>
+
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    </script>
+
+    <script define:vars={{ searchData }}>
+      const themeBtn = document.getElementById('themeMenuBtn');
+      const themeMenu = document.getElementById('themeMenu');
+      const options = document.querySelectorAll('.theme-option');
+
+      themeBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        themeMenu?.classList.toggle('show');
+      });
+
+      document.addEventListener('click', () => {
+        themeMenu?.classList.remove('show');
+      });
+
+      const setTheme = (theme) => {
+        localStorage.setItem('theme', theme);
+        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+
+        options.forEach(opt => {
+          if (opt.getAttribute('data-theme') === theme) {
+            opt.classList.add('active');
+          } else {
+            opt.classList.remove('active');
+          }
+        });
+        themeMenu?.classList.remove('show');
+      };
+
+      const currentTheme = localStorage.getItem('theme') || 'system';
+      options.forEach(opt => {
+        if (opt.getAttribute('data-theme') === currentTheme) {
+          opt.classList.add('active');
+        }
+        opt.addEventListener('click', () => setTheme(opt.getAttribute('data-theme')));
+      });
+
+      // Mobile Menu Drawer Interactivity
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mobileMenuClose = document.getElementById('mobileMenuClose');
+      const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
+
+      const openMobileDrawer = () => {
+        mobileDrawerOverlay?.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeMobileDrawer = () => {
+        mobileDrawerOverlay?.classList.remove('show');
+        document.body.style.overflow = '';
+      };
+
+      mobileMenuToggle?.addEventListener('click', openMobileDrawer);
+      mobileMenuClose?.addEventListener('click', closeMobileDrawer);
+      mobileDrawerOverlay?.addEventListener('click', (e) => {
+        if (e.target === mobileDrawerOverlay) closeMobileDrawer();
+      });
+
+      // Dynamic Active Sidebar Link Highlighter
+      const highlightActiveLinks = () => {
+        let currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+        const links = document.querySelectorAll(".sidebar-link");
+
+        links.forEach(link => {
+          const linkPath = link.getAttribute("data-path")?.replace(/\/$/, "") || "/";
+          
+          if (linkPath === currentPath || (linkPath !== "/" && currentPath.startsWith(linkPath))) {
+            document.querySelectorAll(`.sidebar-link[data-path="${link.getAttribute('data-path')}"]`).forEach(l => {
+              l.classList.add("active");
+            });
+          } else {
+            link.classList.remove("active");
+          }
+        });
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener("DOMContentLoaded", highlightActiveLinks);
+      } else {
+        highlightActiveLinks();
+      }
+
+      // Search Modal Functionality & Live Filtering
+      const searchModal = document.getElementById('searchModal');
+      const searchOpenBtnDesktop = document.getElementById('searchOpenBtnDesktop');
+      const searchOpenBtnMobile = document.getElementById('searchOpenBtnMobile');
+      const searchCloseBtn = document.getElementById('searchCloseBtn');
+      const searchInput = document.getElementById('searchInput');
+      const searchResults = document.getElementById('searchResults');
+
+      const openSearch = () => {
+        searchModal?.classList.add('show');
+        setTimeout(() => searchInput?.focus(), 50);
+      };
+
+      const closeSearch = () => {
+        searchModal?.classList.remove('show');
+        if (searchInput) searchInput.value = '';
+        if (searchResults) searchResults.innerHTML = '<p class="search-placeholder-text">Type a keyword to search posts...</p>';
+      };
+
+      searchOpenBtnDesktop?.addEventListener('click', openSearch);
+      searchOpenBtnMobile?.addEventListener('click', openSearch);
+      searchCloseBtn?.addEventListener('click', closeSearch);
+
+      searchModal?.addEventListener('click', (e) => {
+        if (e.target === searchModal) closeSearch();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (searchModal?.classList.contains('show')) {
+            closeSearch();
+          } else {
+            openSearch();
+          }
+        }
+        if (e.key === 'Escape') {
+          closeSearch();
+          closeMobileDrawer();
+        }
+      });
+
+      searchInput?.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) {
+          searchResults.innerHTML = '<p class="search-placeholder-text">Type a keyword to search posts...</p>';
+          return;
+        }
+
+        const filtered = searchData.filter(post => 
+          post.title.toLowerCase().includes(query) || post.category.toLowerCase().includes(query)
+        );
+
+        if (filtered.length === 0) {
+          searchResults.innerHTML = '<p class="search-placeholder-text">No articles found matching your query.</p>';
+          return;
+        }
+
+        searchResults.innerHTML = filtered.map(post => `
+          <a href="${post.url}" class="search-result-item">
+            <div class="search-result-meta">${post.category} · ${post.date}</div>
+            <div class="search-result-title">${post.title}</div>
+          </a>
+        `).join('');
+      });
+
+      // Lazy Load Images on Scroll using IntersectionObserver
+      document.addEventListener("DOMContentLoaded", () => {
+        const lazyImages = document.querySelectorAll("img[data-src]");
+
+        if ("IntersectionObserver" in window) {
+          const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                if (img.dataset.srcset) {
+                  img.srcset = img.dataset.srcset;
+                }
+                img.classList.remove("lazy");
+                imageObserver.unobserve(img);
+              }
+            });
+          }, {
+            rootMargin: "200px 0px",
+            threshold: 0.01
+          });
+
+          lazyImages.forEach(img => imageObserver.observe(img));
+        } else {
+          lazyImages.forEach(img => {
+            img.src = img.dataset.src;
+          });
+        }
+      });
+
+      // Automatically Add Copy Buttons to Code Blocks
+      document.addEventListener("DOMContentLoaded", () => {
+        const codeBlocks = document.querySelectorAll("pre");
+
+        codeBlocks.forEach((block) => {
+          if (block.querySelector(".copy-code-btn")) return;
+
+          block.style.position = "relative";
+
+          const button = document.createElement("button");
+          button.className = "copy-code-btn";
+          button.type = "button";
+          button.textContent = "Copy";
+
+          button.addEventListener("click", async () => {
+            const codeToCopy = block.querySelector("code")?.innerText || block.innerText;
+            
+            try {
+              await navigator.clipboard.writeText(codeToCopy);
+              button.textContent = "Copied!";
+              button.classList.add("copied");
+
+              setTimeout(() => {
+                button.textContent = "Copy";
+                button.classList.remove("copied");
+              }, 2000);
+            } catch (err) {
+              console.error("Failed to copy text: ", err);
+              button.textContent = "Error";
+            }
+          });
+
+          block.appendChild(button);
+        });
+      });
+
+      // Sticky Back to Top Button Logic
+      document.addEventListener("DOMContentLoaded", () => {
+        const backToTopBtn = document.getElementById("backToTopBtn");
+
+        window.addEventListener("scroll", () => {
+          if (window.scrollY > 300) {
+            backToTopBtn?.classList.add("show");
+          } else {
+            backToTopBtn?.classList.remove("show");
+          }
+        });
+
+        backToTopBtn?.addEventListener("click", () => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+        });
+      });
+    </script>
+
+    <style is:global>
+      :root {
+        --bg-main: #f8fafc;
+        --bg-card: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+        --sidebar-bg: #f8fafc;
+        --sidebar-hover: #f1f5f9;
+        --sidebar-active: #e0e7ff;
+        --sidebar-active-text: #4f46e5;
+      }
+
+      html.dark {
+        --bg-main: #09090b;
+        --bg-card: #18181b;
+        --text-main: #f4f4f5;
+        --text-muted: #a1a1aa;
+        --border-color: #27272a;
+        --sidebar-bg: #09090b;
+        --sidebar-hover: #27272a;
+        --sidebar-active: #27272a;
+        --sidebar-active-text: #818cf8;
+      }
+
+      body.app-body {
+        margin: 0;
+        font-family: 'Google Sans Flex', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+
+      /* Navbar */
+      .top-navbar {
+        height: 65px;
+        background-color: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+      }
+
+      .brand-logo-img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+        border-radius: 0.375rem;
+      }
+
+      .brand-name {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .search-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.5rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        cursor: pointer;
+        width: 280px;
+        text-align: left;
+        font-family: inherit;
+      }
+
+      .search-trigger kbd {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        padding: 0.1rem 0.3rem;
+        border-radius: 0.25rem;
+        font-size: 0.7rem;
+        color: var(--text-main);
+        margin-left: auto;
+      }
+
+      /* Search Modal Styles */
+      .search-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 10vh;
+      }
+
+      .search-modal-overlay.show {
+        display: flex;
+      }
+
+      .search-modal-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .search-modal-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-muted);
+      }
+
+      .search-modal-input-wrapper input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        color: var(--text-main);
+        font-family: inherit;
+      }
+
+      .search-close-kbd {
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      .search-results-container {
+        padding: 1rem;
+        max-height: 350px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .search-placeholder-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .search-result-item {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
+        transition: border-color 0.15s;
+      }
+
+      .search-result-item:hover {
+        border-color: #4f46e5;
+      }
+
+      .search-result-meta {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #4f46e5;
+        margin-bottom: 0.2rem;
+        letter-spacing: 0.05em;
+      }
+
+      .search-result-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+
+      .icon-btn {
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+        width: 38px;
+        height: 38px;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+
+      .icon-btn:hover {
+        background: var(--sidebar-hover);
+        color: var(--text-main);
+      }
+
+      /* Mobile Navigation Drawer Styles */
+      .mobile-drawer-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        justify-content: flex-start;
+        animation: fadeInOverlay 0.2s ease;
+      }
+
+      .mobile-drawer-overlay.show {
+        display: flex;
+      }
+
+      .mobile-drawer-content {
+        background: var(--bg-card);
+        width: 82%;
+        max-width: 320px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+        animation: slideInDrawer 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow-y: auto;
+      }
+
+      .mobile-drawer-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+
+      .drawer-close-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        font-family: inherit;
+      }
+
+      .drawer-close-btn:hover {
+        background: var(--sidebar-hover);
+        color: var(--text-main);
+      }
+
+      .mobile-drawer-body {
+        padding: 1.25rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      @keyframes slideInDrawer {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(0); }
+      }
+
+      @keyframes fadeInOverlay {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      /* Theme Dropdown Styles */
+      .theme-dropdown-container {
+        position: relative;
+      }
+
+      .theme-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 45px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        width: 180px;
+        padding: 0.5rem;
+        z-index: 100;
+      }
+
+      .theme-menu.show {
+        display: block;
+      }
+
+      .theme-menu-header {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        padding: 0.5rem 0.75rem;
+        letter-spacing: 0.05em;
+      }
+
+      .theme-option {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 0.75rem;
+        background: transparent;
+        border: none;
+        border-radius: 0.375rem;
+        color: var(--text-main);
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+      }
+
+      .theme-option:hover {
+        background: var(--sidebar-hover);
+      }
+
+      .check-icon {
+        visibility: hidden;
+        color: #4f46e5;
+      }
+
+      .theme-option.active .check-icon {
+        visibility: visible;
+      }
+
+      /* Dashboard Grid & Sticky Sidebar */
+      .dashboard-container {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        align-items: start;
+      }
+
+      .sidebar {
+        background-color: var(--sidebar-bg);
+        border-right: 1px solid var(--border-color);
+        min-height: calc(100vh - 65px);
+        position: sticky;
+        top: 65px;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+      }
+
+      .sidebar-inner {
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .sidebar-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .sidebar-title {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        letter-spacing: 0.05em;
+        padding: 0.5rem 0.75rem;
+      }
+
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.5rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+      }
+
+      .sidebar-link:hover {
+        background-color: var(--sidebar-hover);
+        color: var(--text-main);
+      }
+
+      .sidebar-link.active {
+        background-color: var(--sidebar-active);
+        color: var(--sidebar-active-text);
+        font-weight: 600;
+      }
+
+      /* Sidebar Social Area Styles (Pinned to Bottom, Exactly 4 Items) */
+      .sidebar-social-section {
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .social-section-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-main);
+        text-align: center;
+        margin-bottom: 0.75rem;
+      }
+
+      .social-icons-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.4rem;
+        justify-items: center;
+      }
+
+      .social-icon-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        color: var(--text-muted);
+        border: 1px solid var(--border-color);
+        background: var(--bg-card);
+        transition: all 0.15s ease;
+      }
+
+      .social-icon-link:hover {
+        color: #4f46e5;
+        border-color: #4f46e5;
+        background: var(--sidebar-hover);
+      }
+
+      .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 65px);
+        justify-content: space-between;
+      }
+
+      .main-content {
+        padding: 2rem;
+        max-width: 1300px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Footer Styles */
+      .site-footer {
+        background-color: var(--bg-card);
+        border-top: 1px solid var(--border-color);
+        padding: 1.5rem 2rem;
+        margin-top: auto;
+      }
+
+      .footer-content {
+        max-width: 1300px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .footer-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--text-main);
+      }
+
+      /* Lazy loading fade-in styles */
+      img.lazy {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      img:not(.lazy) {
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      /* Code Block Copy Button Styles */
+      pre {
+        position: relative;
+      }
+
+      .copy-code-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #cbd5e1;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.3rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-family: inherit;
+      }
+
+      .copy-code-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+      }
+
+      .copy-code-btn.copied {
+        background: #10b981;
+        color: #ffffff;
+        border-color: #10b981;
+      }
+
+      /* Sticky Back to Top Button Styles */
+      .back-to-top-btn {
+        position: fixed;
+        bottom: 5rem;
+        right: 2rem;
+        background: #4f46e5;
+        color: #ffffff;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(15px);
+        transition: all 0.25s ease;
+        z-index: 10;
+      }
+
+      .back-to-top-btn.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .back-to-top-btn:hover {
+        background: #4338ca;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+      }
+
+      /* Dark mode card & pagination overrides for existing inline components */
+      html.dark .post-card-featured-horizontal,
+      html.dark .post-card-grid,
+      html.dark .popular-card,
+      html.dark .post-card,
+      html.dark .post-card-horizontal-sm,
+      html.dark .pagination-container,
+      html.dark nav[aria-label="Pagination"],
+      html.dark .search-modal-box,
+      html.dark .mobile-drawer-content {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-main) !important;
+      }
+
+      /* Force pagination text and unselected numbers/buttons to look correct in dark mode */
+      html.dark .pagination-container,
+      html.dark nav[aria-label="Pagination"] {
+        color: var(--text-main) !important;
+      }
+
+      html.dark .pagination-container a,
+      html.dark .pagination-container button,
+      html.dark nav[aria-label="Pagination"] a,
+      html.dark nav[aria-label="Pagination"] button {
+        background-color: var(--bg-card) !important;
+        color: var(--text-main) !important;
+        border-color: var(--border-color) !important;
+      }
+
+      html.dark .pagination-container a:hover,
+      html.dark .pagination-container button:hover,
+      html.dark nav[aria-label="Pagination"] a:hover,
+      html.dark nav[aria-label="Pagination"] button:hover {
+        background-color: var(--sidebar-hover) !important;
+        color: var(--text-main) !important;
+      }
+
+      html.dark .featured-title,
+      html.dark .grid-title,
+      html.dark .popular-title,
+      html.dark .post-title,
+      html.dark .list-title,
+      html.dark .search-result-title,
+      html.dark .card-body-side h2 {
+        color: var(--text-main) !important;
+      }
+
+      html.dark .card-desc,
+      html.dark .card-footer-row,
+      html.dark .card-footer-row-sm,
+      html.dark .card-footer-sm,
+      html.dark .date-text,
+      html.dark .page-indicator {
+        color: var(--text-muted) !important;
+        border-color: var(--border-color) !important;
+      }
+
+      html.dark .card-image-side,
+      html.dark .card-image-wrapper-top,
+      html.dark .card-thumb-sm,
+      html.dark .search-result-item,
+      html.dark .page-btn.disabled {
+        background-color: #27272a !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-muted) !important;
+      }
+
+      html.dark .page-btn {
+        background-color: var(--bg-card);
+        border-color: var(--border-color);
+        color: var(--text-main);
+      }
+
+      html.dark .popular-item {
+        border-bottom-color: var(--border-color) !important;
+      }
+
+      .mobile-only {
+        display: none !important;
+      }
+      .desktop-only {
+        display: flex !important;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-container {
+          grid-template-columns: 1fr !important;
+        }
+        .desktop-sidebar {
+          display: none !important;
+        }
+        .top-navbar {
+          padding: 0 1rem !important;
+          height: 65px !important;
+        }
+        .desktop-only {
+          display: none !important;
+        }
+        .mobile-only {
+          display: flex !important;
+        }
+        .nav-left {
+          gap: 0.75rem !important;
+        }
+        .main-content {
+          padding: 1rem !important;
+        }
+        .footer-content {
+          flex-direction: column;
+          gap: 0.75rem;
+          text-align: center;
+        }
+        .back-to-top-btn {
+          bottom: 5.5rem;
+          right: 1.25rem;
+          width: 38px;
+          height: 38px;
+        }
+      }
+    </style>
+
+<div id="cookieConsentBanner" class="cookie-banner">
+  <div class="cookie-content">
+    <div class="cookie-text">
+      <h3>We value your privacy</h3>
+      <p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. Read our <a href="/privacy-policy">Privacy Policy</a> to learn more.</p>
+    </div>
+    <div class="cookie-actions">
+      <button id="cookieReject" class="cookie-btn cookie-btn-outline">Reject All</button>
+      <button id="cookieAccept" class="cookie-btn cookie-btn-solid">Accept All</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const banner = document.getElementById('cookieConsentBanner');
+    const acceptBtn = document.getElementById('cookieAccept');
+    const rejectBtn = document.getElementById('cookieReject');
+
+    const consent = localStorage.getItem('cookie-consent');
+    if (!consent) {
+      setTimeout(() => {
+        banner?.classList.add('show');
+      }, 600);
+    }
+
+    acceptBtn?.addEventListener('click', () => {
+      localStorage.setItem('cookie-consent', 'accepted');
+      banner?.classList.remove('show');
+    });
+
+    rejectBtn?.addEventListener('click', () => {
+      localStorage.setItem('cookie-consent', 'rejected');
+      banner?.classList.remove('show');
+    });
+  });
+</script>
+
+<style>
+  .cookie-banner {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 1.25rem 2rem;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.08);
+    transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cookie-banner.show {
+    bottom: 0;
+  }
+
+  .cookie-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .cookie-text {
+    flex: 1;
+  }
+
+  .cookie-text h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.2rem 0;
+  }
+
+  .cookie-text p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .cookie-text a {
+    color: #818cf8;
+    text-decoration: underline;
+  }
+
+  .cookie-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .cookie-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+
+  .cookie-btn-outline {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+  }
+
+  .cookie-btn-outline:hover {
+    background: var(--sidebar-hover);
+  }
+
+  .cookie-btn-solid {
+    background: #4f46e5;
+    border: 1px solid #4f46e5;
+    color: #ffffff;
+  }
+
+  .cookie-btn-solid:hover {
+    background: #4338ca;
+  }
+
+  @media (max-width: 768px) {
+    .cookie-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .cookie-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+</style>
+
+  </body>
+</html>

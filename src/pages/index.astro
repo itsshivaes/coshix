@@ -1,0 +1,585 @@
+---
+import Base from "../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("posts");
+const validPosts = allPosts.filter(p => {
+  const identifier = p.slug || p.id || "";
+  return !identifier.includes("index") && p.data?.title !== "Posts";
+});
+
+const sortedPosts = validPosts.sort((a, b) => {
+  const dateA = new Date(a.data?.date || 0).getTime();
+  const dateB = new Date(b.data?.date || 0).getTime();
+  return dateB - dateA;
+});
+
+const pinnedPost = sortedPosts[0];
+const latestPosts = sortedPosts.slice(1, 7);
+const popularPosts = sortedPosts.slice(0, 5);
+
+const categoryMap = new Map();
+validPosts.forEach(post => {
+  const cat = post.data?.categories?.[0] || "General";
+  categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
+});
+const allLabels = Array.from(categoryMap.entries()).map(([name, count]) => ({ name, count }));
+
+const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+---
+
+<Base title="Coshix - Powering Web Creators">
+  <div class="blog-home-layout">
+    
+    <!-- Main Content Feed (Left) -->
+    <div class="content-feed">
+      
+      <!-- Pinned Post Section -->
+      {pinnedPost && (
+        <section class="feed-section">
+          <div class="section-heading">
+            <span class="heading-title">Pinned Post</span>
+            <span class="heading-dots">···</span>
+          </div>
+
+          <article class="post-card horizontal-card">
+            {pinnedPost.data?.image && (
+              <div class="card-thumb-h">
+                <img src={pinnedPost.data.image} alt={pinnedPost.data.title} loading="lazy" />
+                {pinnedPost.data?.commentsCount && (
+                  <div class="comment-badge">💬 {pinnedPost.data.commentsCount}</div>
+                )}
+              </div>
+            )}
+            <div class="card-content-h">
+              <div class="card-meta-top">
+                <a href={`/categories/${(pinnedPost.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                  in {pinnedPost.data?.categories?.[0] || "General"}
+                </a>
+              </div>
+              <a href={getPostUrl(pinnedPost)} class="title-anchor">
+                <h2 class="card-title">{pinnedPost.data?.title}</h2>
+              </a>
+              {pinnedPost.data?.description && (
+                <p class="card-snippet">{pinnedPost.data.description}</p>
+              )}
+              <div class="card-footer">
+                <span class="update-tag">Updated</span>
+                <span class="date-label">{pinnedPost.data?.date ? formatDate(pinnedPost.data.date) : ""}</span>
+                <a href={getPostUrl(pinnedPost)} class="read-more-link">Read more</a>
+              </div>
+            </div>
+          </article>
+        </section>
+      )}
+
+      <!-- Latest Posts Section -->
+      <section class="feed-section">
+        <div class="section-heading">
+          <span class="heading-title">Latest posts</span>
+          <span class="heading-dots">···</span>
+        </div>
+
+        <div class="latest-cards-grid">
+          {latestPosts.map(post => (
+            <article class="post-card vertical-card">
+              {post.data?.image && (
+                <div class="card-thumb">
+                  <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                  {post.data?.commentsCount && (
+                    <div class="comment-badge">💬 {post.data.commentsCount}</div>
+                  )}
+                </div>
+              )}
+              <div class="card-content">
+                <div class="card-meta-top">
+                  <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                    in {post.data?.categories?.[0] || "General"}
+                  </a>
+                </div>
+                <a href={getPostUrl(post)} class="title-anchor">
+                  <h3 class="card-title">{post.data?.title}</h3>
+                </a>
+                {post.data?.description && (
+                  <p class="card-snippet">{post.data.description}</p>
+                )}
+                <div class="card-footer">
+                  <span class="update-tag">Updated</span>
+                  <span class="date-label">{post.data?.date ? formatDate(post.data.date) : ""}</span>
+                  <a href={getPostUrl(post)} class="read-more-link">Read more</a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- Clean Numbered Pagination Bar -->
+        <nav class="pagination-container" aria-label="Pagination">
+          <span class="page-btn disabled">Previous</span>
+          <span class="page-indicator">Page 1 of 3</span>
+          <a href="/archive" class="page-btn">Next</a>
+        </nav>
+      </section>
+
+    </div>
+
+    <!-- Sidebar (Right) -->
+    <aside class="sidebar-feed">
+      
+      <!-- Popular Posts Widget -->
+      <div class="sidebar-widget">
+        <div class="section-heading">
+          <span class="heading-title">Popular Posts</span>
+          <span class="heading-dots">···</span>
+        </div>
+        <div class="popular-list">
+          {popularPosts.map((post, idx) => (
+            <div class="popular-row">
+              <span class="pop-num">#{idx + 1}</span>
+              <div class="pop-details">
+                <div class="pop-submeta">
+                  {post.data?.date ? formatDate(post.data.date) : ""} — 
+                  <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="pop-cat">
+                    {post.data?.categories?.[0] || "General"}
+                  </a>
+                </div>
+                <a href={getPostUrl(post)} class="pop-title-anchor">
+                  <h4 class="pop-post-title">{post.data?.title}</h4>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Labels Widget -->
+      <div class="sidebar-widget">
+        <div class="section-heading">
+          <span class="heading-title">Labels</span>
+          <span class="heading-dots">···</span>
+        </div>
+        <div class="labels-grid">
+          {allLabels.map(label => (
+            <a href={`/categories/${label.name.toLowerCase()}`} class="label-pill">
+              <span class="label-name">{label.name}</span>
+              <span class="label-count">({label.count})</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <style>
+    .blog-home-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 2rem;
+      max-width: 1300px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .content-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      min-width: 0;
+    }
+
+    .sidebar-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: sticky;
+      top: 5rem;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+
+    .heading-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .heading-dots {
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    /* Pinned Post Horizontal Card */
+    .post-card.horizontal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: border-color 0.15s ease;
+    }
+
+    .post-card.horizontal-card:hover {
+      border-color: #4f46e5;
+    }
+
+    .card-thumb-h {
+      position: relative;
+      width: 280px;
+      height: 100%;
+      min-height: 180px;
+      background: var(--bg-main);
+      overflow: hidden;
+    }
+
+    .card-thumb-h img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-content-h {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    /* Latest Posts 3-Column Grid */
+    .latest-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .post-card.vertical-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: border-color 0.15s ease;
+    }
+
+    .post-card.vertical-card:hover {
+      border-color: #4f46e5;
+    }
+
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      height: 140px;
+      background: var(--bg-main);
+      overflow: hidden;
+    }
+
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .comment-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.12rem 0.4rem;
+      border-radius: 2rem;
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--text-main);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .card-content {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .card-meta-top {
+      margin-bottom: 0.2rem;
+    }
+
+    .cat-link {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #818cf8;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .cat-link:hover {
+      text-decoration: underline;
+    }
+
+    .title-anchor {
+      text-decoration: none;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 0 0 0.35rem 0;
+      line-height: 1.5;
+    }
+
+    .card-title:hover {
+      color: #818cf8;
+    }
+
+    .card-snippet {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0 0 0.75rem 0;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.68rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.5rem;
+    }
+
+    .update-tag {
+      background: #0284c7;
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 0.05rem 0.25rem;
+      border-radius: 0.2rem;
+      text-transform: uppercase;
+    }
+
+    .date-label {
+      color: var(--text-muted);
+      margin-right: auto;
+    }
+
+    .read-more-link {
+      color: #818cf8;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .read-more-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Fixed Pagination Styling */
+    .pagination-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .page-btn {
+      padding: 0.45rem 0.95rem;
+      border-radius: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.825rem;
+      font-weight: 500;
+      transition: background 0.15s ease;
+    }
+
+    .page-btn:hover {
+      background: var(--sidebar-hover);
+    }
+
+    .page-btn.disabled {
+      background: var(--bg-main);
+      border-color: var(--border-color);
+      color: var(--text-muted);
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Popular Posts Widget */
+    .sidebar-widget {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .popular-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .popular-row {
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .popular-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .pop-num {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      min-width: 18px;
+    }
+
+    .pop-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      min-width: 0;
+    }
+
+    .pop-submeta {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pop-cat {
+      color: #818cf8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .pop-title-anchor {
+      text-decoration: none;
+    }
+
+    .pop-post-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .pop-post-title:hover {
+      color: #818cf8;
+    }
+
+    /* Labels Widget */
+    .labels-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.45rem;
+    }
+
+    .label-pill {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.5rem;
+      border-radius: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+      font-size: 0.72rem;
+      transition: background 0.15s ease;
+    }
+
+    .label-pill:hover {
+      background: var(--sidebar-hover);
+      border-color: #818cf8;
+    }
+
+    .label-name {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .label-count {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1200px) {
+      .latest-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .blog-home-layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar-feed {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .post-card.horizontal-card {
+        grid-template-columns: 1fr;
+      }
+      .card-thumb-h {
+        width: 100%;
+        height: 160px;
+      }
+      .latest-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Base>

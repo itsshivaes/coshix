@@ -1,0 +1,184 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths({ paginate }) {
+  const posts = await getCollection("posts");
+  const validPosts = posts.filter(p => {
+    const identifier = p.slug || p.id || "";
+    return !identifier.includes("index") && p.data?.title !== "Posts";
+  });
+
+  const sortedPosts = validPosts.sort((a, b) => {
+    const dateA = new Date(a.data?.date || 0).getTime();
+    const dateB = new Date(b.data?.date || 0).getTime();
+    return dateB - dateA;
+  });
+
+  // Paginate posts (e.g., 6 posts per page)
+  return paginate(sortedPosts, { pageSize: 6 });
+}
+
+const { page } = Astro.props;
+const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
+---
+
+<Base title={`Blog Posts - Page ${page.currentPage}`}>
+  <div class="archive-container">
+    
+    <h1 class="archive-title">All Articles</h1>
+
+    <div class="archive-grid">
+      {page.data.map(post => (
+        <article class="post-card">
+          <div>
+            <span class="post-category">in {post.data?.categories?.[0] || "General"}</span>
+            <a href={getPostUrl(post)} class="post-title-link">
+              <h3 class="post-card-title">
+                {post.data?.title}
+              </h3>
+            </a>
+          </div>
+          <div class="post-card-footer">
+            <a href={getPostUrl(post)} class="post-read-link">Read →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <nav class="pagination-container" aria-label="Pagination">
+      {page.url.prev ? (
+        <a href={page.url.prev} class="page-btn">Previous</a>
+      ) : (
+        <span class="page-btn disabled">Previous</span>
+      )}
+
+      <span class="page-indicator">
+        Page {page.currentPage} of {page.lastPage}
+      </span>
+
+      {page.url.next ? (
+        <a href={page.url.next} class="page-btn">Next</a>
+      ) : (
+        <span class="page-btn disabled">Next</span>
+      )}
+    </nav>
+
+  </div>
+
+  <style>
+    .archive-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .archive-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .post-card {
+      background: var(--bg-card);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.15s ease;
+    }
+
+    .post-card:hover {
+      border-color: #4f46e5;
+    }
+
+    .post-category {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .post-title-link {
+      display: block;
+      margin-top: 0.35rem;
+      text-decoration: none;
+    }
+
+    .post-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .post-card-footer {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .post-read-link {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #4f46e5;
+      text-decoration: none;
+    }
+
+    .pagination-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .page-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.15s ease;
+    }
+
+    .page-btn:hover {
+      background: var(--sidebar-hover);
+    }
+
+    .page-btn.disabled {
+      background: var(--bg-main);
+      border-color: var(--border-color);
+      color: var(--text-muted);
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+  </style>
+</Base>

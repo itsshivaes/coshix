@@ -1,0 +1,306 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths({ paginate }) {
+  const posts = await getCollection("posts");
+  const validPosts = posts.filter(p => {
+    const identifier = p.slug || p.id || "";
+    return !identifier.includes("index") && p.data?.title !== "Posts";
+  });
+
+  const sortedPosts = validPosts.sort((a, b) => {
+    const dateA = new Date(a.data?.date || 0).getTime();
+    const dateB = new Date(b.data?.date || 0).getTime();
+    return dateB - dateA;
+  });
+
+  return paginate(sortedPosts, { pageSize: 6 });
+}
+
+const { page } = Astro.props;
+const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+---
+
+<Base title={`Blog Archive - Page ${page.currentPage} - Coshix`}>
+  <div class="archive-container">
+    
+    <div class="section-heading">
+      <span class="heading-title">Blog Archive (Page {page.currentPage} of {page.lastPage})</span>
+      <span class="heading-dots">···</span>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="archive-cards-grid">
+      {page.data.map(post => (
+        <article class="post-card vertical-card">
+          {post.data?.image && (
+            <div class="card-thumb">
+              <img src={post.data.image} alt={post.data.title} loading="lazy" />
+              {post.data?.commentsCount && (
+                <div class="comment-badge">💬 {post.data.commentsCount}</div>
+              )}
+            </div>
+          )}
+          <div class="card-content">
+            <div class="card-meta-top">
+              <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                in {post.data?.categories?.[0] || "General"}
+              </a>
+            </div>
+            <a href={getPostUrl(post)} class="title-anchor">
+              <h3 class="card-title">{post.data?.title}</h3>
+            </a>
+            {post.data?.description && (
+              <p class="card-snippet">{post.data.description}</p>
+            )}
+            <div class="card-footer">
+              <span class="update-tag">Updated</span>
+              <span class="date-label">{post.data?.date ? formatDate(post.data.date) : ""}</span>
+              <a href={getPostUrl(post)} class="read-more-link">Read more</a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Correct Paginated Navigation Links -->
+    <nav class="pagination-container" aria-label="Pagination">
+      {page.url.prev ? (
+        <a href={page.url.prev} class="page-btn">Previous</a>
+      ) : (
+        <span class="page-btn disabled">Previous</span>
+      )}
+
+      <span class="page-indicator">Page {page.currentPage} of {page.lastPage}</span>
+
+      {page.url.next ? (
+        <a href={page.url.next} class="page-btn">Next</a>
+      ) : (
+        <span class="page-btn disabled">Next</span>
+      )}
+    </nav>
+
+  </div>
+
+  <style>
+    .archive-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+
+    .heading-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .archive-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .post-card.vertical-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: border-color 0.15s ease;
+    }
+
+    .post-card.vertical-card:hover {
+      border-color: #4f46e5;
+    }
+
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      height: 140px;
+      background: var(--bg-main);
+      overflow: hidden;
+    }
+
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .comment-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.12rem 0.4rem;
+      border-radius: 2rem;
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--text-main);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .card-content {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .card-meta-top {
+      margin-bottom: 0.2rem;
+    }
+
+    .cat-link {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #818cf8;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .cat-link:hover {
+      text-decoration: underline;
+    }
+
+    .title-anchor {
+      text-decoration: none;
+    }
+
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0 0 0.35rem 0;
+      line-height: 1.3;
+    }
+
+    .card-title:hover {
+      color: #818cf8;
+    }
+
+    .card-snippet {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0 0 0.75rem 0;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.68rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.5rem;
+    }
+
+    .update-tag {
+      background: #0284c7;
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: 700;
+      padding: 0.05rem 0.25rem;
+      border-radius: 0.2rem;
+      text-transform: uppercase;
+    }
+
+    .date-label {
+      color: var(--text-muted);
+      margin-right: auto;
+    }
+
+    .read-more-link {
+      color: #818cf8;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .read-more-link:hover {
+      text-decoration: underline;
+    }
+
+    .pagination-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.75rem;
+    }
+
+    .page-btn {
+      padding: 0.45rem 0.95rem;
+      border-radius: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.825rem;
+      font-weight: 500;
+      transition: background 0.15s ease;
+    }
+
+    .page-btn:hover {
+      background: var(--sidebar-hover);
+    }
+
+    .page-btn.disabled {
+      background: var(--bg-main);
+      border-color: var(--border-color);
+      color: var(--text-muted);
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 1024px) {
+      .archive-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .archive-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Base>

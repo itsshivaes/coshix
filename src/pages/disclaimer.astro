@@ -1,0 +1,104 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Disclaimer - Coshix" description="Read the disclaimer for Coshix regarding the use of Blogger codes, web elements, code snippets, and third-party services.">
+  <div class="disclaimer-container">
+    
+    <div class="section-heading">
+      <span class="heading-title">Disclaimer</span>
+      <span class="heading-dots">···</span>
+    </div>
+
+    <div class="disclaimer-card">
+      <p class="effective-date"><strong>Effective Date:</strong> September 6, 2026</p>
+
+      <h2>1. General Information</h2>
+      <p>All the information, code snippets, widgets, and tutorials published on Coshix are provided in good faith and for general informational and educational purposes only. Coshix makes no representation or warranties of any kind, express or implied, regarding the completeness, accuracy, reliability, suitability, or availability of the website or the information, products, services, or related graphics contained on the website.</p>
+
+      <h2>2. Use of Code Snippets and Templates</h2>
+      <p>The Blogger templates, CSS styles, JavaScript functions, and HTML widgets shared on Coshix are designed to be customized and implemented by users at their own risk. While we test our code thoroughly before publication, we strongly recommend backing up your website or Blogger theme before applying any modifications or code snippets. Coshix will not be held responsible or liable for any data loss, site downtime, broken layouts, or technical errors resulting from the use of our codes.</p>
+
+      <h2>3. Third-Party Services and Advertisements</h2>
+      <p>Coshix utilizes third-party services such as Google Analytics for tracking and Google AdSense for serving advertisements. These third-party vendors use cookies to serve ads based on prior visits to our website or other websites. We do not control or endorse the content, policies, or practices of external ad networks or third-party platforms linked on our site (including Disqus for comments).</p>
+
+      <h2>4. Limitation of Liability</h2>
+      <p>In no event will Coshix or its contributors be liable for any loss or damage including without limitation, indirect or consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits arising out of, or in connection with, the use of this website.</p>
+
+      <h2>5. Contact Us</h2>
+      <p>If you require any more information or have any questions about our site's disclaimer, please feel free to contact us through our <a href="/contact">Contact page</a>.</p>
+    </div>
+
+  </div>
+
+  <style>
+    .disclaimer-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding-bottom: 3rem;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+
+    .heading-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .heading-dots {
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .disclaimer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    .effective-date {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .disclaimer-card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .disclaimer-card h2:first-of-type {
+      margin-top: 0;
+    }
+
+    .disclaimer-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0 0 1rem 0;
+      line-height: 1.6;
+    }
+
+    .disclaimer-card a {
+      color: #818cf8;
+      text-decoration: underline;
+    }
+  </style>
+</Base>

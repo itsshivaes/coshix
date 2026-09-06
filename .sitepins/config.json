@@ -1,0 +1,11 @@
+{
+  "pagination": 6,
+  "settings": {
+    "pagination": 6
+  },
+  "site": {
+    "base_url": "https://coshix.in",
+    "base_path": "/",
+    "trailing_slash": false
+  }
+}

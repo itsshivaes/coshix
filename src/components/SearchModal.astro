@@ -1,0 +1,80 @@
+---
+interface Props {
+  posts: any[];
+}
+const { posts } = Astro.props;
+
+const searchIndex = posts.map(post => ({
+  title: post.data.title,
+  slug: post.slug,
+  category: post.data.categories?.[0] || "General"
+}));
+---
+
+<div id="searchModal" style="display: none; position: fixed; inset: 0; z-index: 50; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); padding: 2rem 1rem; justify-content: center; align-items: flex-start;">
+  <div style="width: 100%; max-width: 40rem; background: #ffffff; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column;">
+    
+    <div style="padding: 1rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; gap: 0.75rem;">
+      <svg width="20" height="20" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      <input id="modalSearchInput" type="text" placeholder="Search guides, tools, and posts..." style="width: 100%; background: transparent; outline: none; font-size: 1rem; color: #1e293b;" />
+      <button id="closeSearch" style="font-size: 11px; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: 0.25rem; background: #f1f5f9; color: #64748b; border: none; cursor: pointer;">ESC</button>
+    </div>
+    
+    <div id="searchResults" style="max-height: 50vh; overflow-y: auto; padding: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem;"></div>
+  </div>
+</div>
+
+<script define:vars={{ searchIndex }}>
+  const searchModal = document.getElementById("searchModal");
+  const searchTrigger = document.getElementById("searchTrigger");
+  const closeSearch = document.getElementById("closeSearch");
+  const modalInput = document.getElementById("modalSearchInput");
+  const searchResults = document.getElementById("searchResults");
+
+  function openSearch() {
+    searchModal.style.display = "flex";
+    modalInput.focus();
+    renderResults(searchIndex);
+  }
+
+  function hideSearch() {
+    searchModal.style.display = "none";
+    modalInput.value = "";
+  }
+
+  function renderResults(list) {
+    if (!searchResults) return;
+    if (list.length === 0) {
+      searchResults.innerHTML = `<div style="padding: 1.5rem; text-align: center; font-size: 0.875rem; color: #94a3b8;">No matching posts found.</div>`;
+      return;
+    }
+    searchResults.innerHTML = list.slice(0, 8).map(item => `
+      <a href="/blog/${item.slug}" style="display: flex; flex-direction: column; padding: 0.75rem 1rem; border-radius: 0.75rem; text-decoration: none; transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+        <span style="font-size: 10px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em;">${item.category}</span>
+        <span style="font-size: 0.875rem; font-weight: 500; color: #1e293b; margin-top: 0.125rem;">${item.title}</span>
+      </a>
+    `).join('');
+  }
+
+  searchTrigger?.addEventListener("click", openSearch);
+  closeSearch?.addEventListener("click", hideSearch);
+  searchModal?.addEventListener("click", (e) => {
+    if (e.target === searchModal) hideSearch();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      openSearch();
+    }
+    if (e.key === "Escape") hideSearch();
+  });
+
+  modalInput?.addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase();
+    const filtered = searchIndex.filter(item => 
+      item.title.toLowerCase().includes(q) || item.category.toLowerCase().includes(q)
+    );
+    renderResults(filtered);
+  });
+</script>

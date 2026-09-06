@@ -1,0 +1,160 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  const authors = [...new Set(posts.map(p => p.data?.author).filter(Boolean))];
+  
+  // Hardcoded pagination limit to fix the crash
+  const pageSize = 6;
+  const totalPages = Math.ceil(authors.length / pageSize) || 1;
+
+  return Array.from({ length: totalPages }, (_, i) => {
+    const pageNum = i + 1;
+    const start = i * pageSize;
+    const end = start + pageSize;
+    const paginatedAuthors = authors.slice(start, end);
+
+    return {
+      params: { slug: String(pageNum) },
+      props: {
+        authors: paginatedAuthors,
+        currentPage: pageNum,
+        totalPages: totalPages,
+      },
+    };
+  });
+}
+
+const { authors, currentPage, totalPages } = Astro.props;
+---
+
+<Base title={`Authors - Page ${currentPage} - Coshix`} description="Browse our collection of authors.">
+  <div class="authors-container">
+    <div class="section-heading">
+      <span class="heading-title">Site Authors (Page {currentPage} of {totalPages})</span>
+      <span class="heading-dots">···</span>
+    </div>
+
+    <div class="authors-grid">
+      {authors.map(author => (
+        <a href={`/authors/${String(author).toLowerCase().replace(/\s+/g, "-")}`} class="author-card">
+          <h3>{author}</h3>
+          <p>View articles by {author}</p>
+        </a>
+      ))}
+    </div>
+
+    {totalPages > 1 && (
+      <div class="pagination-container">
+        {currentPage > 1 ? (
+          <a href={currentPage === 2 ? "/authors" : `/authors/page/${currentPage - 1}`} class="page-btn">Previous</a>
+        ) : (
+          <span class="page-btn disabled">Previous</span>
+        )}
+
+        <span class="page-indicator">Page {currentPage} of {totalPages}</span>
+
+        {currentPage < totalPages ? (
+          <a href={`/authors/page/${currentPage + 1}`} class="page-btn">Next</a>
+        ) : (
+          <span class="page-btn disabled">Next</span>
+        )}
+      </div>
+    )}
+  </div>
+
+  <style>
+    .authors-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding-bottom: 3rem;
+    }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+    .heading-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .heading-dots {
+      color: var(--text-muted);
+      letter-spacing: 2px;
+    }
+    .authors-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .author-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text-main);
+      transition: border-color 0.15s ease;
+    }
+    .author-card:hover {
+      border-color: #818cf8;
+    }
+    .author-card h3 {
+      font-size: 1.1rem;
+      margin: 0 0 0.5rem 0;
+      color: var(--text-main);
+    }
+    .author-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .pagination-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 0.75rem;
+    }
+    .page-btn {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: border-color 0.15s ease;
+    }
+    .page-btn:hover:not(.disabled) {
+      border-color: #818cf8;
+    }
+    .page-btn.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .page-indicator {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    @media (max-width: 640px) {
+      .authors-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Base>

@@ -1,0 +1,158 @@
+---
+import Base from "../layouts/Base.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("posts");
+const validPosts = allPosts.filter(p => {
+  const identifier = p.slug || p.id || "";
+  return !identifier.includes("index") && p.data?.title !== "Posts";
+});
+
+const sortedPosts = validPosts.sort((a, b) => {
+  const dateA = new Date(a.data?.date || 0).getTime();
+  const dateB = new Date(b.data?.date || 0).getTime();
+  return dateB - dateA;
+});
+
+// Extract unique categories
+const categories = [...new Set(validPosts.map(p => p.data?.categories?.[0] || "General"))];
+
+const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
+---
+
+<Base title="Sitemap - Coshix" description="Browse all pages, categories, and articles available on Coshix.">
+  <div class="sitemap-container">
+    
+    <div class="section-heading">
+      <span class="heading-title">Site Sitemap</span>
+      <span class="heading-dots">···</span>
+    </div>
+
+    <div class="sitemap-card">
+      
+      <!-- Main Pages Section -->
+      <h2>Main Pages</h2>
+      <ul class="sitemap-list">
+        <li><a href="/">Home</a></li>
+        <li><a href="/archive/1">Blog Archive</a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/contact">Contact Us</a></li>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/disclaimer">Disclaimer</a></li>
+      </ul>
+
+      <!-- Categories Section -->
+      <h2>Categories / Labels</h2>
+      <ul class="sitemap-list">
+        {categories.map(cat => (
+          <li><a href={`/categories/${cat.toLowerCase()}`}>{cat}</a></li>
+        ))}
+      </ul>
+
+      <!-- All Posts Section -->
+      <h2>All Articles ({validPosts.length})</h2>
+      <ul class="sitemap-list posts-list">
+        {sortedPosts.map(post => (
+          <li>
+            <a href={getPostUrl(post)}>{post.data?.title}</a>
+            <span class="post-date">{post.data?.date ? new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}</span>
+          </li>
+        ))}
+      </ul>
+
+    </div>
+
+  </div>
+
+  <style>
+    .sitemap-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding-bottom: 3rem;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+
+    .heading-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .heading-dots {
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .sitemap-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    .sitemap-card h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.35rem;
+    }
+
+    .sitemap-card h2:first-of-type {
+      margin-top: 0;
+    }
+
+    .sitemap-list {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+      margin: 0 0 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sitemap-list li {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .sitemap-list a {
+      color: #818cf8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .sitemap-list a:hover {
+      text-decoration: underline;
+    }
+
+    .posts-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .post-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+  </style>
+</Base>
