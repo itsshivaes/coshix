@@ -34,12 +34,6 @@ Whether you are running a tech blog, tutorial website, online store, personal bl
 **Want to see how it works?**  
 [View Demo](https://coshix-outputs.blogspot.com/2026/07/firebase-article-rating.html)
 
-**Useful Guides for you:**
-
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-*   [How to Add Eye Care Mode in Your Website Using Pure CSS & JavaScript](/2026/05/eye-care-mode-css-javascript.html)
-*   [How to Create a Modern YouTube Video Playlist Player Using Pure JavaScript](/2026/06/modern-youtube-video-player.html)
-
 ## How To Add This Article Rating To Your Blogger Website
 
 ### Configure Firebase for the Article Rating System

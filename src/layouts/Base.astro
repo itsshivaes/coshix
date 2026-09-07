@@ -47,9 +47,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(image, canonicalURL)} />
     
+    <!-- Optimized Google Fonts to prevent render-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
+    </noscript>
     
     <script is:inline>
       const savedTheme = localStorage.getItem('theme') || 'system';
@@ -144,16 +149,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         <div class="mobile-drawer-body">
           <div class="sidebar-section">
             <a href="/" class="sidebar-link" data-path="/">Home</a>
-            <a href="/tools" class="sidebar-link" data-path="/tools">Awesome Tools</a>
+            <a href="/categories/blogger" class="sidebar-link" data-path="/blogger">Blogger</a>
+            <a href="/categories/common" class="sidebar-link" data-path="/common">Common</a>
             <a href="/archive" class="sidebar-link" data-path="/archive">Blog Archive</a>
             <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
 
           <div class="sidebar-section">
-            <div class="sidebar-title">INFORMATION</div>
             <a href="/about" class="sidebar-link" data-path="/about">About</a>
             <a href="/contact" class="sidebar-link" data-path="/contact">Contact</a>
-            <a href="/privacy-policy" class="sidebar-link" data-path="/privacy-policy">Privacy Policy</a>
           </div>
 
           <div class="sidebar-social-section">
@@ -856,6 +860,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         display: grid;
         grid-template-columns: 240px 1fr;
         align-items: start;
+        min-width: 0 !important; /* Precautionary fix for flexbox blowout */
       }
 
       .sidebar {
@@ -959,6 +964,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         flex-direction: column;
         min-height: calc(100vh - 65px);
         justify-content: space-between;
+        min-width: 0 !important; /* Precautionary fix for flexbox blowout */
       }
 
       .main-content {
@@ -966,6 +972,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         max-width: 1300px;
         width: 100%;
         box-sizing: border-box;
+        min-width: 0 !important; /* Precautionary fix for flexbox blowout */
       }
 
       /* Footer Styles */
@@ -1201,142 +1208,143 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
     </style>
 
-<div id="cookieConsentBanner" class="cookie-banner">
-  <div class="cookie-content">
-    <div class="cookie-text">
-      <h3>We value your privacy</h3>
-      <p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. Read our <a href="/privacy-policy">Privacy Policy</a> to learn more.</p>
+    <div id="cookieConsentBanner" class="cookie-banner">
+      <div class="cookie-content">
+        <div class="cookie-text">
+          <h3>We value your privacy</h3>
+          <p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. Read our <a href="/privacy-policy">Privacy Policy</a> to learn more.</p>
+        </div>
+        <div class="cookie-actions">
+          <button id="cookieReject" class="cookie-btn cookie-btn-outline">Reject All</button>
+          <button id="cookieAccept" class="cookie-btn cookie-btn-solid">Accept All</button>
+        </div>
+      </div>
     </div>
-    <div class="cookie-actions">
-      <button id="cookieReject" class="cookie-btn cookie-btn-outline">Reject All</button>
-      <button id="cookieAccept" class="cookie-btn cookie-btn-solid">Accept All</button>
-    </div>
-  </div>
-</div>
 
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    const banner = document.getElementById('cookieConsentBanner');
-    const acceptBtn = document.getElementById('cookieAccept');
-    const rejectBtn = document.getElementById('cookieReject');
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const banner = document.getElementById('cookieConsentBanner');
+        const acceptBtn = document.getElementById('cookieAccept');
+        const rejectBtn = document.getElementById('cookieReject');
 
-    const consent = localStorage.getItem('cookie-consent');
-    if (!consent) {
-      setTimeout(() => {
-        banner?.classList.add('show');
-      }, 600);
-    }
+        const consent = localStorage.getItem('cookie-consent');
+        if (!consent) {
+          setTimeout(() => {
+            banner?.classList.add('show');
+          }, 600);
+        }
 
-    acceptBtn?.addEventListener('click', () => {
-      localStorage.setItem('cookie-consent', 'accepted');
-      banner?.classList.remove('show');
-    });
+        acceptBtn?.addEventListener('click', () => {
+          localStorage.setItem('cookie-consent', 'accepted');
+          banner?.classList.remove('show');
+        });
 
-    rejectBtn?.addEventListener('click', () => {
-      localStorage.setItem('cookie-consent', 'rejected');
-      banner?.classList.remove('show');
-    });
-  });
-</script>
+        rejectBtn?.addEventListener('click', () => {
+          localStorage.setItem('cookie-consent', 'rejected');
+          banner?.classList.remove('show');
+        });
+      });
+    </script>
 
-<style>
-  .cookie-banner {
-    position: fixed;
-    bottom: -100%;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 1.25rem 2rem;
-    background: var(--bg-card);
-    border-top: 1px solid var(--border-color);
-    box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.08);
-    transition: bottom 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
+    <style>
+      .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        padding: 1.25rem 2rem;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.08);
+        transform: translateY(100%); /* Avoids Layout Shift */
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
 
-  .cookie-banner.show {
-    bottom: 0;
-  }
+      .cookie-banner.show {
+        transform: translateY(0); /* Avoids Layout Shift */
+      }
 
-  .cookie-content {
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-  }
+      .cookie-content {
+        max-width: 1300px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+      }
 
-  .cookie-text {
-    flex: 1;
-  }
+      .cookie-text {
+        flex: 1;
+      }
 
-  .cookie-text h3 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin: 0 0 0.2rem 0;
-  }
+      .cookie-text h3 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin: 0 0 0.2rem 0;
+      }
 
-  .cookie-text p {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin: 0;
-    line-height: 1.4;
-  }
+      .cookie-text p {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin: 0;
+        line-height: 1.4;
+      }
 
-  .cookie-text a {
-    color: #818cf8;
-    text-decoration: underline;
-  }
+      .cookie-text a {
+        color: #818cf8;
+        text-decoration: underline;
+      }
 
-  .cookie-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-shrink: 0;
-  }
+      .cookie-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-shrink: 0;
+      }
 
-  .cookie-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    font-family: inherit;
-  }
+      .cookie-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-family: inherit;
+      }
 
-  .cookie-btn-outline {
-    background: var(--bg-main);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-  }
+      .cookie-btn-outline {
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+      }
 
-  .cookie-btn-outline:hover {
-    background: var(--sidebar-hover);
-  }
+      .cookie-btn-outline:hover {
+        background: var(--sidebar-hover);
+      }
 
-  .cookie-btn-solid {
-    background: #4f46e5;
-    border: 1px solid #4f46e5;
-    color: #ffffff;
-  }
+      .cookie-btn-solid {
+        background: #4f46e5;
+        border: 1px solid #4f46e5;
+        color: #ffffff;
+      }
 
-  .cookie-btn-solid:hover {
-    background: #4338ca;
-  }
+      .cookie-btn-solid:hover {
+        background: #4338ca;
+      }
 
-  @media (max-width: 768px) {
-    .cookie-content {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    .cookie-actions {
-      width: 100%;
-      justify-content: flex-end;
-    }
-  }
-</style>
+      @media (max-width: 768px) {
+        .cookie-content {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+        .cookie-actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+      }
+    </style>
 
   </body>
 </html>

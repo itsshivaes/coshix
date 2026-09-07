@@ -37,12 +37,6 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 **Want to see how it works?**  
 [View Demo](https://coshix-outputs.blogspot.com/2026/06/about-page.html)
 
-**Useful Guides for you:**
-
-*   [How to Add a Modern Music Player in Your Website Using Pure CSS & JavaScript](/2026/05/modern-music-player.html)
-*   [How to Add Eye Care Mode in Your Website Using Pure CSS & JavaScript](/2026/05/eye-care-mode-css-javascript.html)
-*   [How to Create a Modern YouTube Video Playlist Player Using Pure JavaScript](/2026/06/modern-youtube-video-player.html)
-
 ## How to Implement This Modern About Page in Your Blogger Website
 
 1.  First of all, visit your [Blogger dashboard](https://www.bloggger.com)

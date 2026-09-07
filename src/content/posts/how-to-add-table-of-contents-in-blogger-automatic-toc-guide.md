@@ -62,12 +62,6 @@ class TableOfContents { constructor({ from, to }) { this.fromElement = from; thi
 
 You can change the blue-highlighted text in the code with your likely text.
 
-**Useful Guides for you:**
-
-*   [How to Create a Quiz System in JavaScript with Timer, Explanation & Score (Step-by-Step Tutorial)](/2026/03/javascript-quiz-system.html)
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-*   [How to Add Like and Dislike Button in Blogger Using Firebase](/2026/03/like-and-dislike-feature-blogger.html)
-
 16.  If you have done everything in your post, click the **Publish** button at the top to make the post public
 
 ## Requirement to make the work Table of Contents properly

@@ -70,7 +70,7 @@ const formatDate = (dateStr: string) => {
               <div class="card-footer">
                 <span class="update-tag">Updated</span>
                 <span class="date-label">{pinnedPost.data?.date ? formatDate(pinnedPost.data.date) : ""}</span>
-                <a href={getPostUrl(pinnedPost)} class="read-more-link">Read more</a>
+                <a href={getPostUrl(pinnedPost)} class="read-more-link" aria-label={`Read more about ${pinnedPost.data?.title}`}>Read more</a>
               </div>
             </div>
           </article>
@@ -110,7 +110,7 @@ const formatDate = (dateStr: string) => {
                 <div class="card-footer">
                   <span class="update-tag">Updated</span>
                   <span class="date-label">{post.data?.date ? formatDate(post.data.date) : ""}</span>
-                  <a href={getPostUrl(post)} class="read-more-link">Read more</a>
+                  <a href={getPostUrl(post)} class="read-more-link" aria-label={`Read more about ${post.data?.title}`}>Read more</a>
                 </div>
               </div>
             </article>

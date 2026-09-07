@@ -41,12 +41,6 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 **Want to see how it works?**  
 [View Demo](https://coshix-outputs.blogspot.com/2026/05/music-player.html)
 
-**Useful Guides for you:**
-
-*   [How to Add Smart Health Reminder Toast Notifications in Website Using JavaScript](/2026/05/smart-health-toast.html)
-*   [How to Add Eye Care Mode in Your Website Using Pure CSS & JavaScript](/2026/05/eye-care-mode-css-javascript.html)
-*   [How to make a Keyless Domain License System using Blogger](/2026/04/keyless-license-system.html)
-
 ## How to Add This Music Player to Your Website
 
 1.  Go to your webpage HTML file (example: index.html). If you are using Blogger, go to your [Blogger dashboard](https://www.blogger.com), then click the "**Theme**" option, then click the **drop-down menu** next to the "**Customise**" button, then click the "**Edit HTML**" option.

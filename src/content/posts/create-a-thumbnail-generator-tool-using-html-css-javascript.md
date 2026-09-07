@@ -44,12 +44,6 @@ Every input field in this tool, such as font, colour, shapes, gradients, etc., i
 
 ## Thumbnail Generator Tool Source Code (HTML, CSS & JavaScript)
 
-**Useful Guides for you:**
-
-*   [How to make a Keyless Domain License System using Blogger](/2026/04/keyless-license-system.html)
-*   [How to Create a Simple Cookie Consent Banner with CSS & JS](/2026/04/create-cookie-consent-banner-css-js.html)
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-
 ### HTML Structure of Thumbnail Generator Tool
 
 ```

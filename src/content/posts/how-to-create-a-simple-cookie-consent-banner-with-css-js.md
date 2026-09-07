@@ -83,12 +83,6 @@ First of all, you need to open your website's .html file (e.g. index.html)
 
 **Done!** Now check that your website's cookie consent banner is showing and working properly.
 
-**Useful Guides for you:**
-
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-*   [Fix Blogger ?m=1 Issue + Redirect Errors in Google Search Console](/2026/03/remove-m1-from-blogger.html)
-*   [How to Add Like and Dislike Button in Blogger Using Firebase](/2026/03/like-and-dislike-feature-blogger.html)
-
 ## How to Add a Cookie Consent Banner in Blogger
 
 ### Opening "Edit HTML" in Blogger

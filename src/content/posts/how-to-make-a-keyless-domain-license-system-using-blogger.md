@@ -35,12 +35,6 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 
 ## How to add the Keyless Domain License System in Blogger
 
-**Useful Guides for you:**
-
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-*   [Fix Blogger ?m=1 Issue + Redirect Errors in Google Search Console](/2026/03/remove-m1-from-blogger.html)
-*   [How to Add a Like and Dislike Button in Blogger Using Firebase](/2026/03/like-and-dislike-feature-blogger.html)
-
 1.  First of all, create a separate blog for the license system in [Blogger](https://www.blogger.com)
 
 ### Getting BLOG ID and POST ID

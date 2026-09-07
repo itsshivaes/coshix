@@ -39,11 +39,6 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 **Want to see how it works?**  
 [View Demo](https://coshix-outputs.blogspot.com/2026/06/modern-yt-player.html)
 
-**Useful Guides for you:**
-
-*   [How to Add a Modern Music Player in Your Website Using Pure CSS & JavaScript](/2026/05/modern-music-player.html)
-*   [How to Add Eye Care Mode in Your Website Using Pure CSS & JavaScript](/2026/05/eye-care-mode-css-javascript.html)
-*   [How to make a Keyless Domain License System using Blogger](/2026/04/keyless-license-system.html)
 
 ## How to Add This Modern YouTube Video Playlist Player to Your Website
 

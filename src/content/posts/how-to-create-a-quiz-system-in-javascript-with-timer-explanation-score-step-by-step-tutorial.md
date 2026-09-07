@@ -155,12 +155,6 @@ Also, you can edit other highlighted sections with your text.
 
 7.  Save the HTML
 
-**Useful Guides for you:**
-
-*   [How to Add Table of Contents in Blogger (Automatic TOC Guide)](/2026/03/add-table-of-contents-blogger.html)
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-*   [How to Add Like and Dislike Button in Blogger Using Firebase](/2026/03/like-and-dislike-feature-blogger.html)
-
 ## How to add a quiz system in Blogger website
 
 1.  Go to your [Blogger dashboard](https://www.blogger.com)

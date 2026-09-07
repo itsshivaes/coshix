@@ -93,12 +93,6 @@ service cloud.firestore {
 .like-btn:hover svg, .dislike-btn:hover svg{fill:#000}
 ```
 
-**Useful Guides for you:**
-
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-*   [How to Add Table of Contents in Blogger (Automatic TOC Guide)](/2026/03/add-table-of-contents-blogger.html)
-*   [How to Create a Quiz System in JavaScript with Timer, Explanation & Score (Step-by-Step Tutorial)](/2026/03/javascript-quiz-system.html)
-
 9.  Find <data:post.body/> 
 10.  Paste the following HTML code below it
 

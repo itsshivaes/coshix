@@ -120,12 +120,6 @@ service cloud.firestore {
 
 46.  Click the "**Publish**" button
 
-**Useful Guides for you:**
-
-*   [How to Add Like and Dislike Button in Blogger Using Firebase](/2026/03/like-and-dislike-feature-blogger.html)
-*   [How to Create a Quiz System in JavaScript with Timer, Explanation & Score (Step-by-Step Tutorial)](/2026/03/javascript-quiz-system.html)
-*   [How to Add Table of Contents in Blogger (Automatic TOC Guide)](/2026/03/add-table-of-contents-blogger.html)
-
 ## **How to Implement a Login Feature in Blogger Using Firebase**
 
 ### **Set Up Login, Signup, Dashboard and Bookmark Pages in Blogger**

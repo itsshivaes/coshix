@@ -1,34 +1,28 @@
-const CACHE_NAME = 'coshix-cache-v1';
+const CACHE_NAME = 'coshix-pwa-cache-v1';
 
+// Install the service worker and immediately activate it
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
+  event.waitUntil(clients.claim());
 });
 
+// A basic fetch handler is strictly required for PWA installation
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
   if (event.request.method !== 'GET') return;
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
+        // If the request is successful, return it
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => {
+        // If offline, try to return a cached fallback (if you implement caching later)
+        return caches.match(event.request);
+      })
   );
 });

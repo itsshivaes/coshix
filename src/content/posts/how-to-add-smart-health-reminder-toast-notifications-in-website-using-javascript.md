@@ -29,12 +29,6 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 *   Modern UI
 *   Dark mode support
 
-**Useful Guides for you:**
-
-*   [How to Add a Modern Ripple Click Effect Using Pure CSS & JavaScript](/2026/05/css-javascript-ripple-effect.html)
-*   [Create a Thumbnail Generator Tool Using HTML, CSS & JavaScript](/2026/05/build-thumbnail-generator-tool.html)
-*   [How to make a Keyless Domain License System using Blogger](/2026/04/keyless-license-system.html)
-
 ## How to Add Smart Health Reminder to Your Website
 
 1.  Go to your webpage HTML file (example: index.html). If you are using Blogger, go to your [Blogger dashboard](https://www.blogger.com), then click the "**Theme**" option, then click the **drop-down menu** next to the "**Customise**" button, then click the "**Edit HTML**" option.

@@ -38,12 +38,6 @@ This news ticker works automatically by loading your content from your website's
 3.  Click the **drop-down icon** near the "**Customize**" option
 4.  Click the "**Edit HTML**" option in the drop-down menu
 
-**Useful Guides for you:**
-
-*   [How to Add Table of Contents in Blogger (Automatic TOC Guide)](/2026/03/add-table-of-contents-blogger.html)
-*   [How to Add Login and Signup in Blogger Using Firebase](/2026/03/blogger-login-signup-firebase.html)
-*   [How to Add Like and Dislike Button in Blogger Using Firebase](/2026/03/like-and-dislike-feature-blogger.html)
-
 ### Adding CSS
 
 7.  Find \]\]>`</b:skin>`

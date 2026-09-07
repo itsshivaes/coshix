@@ -34,12 +34,6 @@ Whether you run a tech blog, personal website, news portal, tutorial platform, o
 **Want to see how it works?**  
 [View Demo](https://coshix-outputs.blogspot.com/2026/06/posts-slider.html)
 
-**Useful Guides for you:**
-
-*   [How to Create a Modern About Page in Blogger with Live Stats & Recent Posts](/2026/06/modern-blogger-about-page.html)
-*   [How to Add Eye Care Mode in Your Website Using Pure CSS & JavaScript](/2026/05/eye-care-mode-css-javascript.html)
-*   [How to Create a Modern YouTube Video Playlist Player Using Pure JavaScript](/2026/06/modern-youtube-video-player.html)
-
 ## How to Add The Latest Posts Slider to Your Blogger Website
 
 1.  First of all, go to your [Blogger dashboard](https://www.blogger.com)
