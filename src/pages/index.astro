@@ -429,7 +429,7 @@ const formatDate = (dateStr: string) => {
     .cat-link {
       font-size: 0.68rem;
       font-weight: 700;
-      color: #4338ca; /* Darkened for better contrast in light mode */
+      color: #4338ca; 
       text-decoration: none;
       text-transform: uppercase;
       letter-spacing: 0.03em;
@@ -535,7 +535,7 @@ const formatDate = (dateStr: string) => {
     .page-btn.disabled {
       background: var(--bg-main);
       border-color: var(--border-color);
-      color: var(--text-muted);
+      color: #06080a;
       opacity: 0.6;
       cursor: not-allowed;
     }
@@ -598,9 +598,12 @@ const formatDate = (dateStr: string) => {
     }
 
     .pop-cat {
-      color: #818cf8;
+      color: #4338ca;
       text-decoration: none;
       font-weight: 600;
+    }
+    html.dark .pop-cat {
+      color: #818cf8;
     }
 
     .pop-title-anchor {
