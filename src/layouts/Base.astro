@@ -92,7 +92,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         </button>
 
         <a href="/" class="brand-logo">
-          <img src="/images/logo.png" alt="Coshix Logo" class="brand-logo-img" />
+          <img src="/images/logo.webp" alt="Coshix Logo" class="brand-logo-img" />
           <span class="brand-name">Coshix</span>
         </a>
 
@@ -205,7 +205,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             <a href="/" class="sidebar-link" data-path="/">Home</a>
             <a href="/categories/blogger" class="sidebar-link" data-path="/blogger">Blogger</a>
             <a href="/categories/common" class="sidebar-link" data-path="/common">Common</a>
-            <a href="/archive" class="sidebar-link" data-path="/archive/1">Blog Archive</a>
+            <a href="/archive/1" class="sidebar-link" data-path="/archive/1">Blog Archive</a>
             <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
 
@@ -1343,8 +1343,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
 
       .cookie-text a {
-        color: #818cf8;
+        color: #4f46e5;
         text-decoration: underline;
+      }
+
+      html.dark .cookie-text a {
+        color: #818cf8;
       }
 
       .cookie-actions {
