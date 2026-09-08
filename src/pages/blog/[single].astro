@@ -22,7 +22,14 @@ const relatedPosts = allPosts
   .slice(0, 3);
 ---
 
-<Base title={post.data?.title} description={post.data?.description}>
+<Base 
+  title={post.data?.title} 
+  description={post.data?.description}
+  image={post.data?.image}
+  schemaType="article"
+  datePublished={post.data?.date}
+  dateModified={post.data?.updatedDate || post.data?.date}
+>
   <div class="post-page-wrapper">
     <article class="post-card">
       
