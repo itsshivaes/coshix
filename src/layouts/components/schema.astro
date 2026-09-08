@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { 
-  type = 'page', 
+  type = 'website', 
   title, 
   description, 
   url, 
@@ -22,7 +22,6 @@ const {
 const siteUrl = Astro.site || 'https://coshix.in';
 const fullImageUrl = new URL(image, siteUrl).toString();
 
-// Base Organization Schema (Present on all pages)
 const organizationSchema = {
   "@type": "Organization",
   "@id": `${siteUrl}/#organization`,
@@ -38,23 +37,22 @@ const organizationSchema = {
   ]
 };
 
-// Conditional Schemas
 let primarySchema;
 
 if (type === 'website') {
   primarySchema = {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        "url": siteUrl,
-        "name": "Coshix",
-        "description": description,
-        "publisher": { "@id": `${siteUrl}/#organization` }
-      },
-      organizationSchema
-    ]
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    "url": siteUrl,
+    "name": "Coshix",
+    "description": description,
+    "publisher": organizationSchema,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${siteUrl}/search?q={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
   };
 } else if (type === 'article') {
   primarySchema = {
@@ -66,7 +64,7 @@ if (type === 'website') {
     },
     "headline": title,
     "description": description,
-    "image": fullImageUrl,
+    "image": [fullImageUrl],
     "datePublished": datePublished,
     "dateModified": dateModified || datePublished,
     "publisher": {
@@ -85,13 +83,12 @@ if (type === 'website') {
 } else {
   primarySchema = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "url": url,
-    "name": title,
+    "@type": "Article",
+    "mainEntityOfPage": url,
+    "headline": title,
     "description": description,
-    "publisher": {
-      "@id": `${siteUrl}/#organization`
-    }
+    "image": [fullImageUrl],
+    "publisher": organizationSchema
   };
 }
 ---
