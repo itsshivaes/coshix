@@ -67,6 +67,10 @@ if (type === 'website') {
     "image": [fullImageUrl],
     "datePublished": datePublished,
     "dateModified": dateModified || datePublished,
+    "author": {
+      "@type": "Organization",
+      "name": "Coshix"
+    },
     "publisher": {
       "@type": "Organization",
       "name": "Coshix",
@@ -74,20 +78,15 @@ if (type === 'website') {
         "@type": "ImageObject",
         "url": new URL('/images/logo.png', siteUrl).toString()
       }
-    },
-    "author": {
-      "@type": "Organization",
-      "name": "Coshix"
     }
   };
 } else {
   primarySchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "mainEntityOfPage": url,
-    "headline": title,
+    "@type": "WebPage",
+    "url": url,
+    "name": title,
     "description": description,
-    "image": [fullImageUrl],
     "publisher": organizationSchema
   };
 }
