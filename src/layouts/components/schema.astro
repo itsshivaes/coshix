@@ -1,0 +1,99 @@
+---
+interface Props {
+  type?: 'website' | 'article' | 'page';
+  title: string;
+  description: string;
+  url: string;
+  image?: string;
+  datePublished?: string;
+  dateModified?: string;
+}
+
+const { 
+  type = 'page', 
+  title, 
+  description, 
+  url, 
+  image = '/images/og-image.png',
+  datePublished,
+  dateModified
+} = Astro.props;
+
+const siteUrl = Astro.site || 'https://coshix.in';
+const fullImageUrl = new URL(image, siteUrl).toString();
+
+// Base Organization Schema (Present on all pages)
+const organizationSchema = {
+  "@type": "Organization",
+  "@id": `${siteUrl}/#organization`,
+  "name": "Coshix",
+  "url": siteUrl,
+  "logo": {
+    "@type": "ImageObject",
+    "url": new URL('/images/logo.png', siteUrl).toString()
+  },
+  "sameAs": [
+    "https://github.com/itsshivaes",
+    "https://www.instagram.com/coshix.in"
+  ]
+};
+
+// Conditional Schemas
+let primarySchema;
+
+if (type === 'website') {
+  primarySchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        "url": siteUrl,
+        "name": "Coshix",
+        "description": description,
+        "publisher": { "@id": `${siteUrl}/#organization` }
+      },
+      organizationSchema
+    ]
+  };
+} else if (type === 'article') {
+  primarySchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": url
+    },
+    "headline": title,
+    "description": description,
+    "image": fullImageUrl,
+    "datePublished": datePublished,
+    "dateModified": dateModified || datePublished,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Coshix",
+      "logo": {
+        "@type": "ImageObject",
+        "url": new URL('/images/logo.png', siteUrl).toString()
+      }
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Coshix"
+    }
+  };
+} else {
+  primarySchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "url": url,
+    "name": title,
+    "description": description,
+    "publisher": {
+      "@id": `${siteUrl}/#organization`
+    }
+  };
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(primarySchema)} />

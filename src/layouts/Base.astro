@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Schema from "/src/layouts/components/Schema.astro";
 
 const allPosts = await getCollection("posts");
 const searchData = allPosts.map(post => ({
@@ -13,12 +14,18 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  schemaType?: 'website' | 'article' | 'page';
+  datePublished?: string;
+  dateModified?: string;
 }
 
 const { 
   title = "Coshix", 
   description = "Coshix is a modern web platform offering tutorials, developer tools, Blogger guides, UI components, and resources to help you build better websites.", 
-  image = "/images/og-image.png" 
+  image = "/images/og-image.png",
+  schemaType = "page",
+  datePublished,
+  dateModified
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.in");
@@ -46,6 +53,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(image, canonicalURL)} />
+
+    <!-- Schema.org Rich Results Support -->
+    <Schema 
+      type={schemaType}
+      title={title}
+      description={description}
+      url={canonicalURL.toString()}
+      image={image}
+      datePublished={datePublished}
+      dateModified={dateModified}
+    />
     
     <!-- Optimized Google Fonts to prevent render-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
