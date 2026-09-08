@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import Schema from "/src/layouts/components/Schema.astro";
+import Schema from "../components/schema.astro";
 
 const allPosts = await getCollection("posts");
 const searchData = allPosts.map(post => ({
