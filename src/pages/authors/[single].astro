@@ -1,78 +1,93 @@
 ---
 import Base from "@/layouts/Base.astro";
-import { getCollection, getEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import dateFormat from "@/lib/utils/dateFormat";
 import { humanize, slugify } from "@/lib/utils/textConverter";
 import { BiCalendarEdit, BiCategoryAlt } from "react-icons/bi";
+import AuthorSingle from "@/partials/AuthorSingle.astro";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("posts");
-  return posts.map((post) => ({
-    params: { single: post.slug || post.id },
-    props: { post },
+  const authors = await getCollection("authors");
+  return authors.map((author) => ({
+    params: { single: author.slug || author.id },
+    props: { author },
   }));
 }
 
-const { post } = Astro.props;
-const { Content } = await post.render();
+const { author } = Astro.props;
+const { title, description, image } = author.data;
+
+// Fetch all posts to filter by this author
+const posts = await getCollection("posts");
+const currentPosts = posts.filter((post) => {
+  return post.data.authors?.some((authName) => slugify(authName) === slugify(title));
+});
 ---
 
 <Base 
-  title={post.data.title} 
-  description={post.data.description}
-  image={post.data.image}
-  schemaType="article"
-  datePublished={post.data.date}
-  dateModified={post.data.updatedDate || post.data.date}
+  title={title} 
+  description={description}
+  image={image}
+  schemaType="page"
 >
-  <section class="section">
-    <div class="container">
-      <article class="row justify-center">
-        <div class="col-12 lg:col-10">
-          <h1 class="h2 mb-4">{post.data.title}</h1>
-          
-          <ul class="mb-6 text-text flex flex-wrap items-center text-sm">
-            <li class="mb-2 mr-4 flex items-center flex-wrap font-medium">
-              <BiCalendarEdit className="mr-1 h-[16px] w-[16px] text-gray-600" />
-              {dateFormat(post.data.date!)}
-            </li>
-            <li class="mb-2 mr-4 flex items-center flex-wrap">
-              <BiCategoryAlt className="mr-1 h-[16px] w-[16px] text-gray-600" />
-              <ul>
-                {post.data.categories.map((category, i: number) => (
-                  <li class="inline-block">
-                    <a
-                      href={`/categories/${slugify(category)}`}
-                      class="mr-2 hover:text-primary font-medium"
-                    >
-                      {humanize(category)}
-                      {i !== post.data.categories.length - 1 && ","}
-                    </a>
-                  </li>
-                ))}
+  <AuthorSingle author={author} />
+
+  {currentPosts.length > 0 && (
+    <section class="section pt-0">
+      <div class="container">
+        <h2 class="mb-8 text-center h3">Recent Posts</h2>
+        <div class={`row gy-4 ${currentPosts.length < 3 ? "justify-center" : ""}`}>
+          {currentPosts.map((post) => (
+            <div class="col-12 sm:col-6 lg:col-4">
+              {post.data.image && (
+                <a
+                  href={`/blog/${post.slug || post.id}`}
+                  class="rounded-lg block hover:text-primary overflow-hidden group"
+                >
+                  <Image
+                    class="group-hover:scale-[1.05] transition duration-300 w-full"
+                    src={post.data.image}
+                    alt={post.data.title}
+                    width={445}
+                    height={230}
+                  />
+                </a>
+              )}
+              <ul class="mt-4 text-text flex flex-wrap items-center text-sm">
+                <li class="mb-2 mr-4 flex items-center flex-wrap font-medium">
+                  <BiCalendarEdit className="mr-1 h-[16px] w-[16px] text-gray-600" />
+                  {dateFormat(post.data.date!)}
+                </li>
+                <li class="mb-2 mr-4 flex items-center flex-wrap">
+                  <BiCategoryAlt className="mr-1 h-[16px] w-[16px] text-gray-600" />
+                  <ul>
+                    {post.data.categories.map((category, i: number) => (
+                      <li class="inline-block">
+                        <a
+                          href={`/categories/${slugify(category)}`}
+                          class="mr-2 hover:text-primary font-medium"
+                        >
+                          {humanize(category)}
+                          {i !== post.data.categories.length - 1 && ","}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
               </ul>
-            </li>
-          </ul>
-
-          {post.data.image && (
-            <div class="mb-8 rounded-lg overflow-hidden">
-              <Image
-                class="w-full"
-                src={post.data.image}
-                alt={post.data.title}
-                width={920}
-                height={480}
-                loading="eager"
-              />
+              <h3 class="h5">
+                <a
+                  href={`/blog/${post.slug || post.id}`}
+                  class="block hover:text-primary transition duration-300"
+                >
+                  {post.data.title}
+                </a>
+              </h3>
             </div>
-          )}
-
-          <div class="content">
-            <Content />
-          </div>
+          ))}
         </div>
-      </article>
-    </div>
-  </section>
+      </div>
+    </section>
+  )}
 </Base>
