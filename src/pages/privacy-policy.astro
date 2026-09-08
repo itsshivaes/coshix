@@ -1,0 +1,127 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Privacy Policy - Coshix" description="Read the privacy policy for Coshix to understand how we collect, use, and protect your personal data when using our website, code templates, comments, and third-party services.">
+  <div class="privacy-container">
+    
+    <div class="section-heading">
+      <span class="heading-title">Privacy Policy</span>
+      <span class="heading-dots">···</span>
+    </div>
+
+    <div class="privacy-card">
+      <p class="effective-date"><strong>Effective Date:</strong> September 6, 2026</p>
+
+      <h2>1. Introduction</h2>
+      <p>Welcome to Coshix ("we," "our," or "us"). We respect your privacy and are committed to protecting any personal information you share with us. This Privacy Policy outlines how we collect, use, disclose, and safeguard your information when you visit our website built using the Astro framework (coshix.in), use our code snippets, interact with our comment sections, or engage with our services.</p>
+      <p>By accessing or using Coshix, you signify that you have read, understood, and agree to our collection, storage, use, and disclosure of your personal information as described in this Privacy Policy.</p>
+
+      <h2>2. Information We Collect</h2>
+      <p>We may collect information about you in a variety of ways, including:</p>
+      <p><strong>Log Files and Analytics Data:</strong> Like most modern websites, Coshix automatically collects certain non-personally identifiable information when you visit our site. This includes your Internet Protocol (IP) address, browser type, Internet Service Provider (ISP), referring/exit pages, operating system, date/time stamps, and clickstream data. This information is gathered anonymously to analyze trends, administer the site, and track user movements.</p>
+      <p><strong>Third-Party Interaction Data:</strong> When you leave a comment on our articles or tutorials, data is collected through our integrated comment system (Disqus). This may include your name, email address, profile picture, and the content of your comment.</p>
+
+      <h2>3. Use of Google Analytics and Tracking Technologies</h2>
+      <p>We utilize Google Analytics to track and analyze website traffic, user behavior, and site performance. Google Analytics uses cookies and similar technologies to collect information about your interactions with our pages. This data helps us improve user experience, optimize site speed, and deliver relevant content.</p>
+      <p>You can opt-out of Google Analytics tracking by installing the Google Analytics Opt-out Browser Add-on or by adjusting your browser settings to reject cookies.</p>
+
+      <h2>4. Future Advertisement Partners (Google AdSense)</h2>
+      <p>While Coshix may not currently display paid advertisements, we reserve the right to integrate third-party advertising networks, such as Google AdSense, in the future. If implemented, these ad vendors may use cookies (such as the DART cookie) to serve ads based on your visits to our website and other sites across the internet.</p>
+      <p>Users may opt-out of personalized advertising by visiting Google's Ads Settings or <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.</p>
+
+      <h2>5. Disqus Comments System</h2>
+      <p>To facilitate community engagement and discussions on our tutorials and code guides, Coshix uses Disqus as our third-party commenting platform. When you post a comment, Disqus may collect personal details in accordance with their own privacy policy and terms of service. We encourage you to review Disqus's privacy policies to understand how they handle user submissions and identifiers.</p>
+
+      <h2>6. Third-Party Links and External Services</h2>
+      <p>Our website may contain links to external websites, developer tools, GitHub repositories, or partner platforms that are not operated by us. Please note that we have no control over, and assume no responsibility for, the content, privacy policies, or practices of any third-party sites or services. Clicking on any external link is done at your own discretion and risk.</p>
+
+      <h2>7. Cookies and Web Beacons</h2>
+      <p>Coshix uses cookies to store information about visitors' preferences, to record user-specific information on which pages the site visitor accesses or visits, and to customize our web page content based on visitors' browser type or other information. You can choose to disable cookies through your individual browser options.</p>
+
+      <h2>8. Data Security</h2>
+      <p>We implement appropriate technical and organizational security measures designed to protect the security of any personal information we process. However, please also remember that no method of transmission over the internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your data, we cannot guarantee its absolute security.</p>
+
+      <h2>9. Children's Privacy</h2>
+      <p>Coshix does not knowingly solicit information from or market to children under the age of 13. If you become aware of any data we have collected from children under age 13, please contact us immediately so we can take steps to remove such information.</p>
+
+      <h2>10. Changes to This Privacy Policy</h2>
+      <p>We may update our Privacy Policy from time to time to reflect changes in our practices, technology, or legal requirements. We will notify you of any updates by posting the new Privacy Policy on this page and updating the "Effective Date" at the top. You are advised to review this Privacy Policy periodically for any changes.</p>
+
+      <h2>11. Contact Us</h2>
+      <p>If you have any questions, concerns, or comments about this Privacy Policy or our data practices, please feel free to reach out to us through our <a href="/contact">Contact page</a>.</p>
+    </div>
+
+  </div>
+
+  <style>
+    .privacy-container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding-bottom: 3rem;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 0.4rem;
+    }
+
+    .heading-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .heading-dots {
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .privacy-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    .effective-date {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .privacy-card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .privacy-card h2:first-of-type {
+      margin-top: 0;
+    }
+
+    .privacy-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0 0 1rem 0;
+      line-height: 1.6;
+    }
+
+    .privacy-card a {
+      color: #818cf8;
+      text-decoration: underline;
+    }
+  </style>
+</Base>

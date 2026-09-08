@@ -65,6 +65,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         document.documentElement.classList.remove('dark');
       }
     </script>
+
+    <!-- Lazy Loaded Google Analytics 4 -->
+    <script is:inline>
+      /*<![CDATA[*//*@fineshopdesign/lazy.js*/ window.lazy=window.lazy||new Promise(e=>{const t="IS_LAZIED",n="true",o=["scroll","click"],i=["keydown","mouseover","touchmove","touchstart"],r=o.concat(i);function a(){try{return localStorage.getItem(t)===n}catch(e){return!0}}function l(e=!0){try{e?localStorage.setItem(t,n):localStorage.removeItem(t)}catch(e){}}function d(t){l(!0),e({type:t.type.toLowerCase()}),r.forEach(e=>window.removeEventListener(e,d))}if(a())e({type:"local"});else if(0!==document.documentElement.scrollTop||document.body&&0!==document.body.scrollTop)d({type:"scroll"});else{const e=()=>{window.removeEventListener("load",e),i.forEach(e=>window.addEventListener(e,d))};window.addEventListener("load",e),o.forEach(e=>window.addEventListener(e,d))}}); /*]]>*/
+      
+      window.lazy.then(() => {
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-FJ05EPHXTK';
+        document.head.appendChild(gaScript);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-FJ05EPHXTK');
+      });
+    </script>
   </head>
   <body class="app-body">
     
@@ -151,7 +168,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             <a href="/" class="sidebar-link" data-path="/">Home</a>
             <a href="/categories/blogger" class="sidebar-link" data-path="/blogger">Blogger</a>
             <a href="/categories/common" class="sidebar-link" data-path="/common">Common</a>
-            <a href="/archive" class="sidebar-link" data-path="/archive">Blog Archive</a>
+            <a href="/archive/1" class="sidebar-link" data-path="/archive">Blog Archive</a>
             <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
 
@@ -499,6 +516,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         --sidebar-hover: #f1f5f9;
         --sidebar-active: #e0e7ff;
         --sidebar-active-text: #4f46e5;
+        /* Scrollbar light mode variables */
+        --scrollbar-bg: #f1f5f9;
+        --scrollbar-thumb: #cbd5e1;
+        --scrollbar-thumb-hover: #94a3b8;
       }
 
       html.dark {
@@ -511,6 +532,35 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         --sidebar-hover: #27272a;
         --sidebar-active: #27272a;
         --sidebar-active-text: #818cf8;
+        /* Scrollbar dark mode variables */
+        --scrollbar-bg: #09090b;
+        --scrollbar-thumb: #27272a;
+        --scrollbar-thumb-hover: #3f3f46;
+      }
+
+      /* Custom Scrollbar Styles */
+      html {
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+      }
+
+      ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--scrollbar-bg);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: 8px;
+        border: 3px solid var(--scrollbar-bg);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover);
       }
 
       body.app-body {

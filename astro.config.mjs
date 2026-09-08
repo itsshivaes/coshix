@@ -30,8 +30,8 @@ export default defineConfig({
     }),
     mdx(),
     gtm({
-      enable: true,
-      id: "GTM-XXXXXXX",
+      enable: false,
+      id: "GTM-XXXXXX",
       devMode: true,
     }),
   ],

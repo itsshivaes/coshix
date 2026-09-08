@@ -53,45 +53,12 @@ By its fast downloading speed, its small file size and fast rendering helps to i
 
 ## Comparison Of WebP, PNG And JPG
 
-Features
-
-WebP
-
-PNG
-
-JPG
-
-File Size
-
-Low
-
-High
-
-Medium
-
-Animation
-
-True
-
-False
-
-False
-
-Transparency
-
-True
-
-True
-
-False
-
-Quality
-
-Excellent
-
-Excellent
-
-Good
+| Features | WebP | PNG | JPG |
+| :--- | :--- | :--- | :--- |
+| **File Size** | Low | High | Medium |
+| **Animation** | True | False | False |
+| **Transparency** | True | True | False |
+| **Quality** | Excellent | Excellent | Good |
 
 ## Can We Convert Other Format Images to WebP?
 

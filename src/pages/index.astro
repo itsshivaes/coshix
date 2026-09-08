@@ -15,8 +15,12 @@ const sortedPosts = validPosts.sort((a, b) => {
 });
 
 const pinnedPost = sortedPosts[0];
-const latestPosts = sortedPosts.slice(1, 7);
+const latestPosts = sortedPosts.slice(1, 7); // 6 posts
 const popularPosts = sortedPosts.slice(0, 5);
+
+// Filter Categorized Posts (6 posts each to match Latest Posts design)
+const bloggerPosts = sortedPosts.filter(post => post.data?.categories?.[0]?.toLowerCase() === "blogger").slice(0, 6);
+const commonPosts = sortedPosts.filter(post => post.data?.categories?.[0]?.toLowerCase() === "common").slice(0, 6);
 
 const categoryMap = new Map();
 validPosts.forEach(post => {
@@ -70,7 +74,10 @@ const formatDate = (dateStr: string) => {
               <div class="card-footer">
                 <span class="update-tag">Updated</span>
                 <span class="date-label">{pinnedPost.data?.date ? formatDate(pinnedPost.data.date) : ""}</span>
-                <a href={getPostUrl(pinnedPost)} class="read-more-link" aria-label={`Read more about ${pinnedPost.data?.title}`}>Read more</a>
+                <!-- Inline styles guarantee the text stays hidden but readable by Lighthouse -->
+                <a href={getPostUrl(pinnedPost)} class="read-more-link">
+                  Read more<span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;"> about {pinnedPost.data?.title}</span>
+                </a>
               </div>
             </div>
           </article>
@@ -110,7 +117,9 @@ const formatDate = (dateStr: string) => {
                 <div class="card-footer">
                   <span class="update-tag">Updated</span>
                   <span class="date-label">{post.data?.date ? formatDate(post.data.date) : ""}</span>
-                  <a href={getPostUrl(post)} class="read-more-link" aria-label={`Read more about ${post.data?.title}`}>Read more</a>
+                  <a href={getPostUrl(post)} class="read-more-link">
+                    Read more<span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;"> about {post.data?.title}</span>
+                  </a>
                 </div>
               </div>
             </article>
@@ -121,9 +130,99 @@ const formatDate = (dateStr: string) => {
         <nav class="pagination-container" aria-label="Pagination">
           <span class="page-btn disabled">Previous</span>
           <span class="page-indicator">Page 1 of 3</span>
-          <a href="/archive" class="page-btn">Next</a>
+          <a href="/archive/1" class="page-btn">Next</a>
         </nav>
       </section>
+
+      <!-- Blogger Category Section -->
+      {bloggerPosts.length > 0 && (
+        <section class="feed-section">
+          <div class="section-heading">
+            <span class="heading-title">Blogger</span>
+            <span class="heading-dots">···</span>
+          </div>
+
+          <div class="latest-cards-grid">
+            {bloggerPosts.map(post => (
+              <article class="post-card vertical-card">
+                {post.data?.image && (
+                  <div class="card-thumb">
+                    <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                    {post.data?.commentsCount && (
+                      <div class="comment-badge">💬 {post.data.commentsCount}</div>
+                    )}
+                  </div>
+                )}
+                <div class="card-content">
+                  <div class="card-meta-top">
+                    <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                      in {post.data?.categories?.[0] || "General"}
+                    </a>
+                  </div>
+                  <a href={getPostUrl(post)} class="title-anchor">
+                    <h3 class="card-title">{post.data?.title}</h3>
+                  </a>
+                  {post.data?.description && (
+                    <p class="card-snippet">{post.data.description}</p>
+                  )}
+                  <div class="card-footer">
+                    <span class="update-tag">Updated</span>
+                    <span class="date-label">{post.data?.date ? formatDate(post.data.date) : ""}</span>
+                    <a href={getPostUrl(post)} class="read-more-link">
+                      Read more<span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;"> about {post.data?.title}</span>
+                    </a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Common Category Section -->
+      {commonPosts.length > 0 && (
+        <section class="feed-section">
+          <div class="section-heading">
+            <span class="heading-title">Common</span>
+            <span class="heading-dots">···</span>
+          </div>
+
+          <div class="latest-cards-grid">
+            {commonPosts.map(post => (
+              <article class="post-card vertical-card">
+                {post.data?.image && (
+                  <div class="card-thumb">
+                    <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                    {post.data?.commentsCount && (
+                      <div class="comment-badge">💬 {post.data.commentsCount}</div>
+                    )}
+                  </div>
+                )}
+                <div class="card-content">
+                  <div class="card-meta-top">
+                    <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                      in {post.data?.categories?.[0] || "General"}
+                    </a>
+                  </div>
+                  <a href={getPostUrl(post)} class="title-anchor">
+                    <h3 class="card-title">{post.data?.title}</h3>
+                  </a>
+                  {post.data?.description && (
+                    <p class="card-snippet">{post.data.description}</p>
+                  )}
+                  <div class="card-footer">
+                    <span class="update-tag">Updated</span>
+                    <span class="date-label">{post.data?.date ? formatDate(post.data.date) : ""}</span>
+                    <a href={getPostUrl(post)} class="read-more-link">
+                      Read more<span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;"> about {post.data?.title}</span>
+                    </a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
     </div>
 
@@ -329,8 +428,8 @@ const formatDate = (dateStr: string) => {
 
     .cat-link {
       font-size: 0.68rem;
-      font-weight: 600;
-      color: #818cf8;
+      font-weight: 700;
+      color: #4338ca; /* Darkened for better contrast in light mode */
       text-decoration: none;
       text-transform: uppercase;
       letter-spacing: 0.03em;
@@ -338,6 +437,7 @@ const formatDate = (dateStr: string) => {
 
     .cat-link:hover {
       text-decoration: underline;
+      color: #3730a3;
     }
 
     .title-anchor {
@@ -377,8 +477,8 @@ const formatDate = (dateStr: string) => {
     }
 
     .update-tag {
-      background: #0284c7;
-      color: #fff;
+      background: #0369a1; /* Darkened for better contrast against white text */
+      color: #ffffff;
       font-size: 0.55rem;
       font-weight: 700;
       padding: 0.05rem 0.25rem;
@@ -392,13 +492,14 @@ const formatDate = (dateStr: string) => {
     }
 
     .read-more-link {
-      color: #818cf8;
-      font-weight: 600;
+      color: #4338ca; /* Darkened for better contrast in light mode */
+      font-weight: 700;
       text-decoration: none;
     }
 
     .read-more-link:hover {
       text-decoration: underline;
+      color: #3730a3;
     }
 
     /* Fixed Pagination Styling */
@@ -551,6 +652,17 @@ const formatDate = (dateStr: string) => {
     .label-count {
       color: var(--text-muted);
       font-size: 0.68rem;
+    }
+
+    /* Dark Mode Overrides specifically for these links to maintain visibility */
+    :global(html.dark) .cat-link,
+    :global(html.dark) .read-more-link {
+      color: #818cf8 !important;
+    }
+    
+    :global(html.dark) .cat-link:hover,
+    :global(html.dark) .read-more-link:hover {
+      color: #a5b4fc !important;
     }
 
     /* Responsive Breakpoints */

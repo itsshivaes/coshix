@@ -13,6 +13,13 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const htmlContent = marked.parse(post.body || "");
+
+// Fetch 3 related posts for the "You may also like" section (No images, just titles)
+const allPosts = await getCollection("posts");
+const relatedPosts = allPosts
+  .filter(p => (p.slug || p.id) !== (post.slug || post.id))
+  .sort(() => 0.5 - Math.random()) 
+  .slice(0, 3);
 ---
 
 <Base title={post.data?.title} description={post.data?.description}>
@@ -27,11 +34,53 @@ const htmlContent = marked.parse(post.body || "");
           {post.data?.title}
         </h1>
         <div class="post-meta">
-          {post.data?.date && <span>📅 {new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>}
+          <div class="meta-left">
+            {post.data?.date && <span>📅 {new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>}
+          </div>
+          <!-- Google Add Button -->
+          <a href="https://www.google.com/preferences/source?q=coshix.in" target="_blank" rel="noopener noreferrer" class="google-add-btn" aria-label="Add website to Google News">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            <span>Add</span>
+          </a>
         </div>
       </div>
 
+      <!-- TOC Placeholder with Smooth Toggle (Collapsed by default) -->
+      <div id="dynamic-toc" class="toc-container">
+        <div class="toc-header" id="toc-toggle">
+          <span>Table of Contents</span>
+          <svg class="toc-arrow collapsed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="toc-content collapsed" id="toc-content">
+          <div class="toc-content-inner">
+            <ul id="toc-list" class="toc-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Article Content -->
       <div class="content-body" set:html={htmlContent} />
+
+      <!-- Hidden Related Posts Template (Moved to middle by JS) -->
+      {relatedPosts.length > 0 && (
+        <aside id="related-posts-widget" class="related-list-widget">
+          <div class="related-heading">You may also like</div>
+          <ul class="related-list">
+            {relatedPosts.map(rp => (
+              <li>
+                <a href={`/blog/${rp.slug || rp.id}`} class="related-list-title">
+                  {rp.data?.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
 
       <div class="post-share-section">
         <span class="share-label">Share:</span>
@@ -83,27 +132,106 @@ const htmlContent = marked.parse(post.body || "");
 </Base>
 
 <script>
-  const copyBtn = document.getElementById("copyLinkBtn");
-  const copyText = document.getElementById("copyText");
-
-  copyBtn?.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      if (copyText) {
-        copyText.textContent = "Copied!";
-        setTimeout(() => {
-          copyText.textContent = "Copy Link";
-        }, 2000);
+  document.addEventListener("DOMContentLoaded", () => {
+    // 1. Copy Link Logic
+    const copyBtn = document.getElementById("copyLinkBtn");
+    const copyText = document.getElementById("copyText");
+    copyBtn?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        if (copyText) {
+          copyText.textContent = "Copied!";
+          setTimeout(() => copyText.textContent = "Copy Link", 2000);
+        }
+      } catch (err) {
+        console.error("Failed to copy link: ", err);
       }
-    } catch (err) {
-      console.error("Failed to copy link: ", err);
+    });
+
+    // 2. Table of Contents Generator & Smooth Toggle
+    const contentBody = document.querySelector('.content-body');
+    const headings = contentBody?.querySelectorAll('h2, h3');
+    const tocContainer = document.getElementById('dynamic-toc');
+    const tocList = document.getElementById('toc-list');
+    const tocToggle = document.getElementById('toc-toggle');
+    const tocContent = document.getElementById('toc-content');
+    const tocArrow = document.querySelector('.toc-arrow');
+
+    if (headings && headings.length > 1 && tocContainer && tocList) {
+      headings.forEach((heading, idx) => {
+        if (!heading.id) heading.id = 'heading-' + idx;
+        const li = document.createElement('li');
+        li.className = heading.tagName.toLowerCase() === 'h3' ? 'toc-h3' : 'toc-h2';
+        const a = document.createElement('a');
+        a.href = '#' + heading.id;
+        a.textContent = heading.textContent;
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+      // Move TOC inside the content-body at the very top
+      contentBody.insertBefore(tocContainer, contentBody.firstChild);
+      tocContainer.style.display = 'block';
+
+      // Toggle Animation Logic
+      tocToggle?.addEventListener('click', () => {
+        tocContent?.classList.toggle('collapsed');
+        tocArrow?.classList.toggle('collapsed');
+      });
     }
+
+    // 3. Middle Insertion: "You May Also Like" (List Style)
+    const paragraphs = Array.from(contentBody?.querySelectorAll('p') || []);
+    const relatedWidget = document.getElementById('related-posts-widget');
+    
+    if (relatedWidget) {
+      if (paragraphs.length > 3) {
+        const middleIndex = Math.floor(paragraphs.length / 2);
+        paragraphs[middleIndex].after(relatedWidget);
+      } else {
+        contentBody.appendChild(relatedWidget);
+      }
+      relatedWidget.style.display = 'block';
+    }
+
+    // 4. Mac OS Style Code Blocks Wrapper
+    const codeBlocks = contentBody?.querySelectorAll('pre');
+    codeBlocks?.forEach(pre => {
+      // Prevent wrapping if it's already wrapped
+      if (pre.parentElement.classList.contains('macos-code-wrapper')) return;
+
+      // Try to get the programming language name
+      const codeElement = pre.querySelector('code');
+      let langName = 'code';
+      if (codeElement && codeElement.className) {
+        const match = codeElement.className.match(/language-(\w+)/);
+        if (match) langName = match[1];
+      }
+
+      // Create the Mac OS window wrapper
+      const wrapper = document.createElement('div');
+      wrapper.className = 'macos-code-wrapper';
+
+      const header = document.createElement('div');
+      header.className = 'macos-code-header';
+      header.innerHTML = `
+        <div class="macos-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="macos-lang">${langName}</div>
+      `;
+
+      // Insert wrapper into DOM and move pre inside it
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
+    });
   });
 </script>
 
 <style is:global>
-  /* --- ULTIMATE GRID & FLEXBOX BLOWOUT FIX --- */
-  /* This forces the parent containers in Base.astro to strictly obey the screen width */
+  /* --- GRID & FLEXBOX FIXES --- */
   .dashboard-container,
   .content-wrapper,
   .main-content {
@@ -127,7 +255,6 @@ const htmlContent = marked.parse(post.body || "");
     border: 1px solid var(--border-color);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
     box-sizing: border-box;
-    /* Contain all child elements tightly */
     overflow: hidden;
   }
 
@@ -151,7 +278,6 @@ const htmlContent = marked.parse(post.body || "");
     color: var(--text-main);
     margin: 0.5rem 0 1rem 0;
     line-height: 1.25;
-    /* Force long titles to wrap instead of cutting off */
     overflow-wrap: anywhere;
     word-wrap: break-word;
     word-break: break-word;
@@ -159,25 +285,190 @@ const htmlContent = marked.parse(post.body || "");
 
   .post-meta {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 1rem;
     font-size: 0.8rem;
     color: var(--text-muted);
   }
 
+  .meta-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  /* Google Add Button Styles */
+  .google-add-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .google-add-btn:hover {
+    background: var(--sidebar-hover);
+    border-color: #4f46e5;
+  }
+
+  html.dark .google-add-btn {
+    background-color: #18181b;
+    border-color: #27272a;
+  }
+
+  html.dark .google-add-btn:hover {
+    background-color: #27272a;
+    border-color: #3f3f46;
+  }
+
+  /* --- UPGRADED TABLE OF CONTENTS STYLES --- */
+  .toc-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    margin-bottom: 2.5rem;
+    display: none; /* Shown via JS */
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  html.dark .toc-container {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .toc-header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    background: var(--bg-main);
+    transition: background 0.2s ease;
+  }
+
+  .toc-header:hover {
+    background: var(--sidebar-hover);
+  }
+
+  .toc-arrow {
+    transition: transform 0.3s ease;
+    color: var(--text-muted);
+  }
+
+  .toc-arrow.collapsed {
+    transform: rotate(-180deg);
+  }
+
+  .toc-content {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.3s ease-out;
+  }
+
+  .toc-content.collapsed {
+    grid-template-rows: 0fr;
+  }
+
+  /* The inner content must have min-height 0 to collapse properly */
+  .toc-content-inner {
+    overflow: hidden;
+    min-height: 0;
+    opacity: 1;
+    transition: opacity 0.2s ease-out;
+  }
+
+  .toc-content.collapsed .toc-content-inner {
+    opacity: 0; /* Fully hides content visually when collapsed */
+  }
+
+  /* Padding and border moved inside the shrinking element so they disappear */
+  .toc-list {
+    list-style: none;
+    padding: 1.5rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .toc-list li a {
+    display: inline-block;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    color: inherit!important;
+  }
+
+  .toc-h2 a {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .toc-h2 a:hover {
+    color: #4f46e5;
+    transform: translateX(4px);
+  }
+
+  .toc-h3 {
+    padding-left: 1.25rem;
+    position: relative;
+  }
+
+  /* Sleek vertical line for H3 nesting */
+  .toc-h3::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+    border-radius: 2px;
+    transition: background 0.2s ease;
+  }
+
+  .toc-h3 a {
+    font-size: 0.85rem !important;
+    font-weight: 500;
+    color: var(--text-muted) !important;
+  }
+
+  .toc-h3 a:hover {
+    color: #4f46e5 !important;
+    transform: translateX(4px);
+  }
+
+  .toc-h3:hover::before {
+    background: #4f46e5;
+  }
+
+  /* --- MAIN CONTENT STYLES --- */
   .content-body {
     width: 100%;
     max-width: 100%;
     line-height: 1.8;
     color: var(--text-main);
     font-size: 1rem;
-    /* Force long markdown URLs and text to break */
     overflow-wrap: anywhere;
     word-wrap: break-word;
     word-break: break-word;
     box-sizing: border-box;
   }
 
-  /* Force ALL markdown children to stay inside the box */
   .content-body * {
     max-width: 100% !important;
     box-sizing: border-box !important;
@@ -196,15 +487,6 @@ const htmlContent = marked.parse(post.body || "");
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
-  .content-body table {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    display: block;
-    border-collapse: collapse;
-    margin: 1.5rem 0;
-  }
-
   .content-body iframe {
     max-width: 100%;
     border-radius: 0.5rem;
@@ -214,8 +496,9 @@ const htmlContent = marked.parse(post.body || "");
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-main);
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     margin-bottom: 1rem;
+    scroll-margin-top: 80px; 
   }
 
   .content-body h3 {
@@ -224,47 +507,274 @@ const htmlContent = marked.parse(post.body || "");
     color: var(--text-main);
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
+    scroll-margin-top: 80px;
   }
 
   .content-body p {
     margin-bottom: 1.25rem;
   }
 
-  .content-body strong {
-    color: var(--text-main);
+  /* Article Inline Links */
+  .content-body a {
+    color: #4f46e5;
+    text-decoration: none;
+    text-underline-offset: 3px;
+    font-weight: 500;
+    transition: color 0.15s ease;
   }
 
-  .content-body pre {
-    background: #0f172a !important;
-    color: #f8fafc !important;
-    padding: 1.25rem !important;
-    border-radius: 0.5rem !important;
-    overflow-x: auto !important; /* Enables horizontal scroll INSIDE the code block only */
-    margin: 1.5rem 0 !important;
-    max-width: 100% !important;
+  .content-body a:hover {
+    color: #3730a3;
   }
 
-  .content-body code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.875em;
-    background: var(--bg-main);
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.25rem;
-    color: var(--text-main);
+  html.dark .content-body a {
+    color: #818cf8; 
+  }
+
+  html.dark .content-body a:hover {
+    color: #a5b4fc;
+  }
+
+  /* Markdown Button Styles */
+  .content-body a.md-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4f46e5;
+    color: #ffffff !important;
+    padding: 0.6rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    transition: all 0.2s ease;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+  }
+
+  .content-body a.md-btn:hover {
+    background-color: #3730a3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3);
+  }
+
+  /* Outline/Secondary Button */
+  .content-body a.md-btn-outline {
+    background-color: transparent;
+    color: var(--text-main) !important;
     border: 1px solid var(--border-color);
-    word-break: break-all;
+    box-shadow: none;
+  }
+
+  .content-body a.md-btn-outline:hover {
+    background-color: var(--sidebar-hover);
+    border-color: #4f46e5;
+    transform: translateY(-2px);
+  }
+
+  /* --- MODERN MARKDOWN TABLES --- */
+  .content-body table {
+    width: 100%;
+    max-width: 100%;
+    display: table; /* Fixes the desktop gap */
+    table-layout: auto; 
+    border-collapse: collapse;
+    margin: 2rem 0;
+    border-style: hidden; /* Hides internal border to allow outer radius */
+    box-shadow: 0 0 0 1px var(--border-color); /* Perfect rounded border */
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .content-body th, 
+  .content-body td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  .content-body th {
+    background-color: var(--sidebar-hover);
+    font-weight: 600;
+    color: var(--text-main);
+  }
+
+  .content-body tr:last-child td {
+    border-bottom: none;
+  }
+
+  .content-body th:last-child, 
+  .content-body td:last-child {
+    border-right: none;
+  }
+
+  .content-body tr:nth-child(even) td {
+    background-color: rgba(0, 0, 0, 0.015);
+  }
+  
+  html.dark .content-body tr:nth-child(even) td {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  /* --- MAC OS CODEBLOCK STYLES --- */
+  .macos-code-wrapper {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    margin: 1.5rem 0 !important;
+    overflow: hidden;
+    position: relative; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  html.dark .macos-code-wrapper {
+    background: #0f172a;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .macos-code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: rgba(0,0,0,0.03);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  html.dark .macos-code-header {
+    background: rgba(255,255,255,0.03);
+  }
+
+  .macos-dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .macos-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+
+  .macos-lang {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: lowercase;
+  }
+
+  /* Upgraded Mac OS Copy Button */
+  .macos-code-wrapper .copy-code-btn {
+    position: absolute;
+    top: 0.4rem; 
+    right: 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.35rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    z-index: 10;
+    font-family: inherit;
+  }
+
+  .macos-code-wrapper .copy-code-btn:hover {
+    background: var(--sidebar-hover);
+    color: var(--text-main);
+    border-color: #818cf8;
+  }
+
+  .macos-code-wrapper .copy-code-btn.copied {
+    background: #10b981 !important;
+    border-color: #10b981 !important;
+    color: #ffffff !important;
+  }
+
+  /* Reset pre so the absolute copy button attaches to the outer wrapper */
+  .content-body pre {
+    position: static !important;
+    background: transparent !important;
+    padding: 1.25rem !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    overflow-x: auto !important; 
+    max-width: 100% !important;
   }
 
   .content-body pre code {
     background: transparent !important;
     padding: 0 !important;
     color: inherit !important;
-    white-space: pre !important;
     border: none !important;
     word-break: normal;
+    white-space: pre !important;
   }
 
-  /* Share Section Styles */
+  /* --- MIDDLE RELATED POSTS LIST WIDGET --- */
+  .related-list-widget {
+    background: var(--bg-main);
+    border-left: 4px solid #4f46e5;
+    padding: 1.5rem;
+    margin: 2.5rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
+    display: none; /* Shown via JS */
+  }
+
+  .related-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+  }
+
+  .related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .related-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .related-list li::before {
+    content: "•";
+    color: #4f46e5;
+    font-weight: bold;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .related-list-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-decoration: none;
+    line-height: 1.4;
+    transition: color 0.15s ease;
+  }
+
+  .related-list-title:hover {
+    color: #4f46e5;
+  }
+
+  /* --- SHARE AND COMMENTS --- */
   .post-share-section {
     margin-top: 3rem;
     padding-top: 1.5rem;
@@ -314,7 +824,6 @@ const htmlContent = marked.parse(post.body || "");
   .share-btn.copy-link { background: var(--bg-main); color: var(--text-main); border-color: var(--border-color); }
   .share-btn.copy-link:hover { background: var(--border-color); }
 
-  /* Comments Section */
   .comments-section {
     margin-top: 3rem;
     padding-top: 1.5rem;
@@ -328,7 +837,7 @@ const htmlContent = marked.parse(post.body || "");
     margin-bottom: 1.25rem;
   }
 
-  /* Robust Mobile Responsiveness */
+  /* --- RESPONSIVENESS --- */
   @media (max-width: 768px) {
     .post-card {
       padding: 1.25rem; 
@@ -346,6 +855,14 @@ const htmlContent = marked.parse(post.body || "");
     .content-body figure img {
       margin: 1rem 0 !important;
     }
+    
+    /* Enables horizontal scroll for tables on mobile */
+    .content-body table {
+      display: block; 
+      overflow-x: auto;
+      white-space: nowrap; 
+    }
+
     .post-share-section {
       flex-direction: column;
       align-items: flex-start;
