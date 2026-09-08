@@ -14,7 +14,42 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const htmlContent = marked.parse(post.body || "");
 
-// Fetch 3 related posts for the "You may also like" section (No images, just titles)
+// Extract Category for Breadcrumb
+const postCategory = post.data?.categories?.[0] || "General";
+const categorySlug = postCategory.toLowerCase().replace(/ /g, '-');
+const siteUrl = Astro.site || 'https://coshix.in';
+
+// Extract and deduplicate all tags and categories for the bottom section
+const rawTags = [...(post.data?.categories || []), ...(post.data?.tags || [])];
+const uniqueTags = [...new Set(rawTags)];
+
+// Generate Breadcrumb Rich Result Schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteUrl.toString()
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": postCategory,
+      "item": `${siteUrl}/categories/${categorySlug}`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": post.data?.title,
+      "item": Astro.url.href
+    }
+  ]
+};
+
+// Fetch 3 related posts for the "You may also like" section
 const allPosts = await getCollection("posts");
 const relatedPosts = allPosts
   .filter(p => (p.slug || p.id) !== (post.slug || post.id))
@@ -34,9 +69,17 @@ const relatedPosts = allPosts
     <article class="post-card">
       
       <div class="post-header">
-        <span class="post-category">
-          {post.data?.categories?.[0] || "General"}
-        </span>
+        
+        <!-- Hidden Schema for Google Rich Results -->
+        <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+        <!-- Visual Breadcrumb -->
+        <nav aria-label="breadcrumb" class="post-breadcrumb">
+          <a href="/">Home</a>
+          <span class="separator">/</span>
+          <a href={`/categories/${categorySlug}`} class="current">{postCategory}</a>
+        </nav>
+        
         <h1 class="post-title">
           {post.data?.title}
         </h1>
@@ -87,6 +130,26 @@ const relatedPosts = allPosts
             ))}
           </ul>
         </aside>
+      )}
+
+      <!-- Post Tags / Categories Section -->
+      {uniqueTags.length > 0 && (
+        <div class="post-tags-section">
+          <hr class="tags-divider" />
+          <div class="tags-wrapper">
+            {uniqueTags.map((tag, index) => (
+              <a 
+                href={`/categories/${tag.toLowerCase().replace(/ /g, '-')}`} 
+                class={`tag-pill ${index >= 5 ? 'extra-tag' : ''}`}
+              >
+                {tag}
+              </a>
+            ))}
+            {uniqueTags.length > 5 && (
+              <button id="toggle-tags-btn" class="tag-toggle-btn">Show more</button>
+            )}
+          </div>
+        </div>
       )}
 
       <div class="post-share-section">
@@ -175,18 +238,16 @@ const relatedPosts = allPosts
         li.appendChild(a);
         tocList.appendChild(li);
       });
-      // Move TOC inside the content-body at the very top
       contentBody.insertBefore(tocContainer, contentBody.firstChild);
       tocContainer.style.display = 'block';
 
-      // Toggle Animation Logic
       tocToggle?.addEventListener('click', () => {
         tocContent?.classList.toggle('collapsed');
         tocArrow?.classList.toggle('collapsed');
       });
     }
 
-    // 3. Middle Insertion: "You May Also Like" (List Style)
+    // 3. Middle Insertion: "You May Also Like"
     const paragraphs = Array.from(contentBody?.querySelectorAll('p') || []);
     const relatedWidget = document.getElementById('related-posts-widget');
     
@@ -203,10 +264,8 @@ const relatedPosts = allPosts
     // 4. Mac OS Style Code Blocks Wrapper
     const codeBlocks = contentBody?.querySelectorAll('pre');
     codeBlocks?.forEach(pre => {
-      // Prevent wrapping if it's already wrapped
       if (pre.parentElement.classList.contains('macos-code-wrapper')) return;
 
-      // Try to get the programming language name
       const codeElement = pre.querySelector('code');
       let langName = 'code';
       if (codeElement && codeElement.className) {
@@ -214,10 +273,8 @@ const relatedPosts = allPosts
         if (match) langName = match[1];
       }
 
-      // Create the Mac OS window wrapper
       const wrapper = document.createElement('div');
       wrapper.className = 'macos-code-wrapper';
-
       const header = document.createElement('div');
       header.className = 'macos-code-header';
       header.innerHTML = `
@@ -229,11 +286,26 @@ const relatedPosts = allPosts
         <div class="macos-lang">${langName}</div>
       `;
 
-      // Insert wrapper into DOM and move pre inside it
       pre.parentNode.insertBefore(wrapper, pre);
       wrapper.appendChild(header);
       wrapper.appendChild(pre);
     });
+
+    // 5. Tags Show More/Less Toggle Logic
+    const toggleTagsBtn = document.getElementById('toggle-tags-btn');
+    const extraTags = document.querySelectorAll('.extra-tag');
+    if (toggleTagsBtn && extraTags.length > 0) {
+      toggleTagsBtn.addEventListener('click', () => {
+        const isHidden = extraTags[0].style.display === '' || extraTags[0].style.display === 'none';
+        if (isHidden) {
+          extraTags.forEach(tag => tag.style.display = 'inline-flex');
+          toggleTagsBtn.textContent = 'Show less';
+        } else {
+          extraTags.forEach(tag => tag.style.display = 'none');
+          toggleTagsBtn.textContent = 'Show more';
+        }
+      });
+    }
   });
 </script>
 
@@ -271,13 +343,40 @@ const relatedPosts = allPosts
     padding-bottom: 1.5rem;
   }
 
-  .post-category {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #4f46e5;
-    letter-spacing: 0.05em;
+  /* --- VISUAL BREADCRUMBS --- */
+  .post-breadcrumb {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280; 
   }
+
+  .post-breadcrumb a {
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .post-breadcrumb a:hover {
+    color: #4f46e5;
+  }
+
+  .post-breadcrumb .separator {
+    color: #9ca3af;
+    font-size: 0.9rem;
+  }
+
+  .post-breadcrumb a.current {
+    color: #0f172a; 
+    font-weight: 500;
+  }
+
+  html.dark .post-breadcrumb { color: #9ca3af; }
+  html.dark .post-breadcrumb a { color: #9ca3af; }
+  html.dark .post-breadcrumb a.current { color: #f3f4f6; }
+  html.dark .post-breadcrumb .separator { color: #4b5563; }
 
   .post-title {
     font-size: 2rem;
@@ -331,7 +430,6 @@ const relatedPosts = allPosts
     background-color: #18181b;
     border-color: #27272a;
   }
-
   html.dark .google-add-btn:hover {
     background-color: #27272a;
     border-color: #3f3f46;
@@ -343,14 +441,12 @@ const relatedPosts = allPosts
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     margin-bottom: 2.5rem;
-    display: none; /* Shown via JS */
+    display: none; 
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   }
 
-  html.dark .toc-container {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-  }
+  html.dark .toc-container { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
 
   .toc-header {
     font-size: 1.1rem;
@@ -366,42 +462,24 @@ const relatedPosts = allPosts
     transition: background 0.2s ease;
   }
 
-  .toc-header:hover {
-    background: var(--sidebar-hover);
-  }
-
-  .toc-arrow {
-    transition: transform 0.3s ease;
-    color: var(--text-muted);
-  }
-
-  .toc-arrow.collapsed {
-    transform: rotate(-180deg);
-  }
+  .toc-header:hover { background: var(--sidebar-hover); }
+  .toc-arrow { transition: transform 0.3s ease; color: var(--text-muted); }
+  .toc-arrow.collapsed { transform: rotate(-180deg); }
 
   .toc-content {
     display: grid;
     grid-template-rows: 1fr;
     transition: grid-template-rows 0.3s ease-out;
   }
-
-  .toc-content.collapsed {
-    grid-template-rows: 0fr;
-  }
-
-  /* The inner content must have min-height 0 to collapse properly */
+  .toc-content.collapsed { grid-template-rows: 0fr; }
   .toc-content-inner {
     overflow: hidden;
     min-height: 0;
     opacity: 1;
     transition: opacity 0.2s ease-out;
   }
+  .toc-content.collapsed .toc-content-inner { opacity: 0; }
 
-  .toc-content.collapsed .toc-content-inner {
-    opacity: 0; /* Fully hides content visually when collapsed */
-  }
-
-  /* Padding and border moved inside the shrinking element so they disappear */
   .toc-list {
     list-style: none;
     padding: 1.5rem;
@@ -411,57 +489,31 @@ const relatedPosts = allPosts
     gap: 0.85rem;
     border-top: 1px solid var(--border-color);
   }
-
   .toc-list li a {
     display: inline-block;
     text-decoration: none;
     transition: all 0.2s ease;
     color: inherit!important;
   }
-
   .toc-h2 a {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-main);
   }
-
-  .toc-h2 a:hover {
-    color: #4f46e5;
-    transform: translateX(4px);
-  }
-
-  .toc-h3 {
-    padding-left: 1.25rem;
-    position: relative;
-  }
-
-  /* Sleek vertical line for H3 nesting */
+  .toc-h2 a:hover { color: #4f46e5; transform: translateX(4px); }
+  .toc-h3 { padding-left: 1.25rem; position: relative; }
   .toc-h3::before {
     content: "";
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
+    left: 0; top: 0; bottom: 0;
     width: 2px;
     background: var(--border-color);
     border-radius: 2px;
     transition: background 0.2s ease;
   }
-
-  .toc-h3 a {
-    font-size: 0.85rem !important;
-    font-weight: 500;
-    color: var(--text-muted) !important;
-  }
-
-  .toc-h3 a:hover {
-    color: #4f46e5 !important;
-    transform: translateX(4px);
-  }
-
-  .toc-h3:hover::before {
-    background: #4f46e5;
-  }
+  .toc-h3 a { font-size: 0.85rem !important; font-weight: 500; color: var(--text-muted) !important; }
+  .toc-h3 a:hover { color: #4f46e5 !important; transform: translateX(4px); }
+  .toc-h3:hover::before { background: #4f46e5; }
 
   /* --- MAIN CONTENT STYLES --- */
   .content-body {
@@ -475,422 +527,164 @@ const relatedPosts = allPosts
     word-break: break-word;
     box-sizing: border-box;
   }
-
-  .content-body * {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  .content-body img,
-  .content-body p img,
-  .content-body figure img {
+  .content-body * { max-width: 100% !important; box-sizing: border-box !important; }
+  .content-body img, .content-body p img, .content-body figure img {
     display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    object-fit: contain !important;
-    margin: 1.5rem 0 !important;
-    border-radius: 0.5rem !important;
+    width: 100% !important; max-width: 100% !important;
+    height: auto !important; object-fit: contain !important;
+    margin: 1.5rem 0 !important; border-radius: 0.5rem !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
+  .content-body iframe { max-width: 100%; border-radius: 0.5rem; }
+  .content-body h2 { font-size: 1.5rem; font-weight: 600; color: var(--text-main); margin-top: 2.5rem; margin-bottom: 1rem; scroll-margin-top: 80px; }
+  .content-body h3 { font-size: 1.25rem; font-weight: 600; color: var(--text-main); margin-top: 1.5rem; margin-bottom: 0.75rem; scroll-margin-top: 80px; }
+  .content-body p { margin-bottom: 1.25rem; }
+  .content-body a { color: #4f46e5; text-decoration: none; text-underline-offset: 3px; font-weight: 500; transition: color 0.15s ease; }
+  .content-body a:hover { color: #3730a3; }
+  html.dark .content-body a { color: #818cf8; }
+  html.dark .content-body a:hover { color: #a5b4fc; }
 
-  .content-body iframe {
-    max-width: 100%;
-    border-radius: 0.5rem;
+  /* Buttons and Tables (Minified) */
+  .content-body a.md-btn { display: inline-flex; align-items: center; justify-content: center; background-color: #4f46e5; color: #ffffff !important; padding: 0.6rem 1.5rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.95rem; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2); transition: all 0.2s ease; margin: 0.5rem 0.5rem 0.5rem 0; }
+  .content-body a.md-btn:hover { background-color: #3730a3; transform: translateY(-2px); box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3); }
+  .content-body a.md-btn-outline { background-color: transparent; color: var(--text-main) !important; border: 1px solid var(--border-color); box-shadow: none; }
+  .content-body a.md-btn-outline:hover { background-color: var(--sidebar-hover); border-color: #4f46e5; transform: translateY(-2px); }
+  .content-body table { width: 100%; display: table; table-layout: auto; border-collapse: collapse; margin: 2rem 0; border-style: hidden; box-shadow: 0 0 0 1px var(--border-color); border-radius: 0.5rem; overflow: hidden; }
+  .content-body th, .content-body td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); text-align: left; font-size: 0.95rem; }
+  .content-body th { background-color: var(--sidebar-hover); font-weight: 600; color: var(--text-main); }
+  .content-body tr:last-child td { border-bottom: none; }
+  .content-body th:last-child, .content-body td:last-child { border-right: none; }
+  .content-body tr:nth-child(even) td { background-color: rgba(0, 0, 0, 0.015); }
+  html.dark .content-body tr:nth-child(even) td { background-color: rgba(255, 255, 255, 0.02); }
+
+  /* --- MAC OS CODEBLOCK STYLES --- */
+  .macos-code-wrapper { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 0.5rem; margin: 1.5rem 0 !important; overflow: hidden; position: relative; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+  html.dark .macos-code-wrapper { background: #0f172a; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); }
+  .macos-code-header { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; background: rgba(0,0,0,0.03); border-bottom: 1px solid var(--border-color); }
+  html.dark .macos-code-header { background: rgba(255,255,255,0.03); }
+  .macos-dots { display: flex; gap: 0.4rem; }
+  .macos-dots .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.red { background: #ff5f56; } .dot.yellow { background: #ffbd2e; } .dot.green { background: #27c93f; }
+  .macos-lang { font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--text-muted); text-transform: lowercase; }
+  .macos-code-wrapper .copy-code-btn { position: absolute; top: 0.4rem; right: 0.5rem; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 0.35rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05); z-index: 10; font-family: inherit; }
+  .macos-code-wrapper .copy-code-btn:hover { background: var(--sidebar-hover); color: var(--text-main); border-color: #818cf8; }
+  .macos-code-wrapper .copy-code-btn.copied { background: #10b981 !important; border-color: #10b981 !important; color: #ffffff !important; }
+  .content-body pre { position: static !important; background: transparent !important; padding: 1.25rem !important; margin: 0 !important; border: none !important; border-radius: 0 !important; overflow-x: auto !important; max-width: 100% !important; }
+  .content-body pre code { background: transparent !important; padding: 0 !important; color: inherit !important; border: none !important; word-break: normal; white-space: pre !important; }
+
+  /* --- MIDDLE RELATED POSTS LIST WIDGET --- */
+  .related-list-widget { background: var(--bg-main); border-left: 4px solid #4f46e5; padding: 1.5rem; margin: 2.5rem 0; border-radius: 0 0.5rem 0.5rem 0; display: none; }
+  .related-heading { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 1rem; }
+  .related-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+  .related-list li { display: flex; align-items: flex-start; gap: 0.5rem; }
+  .related-list li::before { content: "•"; color: #4f46e5; font-weight: bold; font-size: 1.2rem; line-height: 1; }
+  .related-list-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); text-decoration: none; line-height: 1.4; transition: color 0.15s ease; }
+  .related-list-title:hover { color: #4f46e5; }
+
+  /* --- TAGS PILL SECTION --- */
+  .post-tags-section {
+    margin-top: 3rem;
   }
-
-  .content-body h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    scroll-margin-top: 80px; 
+  
+  .tags-divider {
+    border: 0;
+    border-top: 1px dashed var(--border-color); /* The dashed line from the screenshot */
+    margin-bottom: 1.5rem;
   }
-
-  .content-body h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    scroll-margin-top: 80px;
+  
+  .tags-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
   }
-
-  .content-body p {
-    margin-bottom: 1.25rem;
-  }
-
-  /* Article Inline Links */
-  .content-body a {
-    color: #4f46e5;
-    text-decoration: none;
-    text-underline-offset: 3px;
-    font-weight: 500;
-    transition: color 0.15s ease;
-  }
-
-  .content-body a:hover {
-    color: #3730a3;
-  }
-
-  html.dark .content-body a {
-    color: #818cf8; 
-  }
-
-  html.dark .content-body a:hover {
-    color: #a5b4fc;
-  }
-
-  /* Markdown Button Styles */
-  .content-body a.md-btn {
+  
+  .tag-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #4f46e5;
-    color: #ffffff !important;
-    padding: 0.6rem 1.5rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    font-size: 0.95rem;
+    padding: 0.35rem 1rem;
+    background: #ffffff; 
+    border: 1px solid #e5e7eb; 
+    border-radius: 9999px; /* Pill shape */
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #0369a1; /* Light blue text */
     text-decoration: none;
-    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
     transition: all 0.2s ease;
-    margin: 0.5rem 0.5rem 0.5rem 0;
-  }
-
-  .content-body a.md-btn:hover {
-    background-color: #3730a3;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3);
-  }
-
-  /* Outline/Secondary Button */
-  .content-body a.md-btn-outline {
-    background-color: transparent;
-    color: var(--text-main) !important;
-    border: 1px solid var(--border-color);
-    box-shadow: none;
-  }
-
-  .content-body a.md-btn-outline:hover {
-    background-color: var(--sidebar-hover);
-    border-color: #4f46e5;
-    transform: translateY(-2px);
-  }
-
-  /* --- MODERN MARKDOWN TABLES --- */
-  .content-body table {
-    width: 100%;
-    max-width: 100%;
-    display: table; /* Fixes the desktop gap */
-    table-layout: auto; 
-    border-collapse: collapse;
-    margin: 2rem 0;
-    border-style: hidden; /* Hides internal border to allow outer radius */
-    box-shadow: 0 0 0 1px var(--border-color); /* Perfect rounded border */
-    border-radius: 0.5rem;
-    overflow: hidden;
-  }
-
-  .content-body th, 
-  .content-body td {
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
-    text-align: left;
-    font-size: 0.95rem;
-  }
-
-  .content-body th {
-    background-color: var(--sidebar-hover);
-    font-weight: 600;
-    color: var(--text-main);
-  }
-
-  .content-body tr:last-child td {
-    border-bottom: none;
-  }
-
-  .content-body th:last-child, 
-  .content-body td:last-child {
-    border-right: none;
-  }
-
-  .content-body tr:nth-child(even) td {
-    background-color: rgba(0, 0, 0, 0.015);
   }
   
-  html.dark .content-body tr:nth-child(even) td {
-    background-color: rgba(255, 255, 255, 0.02);
+  .tag-pill:hover {
+    border-color: #0369a1;
+    background: #f0f9ff;
   }
 
-  /* --- MAC OS CODEBLOCK STYLES --- */
-  .macos-code-wrapper {
-    background: #f8fafc;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    margin: 1.5rem 0 !important;
-    overflow: hidden;
-    position: relative; 
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  }
-
-  html.dark .macos-code-wrapper {
-    background: #0f172a;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-  }
-
-  .macos-code-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 1rem;
-    background: rgba(0,0,0,0.03);
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  html.dark .macos-code-header {
-    background: rgba(255,255,255,0.03);
-  }
-
-  .macos-dots {
-    display: flex;
-    gap: 0.4rem;
-  }
-
-  .macos-dots .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-
-  .dot.red { background: #ff5f56; }
-  .dot.yellow { background: #ffbd2e; }
-  .dot.green { background: #27c93f; }
-
-  .macos-lang {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: lowercase;
-  }
-
-  /* Upgraded Mac OS Copy Button */
-  .macos-code-wrapper .copy-code-btn {
-    position: absolute;
-    top: 0.4rem; 
-    right: 0.5rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-    font-size: 0.7rem;
+  .tag-toggle-btn {
+    display: inline-flex;
+    background: transparent;
+    border: none;
+    font-size: 0.85rem;
     font-weight: 600;
-    padding: 0.25rem 0.6rem;
-    border-radius: 0.35rem;
+    color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    z-index: 10;
-    font-family: inherit;
+    padding: 0.35rem 0.5rem;
   }
 
-  .macos-code-wrapper .copy-code-btn:hover {
-    background: var(--sidebar-hover);
+  .tag-toggle-btn:hover {
     color: var(--text-main);
-    border-color: #818cf8;
+    text-decoration: underline;
   }
 
-  .macos-code-wrapper .copy-code-btn.copied {
-    background: #10b981 !important;
-    border-color: #10b981 !important;
-    color: #ffffff !important;
+  .extra-tag {
+    display: none; /* Hidden by default until JS toggles */
   }
-
-  /* Reset pre so the absolute copy button attaches to the outer wrapper */
-  .content-body pre {
-    position: static !important;
-    background: transparent !important;
-    padding: 1.25rem !important;
-    margin: 0 !important;
-    border: none !important;
-    border-radius: 0 !important;
-    overflow-x: auto !important; 
-    max-width: 100% !important;
+  
+  /* Dark mode for tags */
+  html.dark .tag-pill {
+    background: transparent;
+    border-color: #27272a;
+    color: #38bdf8;
   }
-
-  .content-body pre code {
-    background: transparent !important;
-    padding: 0 !important;
-    color: inherit !important;
-    border: none !important;
-    word-break: normal;
-    white-space: pre !important;
-  }
-
-  /* --- MIDDLE RELATED POSTS LIST WIDGET --- */
-  .related-list-widget {
-    background: var(--bg-main);
-    border-left: 4px solid #4f46e5;
-    padding: 1.5rem;
-    margin: 2.5rem 0;
-    border-radius: 0 0.5rem 0.5rem 0;
-    display: none; /* Shown via JS */
-  }
-
-  .related-heading {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin-bottom: 1rem;
-  }
-
-  .related-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .related-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .related-list li::before {
-    content: "•";
-    color: #4f46e5;
-    font-weight: bold;
-    font-size: 1.2rem;
-    line-height: 1;
-  }
-
-  .related-list-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-main);
-    text-decoration: none;
-    line-height: 1.4;
-    transition: color 0.15s ease;
-  }
-
-  .related-list-title:hover {
-    color: #4f46e5;
+  html.dark .tag-pill:hover {
+    border-color: #38bdf8;
+    background: #082f49;
   }
 
   /* --- SHARE AND COMMENTS --- */
   .post-share-section {
-    margin-top: 3rem;
+    margin-top: 2rem; /* Reduced slightly to fit tags nicely */
     padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
   }
 
-  .share-label {
-    font-weight: 600;
-    color: var(--text-main);
-    font-size: 0.9rem;
-  }
-
-  .share-buttons {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 100%;
-  }
-
-  .share-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    padding: 0.45rem 0.9rem;
-    border-radius: 0.375rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: opacity 0.15s ease;
-  }
-
-  .share-btn:hover {
-    opacity: 0.9;
-  }
-
+  .share-label { font-weight: 600; color: var(--text-main); font-size: 0.9rem; }
+  .share-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; width: 100%; }
+  .share-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.45rem 0.9rem; border-radius: 0.375rem; font-size: 0.8rem; font-weight: 600; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: opacity 0.15s ease; }
+  .share-btn:hover { opacity: 0.9; }
   .share-btn.facebook { background: #2563eb; color: #ffffff !important; }
   .share-btn.whatsapp { background: #0d9488; color: #ffffff !important; }
   .share-btn.twitter { background: #09090b; color: #ffffff !important; }
   .share-btn.copy-link { background: var(--bg-main); color: var(--text-main); border-color: var(--border-color); }
   .share-btn.copy-link:hover { background: var(--border-color); }
-
-  .comments-section {
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
-  }
-
-  .comments-title {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin-bottom: 1.25rem;
-  }
+  .comments-section { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+  .comments-title { font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin-bottom: 1.25rem; }
 
   /* --- RESPONSIVENESS --- */
   @media (max-width: 768px) {
-    .post-card {
-      padding: 1.25rem; 
-      border-radius: 0.5rem;
-    }
-    .post-title {
-      font-size: 1.5rem;
-      margin-top: 0;
-    }
-    .content-body {
-      font-size: 0.95rem;
-    }
-    .content-body img,
-    .content-body p img,
-    .content-body figure img {
-      margin: 1rem 0 !important;
-    }
-    
-    /* Enables horizontal scroll for tables on mobile */
-    .content-body table {
-      display: block; 
-      overflow-x: auto;
-      white-space: nowrap; 
-    }
-
-    .post-share-section {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-    .share-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-    }
+    .post-card { padding: 1.25rem; border-radius: 0.5rem; }
+    .post-title { font-size: 1.5rem; margin-top: 0; }
+    .content-body { font-size: 0.95rem; }
+    .content-body img, .content-body p img, .content-body figure img { margin: 1rem 0 !important; }
+    .content-body table { display: block; overflow-x: auto; white-space: nowrap; }
+    .post-share-section { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .share-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
   }
-
   @media (max-width: 480px) {
-    .post-card {
-      padding: 1rem;
-    }
-    .post-title {
-      font-size: 1.4rem;
-    }
-    .share-buttons {
-      grid-template-columns: 1fr;
-    }
+    .post-card { padding: 1rem; }
+    .post-title { font-size: 1.4rem; }
+    .share-buttons { grid-template-columns: 1fr; }
   }
 </style>
