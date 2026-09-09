@@ -1,11 +1,7 @@
 ---
-import Base from "@/layouts/Base.astro";
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
-import dateFormat from "@/lib/utils/dateFormat";
-import { humanize, slugify } from "@/lib/utils/textConverter";
-import { BiCalendarEdit, BiCategoryAlt } from "react-icons/bi";
-import AuthorSingle from "@/partials/AuthorSingle.astro";
+import Base from "../../layouts/Base.astro";
+import { marked } from "marked";
 
 export async function getStaticPaths() {
   const authors = await getCollection("authors");
@@ -18,76 +14,353 @@ export async function getStaticPaths() {
 const { author } = Astro.props;
 const { title, description, image } = author.data;
 
-// Fetch all posts to filter by this author
-const posts = await getCollection("posts");
-const currentPosts = posts.filter((post) => {
-  return post.data.authors?.some((authName) => slugify(authName) === slugify(title));
-});
+// Parse bio if it exists
+const htmlContent = marked.parse(author.body || "");
+
+// Fetch all posts to filter by this exact author
+const allPosts = await getCollection("posts");
+const authorPosts = allPosts
+  .filter((post) => post.data.authors && post.data.authors.includes(title))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 ---
 
 <Base 
-  title={title} 
-  description={description}
+  title={`${title} - Author Profile`} 
+  description={description || `Read all articles written by ${title}.`}
   image={image}
   schemaType="page"
 >
-  <AuthorSingle author={author} />
+  <div class="author-dashboard-wrapper">
+    
+    <!-- Compact Author Header -->
+    <div class="compact-author-header">
+      {image && (
+        <img src={image} alt={title} class="compact-author-avatar" />
+      )}
+      <div class="compact-author-info">
+        <h1 class="compact-author-title">{title}</h1>
+        {description && <p class="compact-author-bio">{description}</p>}
+        {htmlContent && <div class="compact-author-full-bio" set:html={htmlContent} />}
+      </div>
+    </div>
 
-  {currentPosts.length > 0 && (
-    <section class="section pt-0">
-      <div class="container">
-        <h2 class="mb-8 text-center h3">Recent Posts</h2>
-        <div class={`row gy-4 ${currentPosts.length < 3 ? "justify-center" : ""}`}>
-          {currentPosts.map((post) => (
-            <div class="col-12 sm:col-6 lg:col-4">
-              {post.data.image && (
-                <a
-                  href={`/blog/${post.slug || post.id}`}
-                  class="rounded-lg block hover:text-primary overflow-hidden group"
-                >
-                  <Image
-                    class="group-hover:scale-[1.05] transition duration-300 w-full"
-                    src={post.data.image}
-                    alt={post.data.title}
-                    width={445}
-                    height={230}
-                  />
-                </a>
-              )}
-              <ul class="mt-4 text-text flex flex-wrap items-center text-sm">
-                <li class="mb-2 mr-4 flex items-center flex-wrap font-medium">
-                  <BiCalendarEdit className="mr-1 h-[16px] w-[16px] text-gray-600" />
-                  {dateFormat(post.data.date!)}
-                </li>
-                <li class="mb-2 mr-4 flex items-center flex-wrap">
-                  <BiCategoryAlt className="mr-1 h-[16px] w-[16px] text-gray-600" />
-                  <ul>
-                    {post.data.categories.map((category, i: number) => (
-                      <li class="inline-block">
-                        <a
-                          href={`/categories/${slugify(category)}`}
-                          class="mr-2 hover:text-primary font-medium"
-                        >
-                          {humanize(category)}
-                          {i !== post.data.categories.length - 1 && ","}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              </ul>
-              <h3 class="h5">
-                <a
-                  href={`/blog/${post.slug || post.id}`}
-                  class="block hover:text-primary transition duration-300"
-                >
-                  {post.data.title}
-                </a>
-              </h3>
-            </div>
-          ))}
+    <!-- Compact Recent Posts Grid -->
+    {authorPosts.length > 0 && (
+      <div class="dashboard-posts-section">
+        <div class="dashboard-section-header">
+          <h2 class="dashboard-heading">Latest posts by {title}</h2>
+          <span class="dashboard-dots">...</span>
+        </div>
+        
+        <div class="dashboard-posts-grid">
+          {authorPosts.map((post) => {
+            const postCategory = post.data?.categories?.[0] || "General";
+            const categorySlug = postCategory.toLowerCase().replace(/ /g, '-');
+            const hasUpdated = !!post.data?.updatedDate;
+            const displayDate = hasUpdated ? post.data.updatedDate : post.data?.date;
+            const dateStr = displayDate ? new Date(displayDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
+            
+            return (
+              <article class="compact-post-card">
+                {post.data.image && (
+                  <a href={`/blog/${post.slug || post.id}`} class="compact-card-img-link">
+                    <img 
+                      src={post.data.image} 
+                      alt={post.data.title} 
+                      class="compact-card-img"
+                      loading="lazy" 
+                    />
+                  </a>
+                )}
+                <div class="compact-card-body">
+                  <div class="compact-card-top">
+                    <a href={`/categories/${categorySlug}`} class="compact-card-category">
+                      IN {postCategory.toUpperCase()}
+                    </a>
+                  </div>
+                  <h3 class="compact-card-title">
+                    <a href={`/blog/${post.slug || post.id}`}>
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  <div class="compact-card-footer">
+                    <div class="compact-card-date-wrap">
+                      {hasUpdated && <span class="badge-updated">UPDATED</span>}
+                      <span class="compact-card-date">{dateStr}</span>
+                    </div>
+                    <a href={`/blog/${post.slug || post.id}`} class="compact-card-read-more">
+                      Read more
+                    </a>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
-    </section>
-  )}
+    )}
+
+  </div>
 </Base>
+
+<style is:global>
+  /* --- LAYOUT WRAPPER --- */
+  .author-dashboard-wrapper {
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  /* --- COMPACT AUTHOR HEADER --- */
+  .compact-author-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+
+  .compact-author-avatar {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+  }
+
+  .compact-author-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .compact-author-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.25rem 0;
+    line-height: 1.2;
+  }
+
+  .compact-author-bio {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .compact-author-full-bio {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+  .compact-author-full-bio p { margin: 0; }
+
+  /* --- DASHBOARD POSTS SECTION --- */
+  .dashboard-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+  }
+
+  .dashboard-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+  }
+
+  .dashboard-dots {
+    color: var(--text-muted);
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+
+  /* --- COMPACT GRID UI & EXACT HOVER EFFECTS --- */
+  .dashboard-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .compact-post-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+
+  .compact-post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px -4px rgba(79, 70, 229, 0.1);
+    border-color: #4f46e5;
+  }
+
+  html.dark .compact-post-card:hover {
+    box-shadow: 0 8px 16px -4px rgba(129, 140, 248, 0.15);
+    border-color: #6366f1;
+  }
+
+  .compact-card-img-link {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+  }
+
+  .compact-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .compact-card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .compact-card-top {
+    margin-bottom: 0.5rem;
+  }
+
+  .compact-card-category {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s ease;
+  }
+
+  .compact-post-card:hover .compact-card-category {
+    color: #4f46e5;
+  }
+  html.dark .compact-post-card:hover .compact-card-category {
+    color: #818cf8;
+  }
+
+  .compact-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0 0 1rem 0;
+    flex-grow: 1;
+  }
+
+  .compact-card-title a {
+    color: var(--text-main);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .compact-post-card:hover .compact-card-title a {
+    color: #6366f1; 
+  }
+  html.dark .compact-post-card:hover .compact-card-title a {
+    color: #a5b4fc;
+  }
+
+  /* --- CARD FOOTER & DIVIDER --- */
+  .compact-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    margin-top: auto;
+    border-top: 1px solid var(--border-color); 
+    padding-top: 0.85rem;
+  }
+
+  .compact-card-date-wrap {
+    display: flex;
+    align-items: center;
+  }
+
+  .badge-updated {
+    background: #0284c7; 
+    color: #ffffff;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  html.dark .badge-updated {
+    background: #0ea5e9;
+  }
+
+  .compact-card-date {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .compact-card-read-more {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.8rem;
+    transition: color 0.2s ease;
+  }
+
+  .compact-post-card:hover .compact-card-read-more {
+    color: #4f46e5;
+  }
+  html.dark .compact-post-card:hover .compact-card-read-more {
+    color: #818cf8;
+  }
+
+  /* --- RESPONSIVE ADJUSTMENTS (COMPACT MOBILE) --- */
+  @media (max-width: 768px) {
+    .compact-author-header {
+      flex-direction: column;
+      text-align: center;
+      padding: 1.25rem 1rem;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .compact-author-avatar {
+      width: 65px;
+      height: 65px;
+    }
+    .compact-author-title {
+      font-size: 1.35rem;
+    }
+    .compact-author-bio {
+      font-size: 0.9rem;
+    }
+    .dashboard-heading {
+      font-size: 1rem;
+    }
+    .dashboard-posts-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .compact-card-body {
+      padding: 1rem;
+    }
+    .compact-card-title {
+      font-size: 1rem;
+      margin: 0 0 0.75rem 0;
+    }
+    .compact-card-footer {
+      padding-top: 0.75rem;
+    }
+  }
+</style>

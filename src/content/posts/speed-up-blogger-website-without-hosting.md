@@ -1,13 +1,15 @@
 ---
 title: "How to Speed Up Blogger Website Without Paid Hosting"
 date: 2025-12-24
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgRyUAOENQU_FJWNqbunEvpnf7VVbtjFuZQfexz7mKArmKMsisOJAmfZIifAPmt_GZOhSUY9oHHBOyDK0JVT1geqYhXxHZ6-BEOW2tIwg3J4nV_fpVLIRkVuSzxcoNOQPASZgjti8kCyQjUXy1wDN6-nomrbRUnGiIcOYz0I18R13dSpNi5R2cGyOXR2jkE/s1600-rw/thumbnail-teorzo.webp"
+image: "/images/posts/thumbnail-teorzo.webp"
 categories: ["Blogger"]
 tags: ["Blogger","How To","Performance","Web","SEO & Performance"]
+authors: [shiva-e-s]
+description: "The performance issue is the most common issue faced by owners of websites. A website without a good loading speed can affect user experience and cause loading trouble in low internet connections. The improvement of the website speed is also important, along with developing a good interface."
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgRyUAOENQU_FJWNqbunEvpnf7VVbtjFuZQfexz7mKArmKMsisOJAmfZIifAPmt_GZOhSUY9oHHBOyDK0JVT1geqYhXxHZ6-BEOW2tIwg3J4nV_fpVLIRkVuSzxcoNOQPASZgjti8kCyQjUXy1wDN6-nomrbRUnGiIcOYz0I18R13dSpNi5R2cGyOXR2jkE/s1600-rw/thumbnail-teorzo.webp)
+![Thumbnail](/images/posts/thumbnail-teorzo.webp)
 
 The performance issue is the most common issue faced by owners of websites. A website without a good loading speed can affect user experience and cause loading trouble in low internet connections. The improvement of the website speed is also important, along with developing a good interface.
 
@@ -81,7 +83,7 @@ WebP is a modern image format developed by Google. It has a smaller file size wh
 
   
 
-To know more about WebP images check out: [What is WebP and Why Modern Websites Use It?](/2026/01/what-is-webp.html)
+To know more about WebP images check out: [What is WebP and Why Modern Websites Use It?](/blog/what-is-webp-image-format)
 
 #### Why does image size matter?
 

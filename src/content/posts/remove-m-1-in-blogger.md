@@ -1,13 +1,15 @@
 ---
 title: "Remove ?m=1 in Blogger + Fix Redirect Errors"
 date: 2026-03-31
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEisxS7jamF1tDmYA-9kkaey7Jfry7jGKRmzRZ0aG48EgMESi-86hcI0tvczE-DnmI08y887Ij_kMru1ZyZ9uZ8nMxdR2NW_3Vt1bTr1b8hTz-iMMK_W8o5pPtmndOKScz-hLdByHIqI-0qXtOmAfio2CaMfGGg326CroUa-_UpS2oJpuOSruMbkdlaXYHwx/s1600-rw/remove-m1-blogger.webp"
+authors: [shiva-e-s]
+description: "The Blogger adds ?m=1 automatically in mobile URLs to display the mobile version of that website, but now most of the themes are being released as fully responsive themes, so this extra parameter is no longer needed. Nowadays, this ?m=1 parameter is causing problems in indexing for some blogger websites in the name of redirect error, other canonical tags, etc."
+image: "/images/posts/remove-m1-blogger.webp"
 categories: ["Blogger"]
 tags: ["Blogger","Codes","Remove ?m=1","Web","SEO & Performance"]
 draft: false
 ---
 
-[![Remove ?m=1 in Blogger](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEisxS7jamF1tDmYA-9kkaey7Jfry7jGKRmzRZ0aG48EgMESi-86hcI0tvczE-DnmI08y887Ij_kMru1ZyZ9uZ8nMxdR2NW_3Vt1bTr1b8hTz-iMMK_W8o5pPtmndOKScz-hLdByHIqI-0qXtOmAfio2CaMfGGg326CroUa-_UpS2oJpuOSruMbkdlaXYHwx/s1600-rw/remove-m1-blogger.webp)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEisxS7jamF1tDmYA-9kkaey7Jfry7jGKRmzRZ0aG48EgMESi-86hcI0tvczE-DnmI08y887Ij_kMru1ZyZ9uZ8nMxdR2NW_3Vt1bTr1b8hTz-iMMK_W8o5pPtmndOKScz-hLdByHIqI-0qXtOmAfio2CaMfGGg326CroUa-_UpS2oJpuOSruMbkdlaXYHwx/s1600-rw/remove-m1-blogger.webp)
+[![Remove ?m=1 in Blogger](/images/posts/remove-m1-blogger.webp)
 
 Nowadays, many Blogger users are facing a redirection error issue in the search console, which prevents the indexing of their pages in Google search. The main reason behind this problem is the extra parameter, which shows in the mobile URLs of a Blogger-based blog. From the beginning of Blogger, there was `?m=1` or `?m=0` in url's, but this redirection error problem came recently.
 
@@ -30,7 +32,7 @@ A custom domain name connected with your Blogger blog and Cloudflare in Proximiz
 
 ## How to Remove ?m=1 from Blogger (Step-by-Step Guide)
 
-**Warning!** Cloudflare have [workers limit](https://developers.cloudflare.com/workers/platform/limits/). If your website hits this limit, your website may become inaccessible.
+<div class="alert warning">Cloudflare have<a href="https://developers.cloudflare.com/workers/platform/limits" target="_blank" rel="nofollow">workers limit</a>. If your website hits this limit, your website may become inaccessible.</div>
 
 ### Create Worker in Cloudflare
 
@@ -130,7 +132,7 @@ www.coshix.in/*
 22.  In the "**Worker**" section, choose the worker we just created
 23.  Click the "**Save**" button
 
-**Done!** Now check your blog from your mobile device, the `?m=1` parameter has been removed from your URL.
+<div class="alert success">Done! Now check your blog from your mobile device, the `?m=1` parameter has been removed from your URL.</div>
 
 ## Validate fixes in Search Console
 
@@ -142,21 +144,37 @@ www.coshix.in/*
 
 ## FAQs
 
-Why ?m=1 in Blogger Mobile URLs?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Why ?m=1 in Blogger Mobile URLs?</summary>
+    <div class="faq-answer">
+      I provided an answer to this question in this post. ?m=1 was added because in older times, there were less responsive Blogger templates so Blogger added ?m=1 to mobile URLs to apply a different version of the same website in mobile to show a simplified and good-looking page in mobile.
+    </div>
+  </details>
 
-I provided an answer to this question in this post. ?m=1 was added because in older times, there were less responsive Blogger templates so Blogger added ?m=1 to mobile URLs to apply a different version of the same website in mobile to show a simplified and good-looking page in mobile.
+  <details class="faq-item">
+    <summary class="faq-question">Why i getting a redirect error in Search Console in my Blogger website?</summary>
+    <div class="faq-answer">
+      In Blogger, most of times redirect error was caused by improper handling of the ?m=1 parameter, multiple redirects or incorrect canonical URL.
+    </div>
+  </details>
 
-Why i getting a redirect error in Search Console in my Blogger website?
+  <details class="faq-item">
+    <summary class="faq-question">Can we remove the ?m=1 parameter completely from the mobile URL?</summary>
+    <div class="faq-answer">
+      Yes, we can remove it if you have been using a custom domain and Cloudflare. Currently, we haven't found any method to fix this issue in the blogspot subdomain blog.
+    </div>
+  </details>
 
-In Blogger, most of times redirect error was caused by improper handling of the ?m=1 parameter, multiple redirects or incorrect canonical URL.
+  <details class="faq-item">
+    <summary class="faq-question">Which method is best for removing ?m=1 from the Blogger blog URL?</summary>
+    <div class="faq-answer">
+      Custom domain + Cloudflare Worker method is best for removing ?m=1 from the mobile URL.
+    </div>
+  </details>
 
-Can we remove the ?m=1 parameter completely from the mobile URL?
-
-Yes, we can remove it if you have been using a custom domain and Cloudflare. Currently, we haven't found any method to fix this issue in the blogspot subdomain blog.
-
-Which method is best for removing ?m=1 from the Blogger blog URL?
-
-Custom domain + Cloudflare Worker method is best for removing ?m=1 from the mobile URL.
+</div>
 
 ## Conclusion
 

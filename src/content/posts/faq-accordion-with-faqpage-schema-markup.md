@@ -1,13 +1,15 @@
 ---
 title: "How to Build a Pure CSS FAQ Accordion with FAQPage Schema Markup"
 date: 2026-07-03
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjKRBlGJqKno66zilIW1B_v9jsGAMlm-3iAFdt0bNeJ3Q8D89DUxNIvtleyVmIUYCUP_ueFNtOFUyQ6cu3KiaWj68ZMNbAkeGZCT019mD8tUa3BWUYpw5usijGtrrdbnfh2vkBVu6M0zNSTV4XyNG7P928OF84CJ0KaXdlNLa261DM5_S6vf6Y1xRnLCMxm/s1600-rw/faqpage-schema-markup-coshix.webp"
-categories: ["Codes"]
-tags: ["Codes","Common","FAQ","FAQPage","How To","Web","HTML","CSS","Components","SEO & Performance","CSS Components","Widgets"]
+description: "Frequently Asked Questions are commonly used on websites to organise information well and to give answers to users' common questions in a proper, user-friendly, and clear way. Instead of displaying questions and answers in a simple block of text."
+authors: [shiva-e-s]
+image: "/images/posts/faqpage-schema-markup-coshix.webp"
+categories: ["Common"]
+tags: ["Common","Codes","FAQ","FAQPage","How To","Web","HTML","CSS","Components","SEO & Performance","CSS Components","Widgets"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjKRBlGJqKno66zilIW1B_v9jsGAMlm-3iAFdt0bNeJ3Q8D89DUxNIvtleyVmIUYCUP_ueFNtOFUyQ6cu3KiaWj68ZMNbAkeGZCT019mD8tUa3BWUYpw5usijGtrrdbnfh2vkBVu6M0zNSTV4XyNG7P928OF84CJ0KaXdlNLa261DM5_S6vf6Y1xRnLCMxm/s1600-rw/faqpage-schema-markup-coshix.webp) Frequently Asked Questions are commonly used on websites to organise information well and to give answers to users' common questions in a proper, user-friendly, and clear way. Instead of displaying questions and answers in a simple block of text, an **accordion FAQ section helps you to display questions and answers properly and allows users to expand only the question they are interested in**.
+![Thumbnail](/images/posts/faqpage-schema-markup-coshix.webp) Frequently Asked Questions are commonly used on websites to organise information well and to give answers to users' common questions in a proper, user-friendly, and clear way. Instead of displaying questions and answers in a simple block of text, an **accordion FAQ section helps you to display questions and answers properly and allows users to expand only the question they are interested in**.
 
   
 
@@ -33,8 +35,7 @@ As this **includes FAQPage Schema Markup**, it **helps search engines understand
 
 ## FAQ Accordion Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/07/faq-with-schema-markup.html)
+<div class="alert info">Want to see how it works? <a href="https://coshix-outputs.blogspot.com/2026/07/faq-with-schema-markup.html" target="_blank">View Demo</a></div>
 
 ## How to Add This FAQ Accordion to Your Website
 
@@ -43,7 +44,7 @@ As this **includes FAQPage Schema Markup**, it **helps search engines understand
 ### Adding CSS For FAQ Accordion
 
 ```
-/* FAQ Accordion CSS (Source:www.coshix.in) */
+/* FAQ Accordion CSS (Source:coshix.in) */
 .showH{max-width:820px;margin:0 auto;padding:2.5rem 2.5rem 2rem;background:#fff;border-radius:6px;border:1px solid #e2e2e2;color:#1a2332}
 .faq-head{text-align:center;margin-bottom:2.5rem}
 .faq-head h2{font-size:2.2rem;font-weight:700;letter-spacing:-.02em;margin:0;background:linear-gradient(135deg,#1a2332 0%,#3a4a62 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -72,20 +73,20 @@ As this **includes FAQPage Schema Markup**, it **helps search engines understand
 }
 
 /* Dark Mode (Remove if not using) */
-.dark-mode .showH{background:#14181f;border-color:#2b3442;color:#e8edf7}
-.dark-mode .faq-head h2{background:linear-gradient(135deg,#fff 0%,#b9c8e7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.dark-mode .faq-head p{color:#9aa9bf}
-.dark-mode .faq-item{border-bottom:1px solid rgba(255,255,255,.08)}
-.dark-mode .faq-question{color:#f2f5fb}
-.dark-mode .faq-question:hover{color:#7ea2ff}
-.dark-mode .faq-icon svg{stroke:#7ea2ff}
-.dark-mode .faq-toggle svg{stroke:#9aa9bf}
-.dark-mode .faq-item[open] .faq-toggle svg{stroke:#7ea2ff}
-.dark-mode .faq-answer{color:#c6d2e3}
-.dark-mode .faq-answer strong{color:#fff}
+.[ul:green]dark-mode[/ul] .showH{background:#14181f;border-color:#2b3442;color:#e8edf7}
+.[ul:green]dark-mode[/ul] .faq-head h2{background:linear-gradient(135deg,#fff 0%,#b9c8e7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.[ul:green]dark-mode[/ul] .faq-head p{color:#9aa9bf}
+.[ul:green]dark-mode[/ul] .faq-item{border-bottom:1px solid rgba(255,255,255,.08)}
+.[ul:green]dark-mode[/ul] .faq-question{color:#f2f5fb}
+.[ul:green]dark-mode[/ul] .faq-question:hover{color:#7ea2ff}
+.[ul:green]dark-mode[/ul] .faq-icon svg{stroke:#7ea2ff}
+.[ul:green]dark-mode[/ul] .faq-toggle svg{stroke:#9aa9bf}
+.[ul:green]dark-mode[/ul] .faq-item[open] .faq-toggle svg{stroke:#7ea2ff}
+.[ul:green]dark-mode[/ul] .faq-answer{color:#c6d2e3}
+.[ul:green]dark-mode[/ul] .faq-answer strong{color:#fff}
 ```
 
-If your theme supports dark mode, then don't forget to replace the dark-mode class in CSS with your theme's dark mode class.
+<div class="alert info">If your theme supports dark mode, then don't forget to replace the dark-mode class in CSS with your theme's dark mode class.</div>
 
 ### Adding FAQ Accordion with FAQPage Schema Markup
 
@@ -166,7 +167,7 @@ If your theme supports dark mode, then don't forget to replace the dark-mode c
 </div>
 ```
 
-Don't forget to change the highlighted texts, SVGs, and others with yours!
+<div class="note">Don't forget to change the highlighted texts, SVGs, and others with yours!</div>
 
 ### To Add More Questions and Answers
 
@@ -253,21 +254,37 @@ The accordion also includes **FAQPage Scheme Markup** using schema.org structure
 
 ## FAQ (Frequently Asked Questions)
 
-Do I need JavaScript to use this FAQ accordion?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Do I need JavaScript to use this FAQ accordion?</summary>
+    <div class="faq-answer">
+      No. This FAQ accordion is built entirely with HTML and CSS.
+    </div>
+  </details>
 
-No. This FAQ accordion is built entirely with HTML and CSS.
+  <details class="faq-item">
+    <summary class="faq-question">Can I customize the colors and design?</summary>
+    <div class="faq-answer">
+      Yes. You can easily modify the colors, fonts, spacing, borders, icons, and other design elements through the CSS code.
+    </div>
+  </details>
 
-Can I customize the colors and design?
+  <details class="faq-item">
+    <summary class="faq-question">Does this FAQ support FAQPage Schema Markup?</summary>
+    <div class="faq-answer">
+      Yes. The code includes FAQPage Schema Markup using Schema.org.
+    </div>
+  </details>
 
-Yes. You can easily modify the colors, fonts, spacing, borders, icons, and other design elements through the CSS code.
+  <details class="faq-item">
+    <summary class="faq-question">Can I replace the SVG icons?</summary>
+    <div class="faq-answer">
+      Yes. You can replace the default SVG icons with your own icons or use any icons website like <a href="https://iconsax.io/" target="_blank" rel="noopener noreferrer">iconsax.io</a>.
+    </div>
+  </details>
 
-Does this FAQ support FAQPage Schema Markup?
-
-Yes. The code includes FAQPage Schema Markup using Schema.org.
-
-Can I replace the SVG icons?
-
-Yes. You can replace the default SVG icons with your own icons or use any icons website like [iconsax.io](https://iconsax.io/)
+</div>
 
 ## Conclusion
 

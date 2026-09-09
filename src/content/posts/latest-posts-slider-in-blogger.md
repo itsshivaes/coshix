@@ -1,13 +1,15 @@
 ---
 title: "How to Add a Latest Posts Slider in Blogger Using CSS & JavaScript"
+description: "The latest posts slider is one of the best ways to make your Blogger website more intractive. Instead of displaying a simple list or grid of posts, the slider presents them in a visually appealing format that helps you to attract visitors to your website."
 date: 2026-06-21
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhaEuOfyBrs7maBNfXA14vo1MunU-hIS4jPHaR_lDHaplUYidlDUL-SakOPUYBbxTqsc1b2fNUaNzmLrl7UbgyCKheN9RIIdx4Bey7Iah-mCvclZaNcmJ7Y30Tq2cqmEr9iWEBFVZ1uPNGwS066VasSiufp6C7xGI7ncYhZsgO1-UqpM9x7RXXe4Pyvvrck/s1600-rw/latest-posts-slider.webp"
+authors: ["Shiva E S"]
+image: "/images/posts/latest-posts-slider.webp"
 categories: ["Blogger"]
 tags: ["Blogger","Codes","Web","How To","Post Slider","CSS","JavaScript","HTML","Widgets"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhaEuOfyBrs7maBNfXA14vo1MunU-hIS4jPHaR_lDHaplUYidlDUL-SakOPUYBbxTqsc1b2fNUaNzmLrl7UbgyCKheN9RIIdx4Bey7Iah-mCvclZaNcmJ7Y30Tq2cqmEr9iWEBFVZ1uPNGwS066VasSiufp6C7xGI7ncYhZsgO1-UqpM9x7RXXe4Pyvvrck/s1600-rw/latest-posts-slider.webp)
+![Thumbnail](/images/posts/latest-posts-slider.webp)
 
 The latest posts slider is one of the **best ways to make your Blogger website more intractive**. Instead of displaying a simple list or grid of posts, the slider presents them in a visually appealing format that **helps you to attract visitors to your website**. Along with making your website more intractive it also **improves user engagement and content discovery**, especially when your website page is too long.
 
@@ -31,8 +33,7 @@ Whether you run a tech blog, personal website, news portal, tutorial platform, o
 
 ## Latest Posts Slider Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/06/posts-slider.html)
+<div class="alert info">Want to see how it works? <a href="https://coshix-outputs.blogspot.com/2026/06/posts-slider.html" target="_blank">View Demo</a></div>
 
 ## How to Add The Latest Posts Slider to Your Blogger Website
 
@@ -46,7 +47,7 @@ Whether you run a tech blog, personal website, news portal, tutorial platform, o
 6.  Find `]]></b:skin>` Then paste the following CSS just above it
 
 ```
-/* Post Slider CSS (Source:www.coshix.in) */
+/* Post Slider CSS (Source:coshix.in) */
 .chxslider{position:relative;overflow:hidden;width:100%;margin-bottom:20px;border-radius:6px}
 .chxtrack{display:flex;transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
 .chxslide{min-width:100%;width:100%;position:relative;flex-shrink:0;overflow:hidden}
@@ -80,7 +81,7 @@ Whether you run a tech blog, personal website, news portal, tutorial platform, o
 9.  Add the following HTML code anywhere in the HTML where you need to show the slider (**Example**: Paste just below the `</header>` tag)
 
 ```
-<!--[ Post Slider by www.coshix.in ]-->
+<!--[ Post Slider by coshix.in ]-->
 <div id='chxpost-slider'>
   <div class="chxslider">
     <div class="chx-skeleton">
@@ -100,11 +101,11 @@ Whether you run a tech blog, personal website, news portal, tutorial platform, o
 12.  Add the following JavaScript just above the `</body>` tag
 
 ```
-<script>/*<![CDATA[*//* Post Slider JS (Source:www.coshix.in) */
+<script>/*<![CDATA[*//* Post Slider JS (Source:coshix.in) */
 const sliderConfig = {
   blogUrl: location.origin,
-  maxPosts: 6,
-  autoPlaySpeed: 5000
+  maxPosts: [ul:green]6[/ul],
+  autoPlaySpeed: [ul:green]5000[/ul]
 };
 
 /* Risky edit area */!function(){"use strict";const e=document.getElementById("chxpost-slider");fetch(sliderConfig.blogUrl+"/feeds/posts/default?alt=json&max-results="+sliderConfig.maxPosts).then((t=>t.json())).then((t=>{const n=t.feed.entry||[];let o="";n.forEach((t=>{const n=t.title.$t,l=t.link.find((e=>"alternate"===e.rel)).href;let a="https://placehold.co/1200x675/e5e7eb/4b5563?text="+encodeURIComponent(n);t.media$thumbnail&&(a=t.media$thumbnail.url.replace(/\/s\d+[^/]*\//,"/s1600/"));o+='<div class="chxslide"><img loading="lazy" src="'+a+'" alt="'+n+'" decoding="async" fetchpriority="low"><div class="chxoverlay"></div><div class="chxcontent"><a href="'+l+'" class="chxtitle">'+n+'</a></div></div>'})),e.innerHTML='<div class="chxslider" id="chxSlider"><div class="chxtrack" id="chxTrack">'+o+'</div><button class="chxarrow chxprev" id="chxPrev" aria-label="Previous slide">❮</button><button class="chxarrow chxnext" id="chxNext" aria-label="Next slide">❯</button><div class="chxdots" id="chxDots"></div></div>';const r=document.getElementById("chxTrack"),c=document.querySelectorAll(".chxslide"),l=c.length,a=document.getElementById("chxDots"),i=document.getElementById("chxPrev"),u=document.getElementById("chxNext"),d=document.getElementById("chxSlider");let p=0,m=!1,g=null,h=!1;for(let e=0;e<l;e++){const t=document.createElement("span");t.className="chxdot"+(0===e?" active":""),t.dataset.index=e,t.addEventListener("click",(()=>v(e))),a.appendChild(t)}const s=document.querySelectorAll(".chxdot");function v(e,t=!0){if(m||e===p)return;m=!0,p=e,r.style.transition=t?"transform .8s cubic-bezier(.25,.46,.45,.94)":"none",r.style.transform="translateX(-"+100*p+"%)",s.forEach(((e,t)=>{e.classList.toggle("active",t===p)})),setTimeout((()=>{m=!1}),800)}function f(){h||(h=!0,v((p+1)%l),setTimeout((()=>{h=!1}),900))}function b(){h||(h=!0,v((p-1+l)%l),setTimeout((()=>{h=!1}),900))}function w(e){e?clearInterval(g):(clearInterval(g),g=setInterval(f,sliderConfig.autoPlaySpeed))}let y=0,k=0;d.addEventListener("touchstart",(e=>{y=e.touches[0].clientX}),{passive:!0}),d.addEventListener("touchend",(e=>{k=e.changedTouches[0].clientX;const t=y-k;Math.abs(t)>50&&(t>0?f():b())}),{passive:!0});let E=null;u.addEventListener("click",(e=>{e.preventDefault(),f(),w(!0),clearTimeout(E),E=setTimeout((()=>{w(!1)}),1e4)})),i.addEventListener("click",(e=>{e.preventDefault(),b(),w(!0),clearTimeout(E),E=setTimeout((()=>{w(!1)}),1e4)})),document.addEventListener("keydown",(e=>{"ArrowRight"===e.key?(e.preventDefault(),f()):"ArrowLeft"===e.key&&(e.preventDefault(),b())})),d.addEventListener("mouseenter",(()=>{w(!0)})),d.addEventListener("mouseleave",(()=>{w(!1)})),d.addEventListener("focusin",(()=>{w(!0)})),d.addEventListener("focusout",(()=>{w(!1)})),g=setInterval(f,sliderConfig.autoPlaySpeed)})).catch((t=>{console.error("Slider error:",t),e.innerHTML='<div style="padding:20px;text-align:center;color:#666;">Failed to load posts</div>'}))}();
@@ -113,7 +114,7 @@ const sliderConfig = {
 
 14.  Click to save changes made in HTML
 
-**Success:** Now you have successfully implemented the latest posts slider in your Blogger website.
+<div class="alert success">Now you have successfully implemented the latest posts slider in your Blogger website.</div>
 
 ## How This Latest Posts Slider Works
 
@@ -129,21 +130,37 @@ The CSS make it look good, like giving proper layouts, colours, border radius, a
 
 ## FAQ (Frequently Asked Questions)
 
-Does this Latest Posts Slider work on all Blogger templates?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Does this Latest Posts Slider work on all Blogger templates?</summary>
+    <div class="faq-answer">
+      Yes. The slider is built using HTML, CSS, and JavaScript, making it compatible with most Blogger templates.
+    </div>
+  </details>
 
-Yes. The slider is built using HTML, CSS, and JavaScript, making it compatible with most Blogger templates.
+  <details class="faq-item">
+    <summary class="faq-question">Is the slider mobile-friendly?</summary>
+    <div class="faq-answer">
+      Yes. The slider is fully responsive and automatically adjusts its layout for mobile phones, tablets, and desktop devices.
+    </div>
+  </details>
 
-Is the slider mobile-friendly?
+  <details class="faq-item">
+    <summary class="faq-question">Can I change the number of posts shown?</summary>
+    <div class="faq-answer">
+      Yes. You can modify the JavaScript settings to increase or decrease the number of latest posts displayed in the slider.
+    </div>
+  </details>
 
-Yes. The slider is fully responsive and automatically adjusts its layout for mobile phones, tablets, and desktop devices.
+  <details class="faq-item">
+    <summary class="faq-question">Does the slider support autoplay?</summary>
+    <div class="faq-answer">
+      Yes. The slider includes autoplay functionality, allowing slides to change automatically after a specified interval.
+    </div>
+  </details>
 
-Can I change the number of posts shown?
-
-Yes. You can modify the JavaScript settings to increase or decrease the number of latest posts displayed in the slider.
-
-Does the slider support autoplay?
-
-Yes. The slider includes autoplay functionality, allowing slides to change automatically after a specified interval.
+</div>
 
 ## Conclusion
 

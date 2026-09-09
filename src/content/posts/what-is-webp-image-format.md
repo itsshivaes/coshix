@@ -1,13 +1,15 @@
 ---
 title: "What Is WebP? Image Format Explained and Why Websites Use It"
 date: 2026-01-01
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhljlHWgogO87Iu8AQYjxy8Frqhf0nJVNuTYBCzu4AqU4hkX1lvA9THDjXxRjVzkz03UwKnPwv1IXfre5Umpo_15HNZKUcw0XbLlw7Oa6CPuzll9mBxSvHvRbiuu9K-XUwKSnDvFTpDuTqVhUUtdwih02_uFPPpdq8Lo7haE6etatqSccbTLsjZOQfwjcYz/s1600-rw/webp-tab.webp"
+image: "/images/posts/webp-tab.webp"
 categories: ["Common"]
 tags: ["Common","Compression","Optimisation","Web","WebP","Performance","SEO & Performance"]
 draft: false
+authors: [shiva-e-s]
+description: "Websites are no longer judged by just their design; nowadays, a good website should be well optimised along with its design, and even a small delay in loading can increase bounce rate. Images also have a good role in website optimisation; if images are not optimised very well, it can cause low performance of the website."
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhljlHWgogO87Iu8AQYjxy8Frqhf0nJVNuTYBCzu4AqU4hkX1lvA9THDjXxRjVzkz03UwKnPwv1IXfre5Umpo_15HNZKUcw0XbLlw7Oa6CPuzll9mBxSvHvRbiuu9K-XUwKSnDvFTpDuTqVhUUtdwih02_uFPPpdq8Lo7haE6etatqSccbTLsjZOQfwjcYz/s1600-rw/webp-tab.webp)
+![Thumbnail](/images/posts/webp-tab.webp)
 
 Websites are no longer judged by just their design; nowadays, a good website should be well optimised along with its design, and even a small delay in loading can increase bounce rate. Images also have a good role in website optimisation; if images are not optimised very well, it can cause low performance of the website.
 

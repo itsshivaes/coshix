@@ -1,13 +1,15 @@
 ---
 title: "How to Add Eye Care Mode in Your Website Using Pure CSS & JavaScript"
+description: "Many users spend so much time reading articles, browsing websites or studying online in front of the screen. Spending so much time in front of the screen is not good because it can cause problems like eye strain or discomfort."
+authors: ["Shiva E S"]
 date: 2026-05-24
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjhld-FqwuP3CQXXTTIOfQc8smKgUnmVyGWVfkTxRDXq39NPohvdBDXLhVnBbJLsbAfBZ-Nr5n75DieiGLlu8CJmYG3ElfH7D-8qmWv3f08cWB3VRg0VIROkeqkDzcsNiDhZtEOCAori5TO6ofdIWzshpFKnz39XdEJTxkzH_NxXm-M0muOJuTMV8AcYBfY/s1600-rw/eye-care-mode.webp"
-categories: ["Codes"]
-tags: ["Codes","Common","How To","Web","Eye Care Mode","CSS","JavaScript","HTML","CSS Components"]
+image: "/images/posts/eye-care-mode.webp"
+categories: ["Common"]
+tags: ["Common","Codes","How To","Web","Eye Care Mode","CSS","JavaScript","HTML","CSS Components"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjhld-FqwuP3CQXXTTIOfQc8smKgUnmVyGWVfkTxRDXq39NPohvdBDXLhVnBbJLsbAfBZ-Nr5n75DieiGLlu8CJmYG3ElfH7D-8qmWv3f08cWB3VRg0VIROkeqkDzcsNiDhZtEOCAori5TO6ofdIWzshpFKnz39XdEJTxkzH_NxXm-M0muOJuTMV8AcYBfY/s1600-rw/eye-care-mode.webp) Many users spend so much time reading articles, browsing websites or studying online in front of the screen. **Spending so much time in front of the screen is not good because it can cause problems like eye strain or discomfort**. To avoid these issues and to keep users engaged, and to create a more relaxed viewing experience on the website, several modern websites already use eye care or eye comfort mode to improve their user experience.
+![Thumbnail](/images/posts/eye-care-mode.webp) Many users spend so much time reading articles, browsing websites or studying online in front of the screen. **Spending so much time in front of the screen is not good because it can cause problems like eye strain or discomfort**. To avoid these issues and to keep users engaged, and to create a more relaxed viewing experience on the website, several modern websites already use eye care or eye comfort mode to improve their user experience.
 
   
 
@@ -24,8 +26,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 
 ## Eye Care Mode Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/05/eye-care-mode.html)
+<div class="alert info">Want to see how it works? <a href="https://coshix-outputs.blogspot.com/2026/05/eye-care-mode.html" target="_blank">View Demo</a></div>
 
 ## Features of Eye Care Mode
 
@@ -52,22 +53,22 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 ```
 /* Eye Care Mode Style */.ecmBtn{position:fixed;left:28px;bottom:45px;width:42px;height:42px;border-radius:50%;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 4px 14px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:99999;transition:.2s;-webkit-tap-highlight-color:transparent;user-select:none}.ecmBtn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;color:#5f6368}.ecmLayer{position:fixed;inset:0;background:rgba(255,235,170,.18);opacity:0;pointer-events:none;z-index:99998;transition:.25s}.ecm .ecmLayer{opacity:1}.ecm .ecmBtn{background:#ece4c7}.ecm .ecmBtn svg{color:#8a6b00}@media(max-width:768px){.ecmBtn{width:40px;height:40px;left:17px;bottom:26px}}
   
-  /* Dark Mode (Remove if not using) */.dark-mode .ecmLayer{background:rgba(255,170,70,.08)}.dark-mode .ecmBtn{background:#1f1f1f;border-color:rgba(255,255,255,.08)}.dark-mode .ecmBtn svg{color:#d7d7d7}.dark-mode.ecm .ecmBtn{background:#2d2617}.dark-mode.ecm .ecmBtn svg{color:#f0d98a}
+  /* Dark Mode (Remove if not using) */.[ul:green]dark-mode[/ul] .ecmLayer{background:rgba(255,170,70,.08)}.[ul:green]dark-mode[/ul] .ecmBtn{background:#1f1f1f;border-color:rgba(255,255,255,.08)}.[ul:green]dark-mode[/ul] .ecmBtn svg{color:#d7d7d7}.[ul:green]dark-mode[/ul].ecm .ecmBtn{background:#2d2617}.[ul:green]dark-mode[/ul].ecm .ecmBtn svg{color:#f0d98a}
 ```
 
-**Note:** If your theme supports dark mode, then don't forget to replace dark-mode with your theme's dark mode class name.
+<div class="alert info">If your theme supports dark mode, then don't forget to replace dark-mode with your theme's dark mode class name.</div>
 
 ### Adding Main Code to Webpage
 
 7.  Find the `</body>` tag, paste the following code just above it
 
 ```
-<!--[ Eye Care Mode (www.coshix.in) ]-->
+<!--[ Eye Care Mode (coshix.in) ]-->
     <div class='ecmLayer'/>
     <div class='ecmBtn' id='ecmBtn'>
         <svg viewBox='0 0 24 24'><path d='M12 5C7 5 3.73 8.11 2 12c1.73 3.89 5 7 10 7s8.27-3.11 10-7c-1.73-3.89-5-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg>
     </div>
-    <script>/*<![CDATA[*//* Eye Care Mode JS (www.coshix.in) */(()=>{let e=document.documentElement,t=document.getElementById("ecmBtn"),o="eyeComfort";localStorage.getItem(o)=="on"&&e.classList.add("ecm"),t.onclick=()=>{let t=e.classList.toggle("ecm");localStorage.setItem(o,t?"on":"off")}})();/*]]>*/</script>
+    <script>/*<![CDATA[*//* Eye Care Mode JS (coshix.in) */(()=>{let e=document.documentElement,t=document.getElementById("ecmBtn"),o="eyeComfort";localStorage.getItem(o)=="on"&&e.classList.add("ecm"),t.onclick=()=>{let t=e.classList.toggle("ecm");localStorage.setItem(o,t?"on":"off")}})();/*]]>*/</script>
 ```
 
 9.  Save the HTML
@@ -86,21 +87,37 @@ The **CSS handles the visual appearance of the eye care mode**, which includes a
 
 ## FAQ (Frequently Asked Questions)
 
-Does this eye care mode work on mobile devices?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Does this eye care mode work on mobile devices?</summary>
+    <div class="faq-answer">
+      Yes, this eye care mode works properly on both desktop and mobile devices.
+    </div>
+  </details>
 
-Yes, this eye care mode works properly on both desktop and mobile devices.
+  <details class="faq-item">
+    <summary class="faq-question">Can I customise the eye care color?</summary>
+    <div class="faq-answer">
+      Yes, you can easily change the overlay color and opacity values inside the CSS.
+    </div>
+  </details>
 
-Can I customise the eye care color?
+  <details class="faq-item">
+    <summary class="faq-question">Does this work in Blogger?</summary>
+    <div class="faq-answer">
+      Yes, this eye care mode works perfectly in Blogger.
+    </div>
+  </details>
 
-Yes, you can easily change the overlay color and opacity values inside the CSS.
+  <details class="faq-item">
+    <summary class="faq-question">Does the eye care setting stay the same after a page refresh?</summary>
+    <div class="faq-answer">
+      Yes, the script uses localStorage to save the user’s preference automatically.
+    </div>
+  </details>
 
-Does this work in Blogger?
-
-Yes, this eye care mode works perfectly in Blogger.
-
-Does the eye care setting stay the same after a page refresh?
-
-Yes, the script uses localStorage to save the user’s preference automatically.
+</div>
 
 ## Conclusion
 
@@ -112,4 +129,4 @@ One of the biggest advantages of using this eye care mode code is that **it is l
 
   
 
-The usage of pure and lightweight code makes it the **best option to implement eye care mode without affecting your webpage speed**. I hope this guide helps you to implement eye care mode on your website. If you have any doubts related to this guide, don't forget to drop a comment below. If you need more content like this, don't forget to explore more on [Coshix](https://www.coshix.in). Thanks for reading this guide. Have a nice day.
+The usage of pure and lightweight code makes it the **best option to implement eye care mode without affecting your webpage speed**. I hope this guide helps you to implement eye care mode on your website. If you have any doubts related to this guide, don't forget to drop a comment below. If you need more content like this, don't forget to explore more on [Coshix](https://coshix.in). Thanks for reading this guide. Have a nice day.

@@ -1,13 +1,15 @@
 ---
 title: "How to Add an Article Star Rating System in Blogger Using Firebase & JavaScript"
+description: "In this guide, we are going to share with you how to add an article rating system to your Blogger website with the help of Firebase."
 date: 2026-07-22
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJ8tpKgZZ46PhjTNlQQ6PJ6FyRLZ9mgwnsHTsb4wqt1A4Yos-4JceSXOHD618mQeDrv4z2F-8TLlkOMehEh6Xyq8p_zZKNQMDHw7JrxDnzEGUSuJyLyEGFjNwoF_8tJ1cedPIjpd80qvnAKKvBEG3_Ibi2hSvzk8zyzrloNRBCMLSGsWXkx3ENq0elomnA/s1600-rw/article-rating-blogger-coshix.webp"
+authors: ["Shiva E S"]
+image: "/images/posts/article-rating-blogger-coshix.webp"
 categories: ["Blogger"]
 tags: ["Blogger","Codes","How To","HTML","CSS","JavaScript","Firebase","JavaScript Components","Widgets","Article Rating"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJ8tpKgZZ46PhjTNlQQ6PJ6FyRLZ9mgwnsHTsb4wqt1A4Yos-4JceSXOHD618mQeDrv4z2F-8TLlkOMehEh6Xyq8p_zZKNQMDHw7JrxDnzEGUSuJyLyEGFjNwoF_8tJ1cedPIjpd80qvnAKKvBEG3_Ibi2hSvzk8zyzrloNRBCMLSGsWXkx3ENq0elomnA/s1600-rw/article-rating-blogger-coshix.webp)
+![Thumbnail](/images/posts/article-rating-blogger-coshix.webp)
 
 Adding an article rating system to your Blogger website is **one of the best ways to encourage user interaction and to collect feedback on your website's content**. Instead of relying only on the comment section on your Blogger website, the article rating **allows users to quickly share their opinion about your article** with a single click. This also helps you identify the most user-liked content on your website.
 
@@ -31,8 +33,8 @@ Whether you are running a tech blog, tutorial website, online store, personal bl
 
 ## Article Rating System Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/07/firebase-article-rating.html)
+<div class="alert info">Want to see how it works?
+<a href="https://coshix-outputs.blogspot.com/2026/07/firebase-article-rating.html" target="_blank">View Demo</a></div>
 
 ## How To Add This Article Rating To Your Blogger Website
 
@@ -57,7 +59,7 @@ const firebaseConfig = {
   authDomain: "example-app.firebaseapp.com",
   databaseURL: "https://example-app-default-rtdb.firebaseio.com",
   projectId: "example-app",
-  storageBucket: "example-app.appspot.com",
+  storageBucket: "example-app.appspot.com"
   messagingSenderId: "123456789000",
   appId: "1:123456789000:web:abcdef1234567890abcd",
   measurementId: "G-ABCDEFG123"
@@ -106,30 +108,30 @@ const firebaseConfig = {
 7.  Paste the following CSS just above it
 
 ```
-/* Article Rating CSS (Source: www.coshix.in) */
+/* Article Rating CSS (Source: coshix.in) */
 .rating-container{margin:30px 0 10px;padding:16px 20px;background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.04);display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;font-family:inherit;min-height:70px;justify-content:center}
 .rating-loader{width:30px;height:30px;border:3px solid #ddd;border-top-color:#f5b342;border-radius:50%;animation:.8s linear infinite spin}
 @keyframes spin{to{transform:rotate(360deg)}}
 .rating-stars{display:flex;gap:6px;cursor:pointer}
 .rating-star{width:32px;height:32px;display:block;touch-action:manipulation}
 .rating-star svg{width:100%;height:100%;transition:fill .15s;fill:#ccc}
-.dark-mode .rating-star.active svg,.dark-mode .rating-star.hover svg,.dark-mode.rating-star.active svg,.dark-mode.rating-star.hover svg,.rating-star.active svg,.rating-star.hover svg{fill:#f5b342}
+.[ul:green]dark-mode[/ul] .rating-star.active svg,.[ul:green]dark-mode[/ul] .rating-star.hover svg,.[ul:green]dark-mode[/ul].rating-star.active svg,.[ul:green]dark-mode[/ul].rating-star.hover svg,.rating-star.active svg,.rating-star.hover svg{fill:#f5b342}
 .rating-star.disabled{cursor:default}
 .rating-info{display:flex;align-items:baseline;gap:8px;font-size:15px;color:#333}
 .rating-average{font-weight:700;color:#222}
 .rating-count{opacity:.7}
 .rating-message{font-size:13px;opacity:.8;margin-left:auto;white-space:nowrap}
 @media(max-width:600px){.rating-container{flex-direction:column;align-items:stretch;gap:10px;padding:14px;min-height:80px}.rating-stars{gap:8px;justify-content:center}.rating-star{width:40px;height:40px}.rating-info{justify-content:center;font-size:14px}.rating-message{margin-left:0;text-align:center;white-space:normal;font-size:12px}}
-.dark-mode .rating-container,.dark-mode.rating-container{background:#1e1e1e;border-color:#444;box-shadow:0 2px 8px rgba(255,255,255,.06)}
-.dark-mode .rating-info,.dark-mode.rating-info{color:#ccc}
-.dark-mode .rating-average,.dark-mode.rating-average{color:#eee}
-.dark-mode .rating-count,.dark-mode.rating-count{color:#999}
-.dark-mode .rating-message,.dark-mode.rating-message{color:#aaa}
-.dark-mode .rating-star svg,.dark-mode.rating-star svg{fill:#555}
-.dark-mode .rating-loader,.dark-mode.rating-loader{border-color:#f5b342 #444 #444}
+.[ul:green]dark-mode[/ul] .rating-container,.[ul:green]dark-mode[/ul].rating-container{background:#1e1e1e;border-color:#444;box-shadow:0 2px 8px rgba(255,255,255,.06)}
+.[ul:green]dark-mode[/ul] .rating-info,.[ul:green]dark-mode[/ul].rating-info{color:#ccc}
+.[ul:green]dark-mode[/ul] .rating-average,.[ul:green]dark-mode[/ul].rating-average{color:#eee}
+.[ul:green]dark-mode[/ul] .rating-count,.[ul:green]dark-mode[/ul].rating-count{color:#999}
+.[ul:green]dark-mode[/ul] .rating-message,.[ul:green]dark-mode[/ul].rating-message{color:#aaa}
+.[ul:green]dark-mode[/ul] .rating-star svg,.[ul:green]dark-mode[/ul].rating-star svg{fill:#555}
+.[ul:green]dark-mode[/ul] .rating-loader,.[ul:green]dark-mode[/ul].rating-loader{border-color:#f5b342 #444 #444}
 ```
 
-If your theme supports dark mode, then don't forget to replace `dark-mode` with your theme's dark mode class.
+<div class="alert info">If your theme supports dark mode, then don't forget to replace dark-mode with your theme's dark mode class.</div>
 
 #### Adding lazy.js for Performance Optimisation
 
@@ -145,7 +147,7 @@ If your theme supports dark mode, then don't forget to replace `dark-mode` with 
 
 ```
 <b:if cond='data:view.isPost'>
-<!--[ Article Rating (Source: www.coshix.in) ]-->
+<!--[ Article Rating (Source: coshix.in) ]-->
 <div class="rating-container" data-postid="auto">
   <div class="rating-loader"></div>
 </div>
@@ -161,24 +163,24 @@ If your theme supports dark mode, then don't forget to replace `dark-mode` with 
 <script>/*<![CDATA[*/
   /* ----
   Firebase Article Rating
-  Created by: www.coshix.in
-  Source code: https://www.coshix.in/2026/07/blogger-firebase-article-rating.html
+  Created by: coshix.in
+  Source code: https://coshix.in/blog/article-star-rating-system-in-blogger
 ---- */
   window.FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "[hl:blue]YOUR_API_KEY[/hl]",
+  authDomain: "[hl:blue]YOUR_PROJECT_ID.firebaseapp.[/hl]",
+  databaseURL: "[hl:blue]https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com[/hl]",
+  projectId: "[hl:blue]YOUR_PROJECT_ID[/hl]",
+  storageBucket: "[hl:blue]YOUR_PROJECT_ID.firebasestorage.app[/hl]",
+  messagingSenderId: "[hl:blue]YOUR_MESSAGING_SENDER_ID[/hl]",
+  appId: "[hl:blue]YOUR_APP_ID[/hl]"
 };
 /* Risky edit section */!function(){var t=document.querySelector(".rating-container");if(t){var e,n,a=(e=window.location.pathname,(n=e.match(/\/(\d{4})\/(\d{2})\/([^\/]+)\.html/))?n[1]+n[2]+"_"+n[3].replace(/[^a-zA-Z0-9]/g,""):(n=e.match(/\/(\d+)(?:\/|\?|$)/))?n[1]:"post_"+e.replace(/[^a-zA-Z0-9]/g,"_").substring(0,20));a&&(t.dataset.postid=a,void 0!==window.lazy&&"function"==typeof window.lazy.then?window.lazy.then(r).catch(function(){r()}):r())}function i(){var e=t.querySelector(".rating-loader");e&&e.remove()}function o(){var e=window.FIREBASE_CONFIG||window.PU&&window.PU.fb&&window.PU.fb.cf;if(!e)return console.warn("Rating: Firebase config missing."),i(),void(t.innerHTML='<p style="color:#999;font-size:14px;">Rating unavailable.</p>');if("undefined"!=typeof firebase&&firebase.initializeApp)try{for(var n=firebase.initializeApp(e,"rating-app"),r=firebase.database(n).ref("ratings/"+a),s="",c=1;c<=5;c++)s+='<span class="rating-star" data-value="'+c+'"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>';t.innerHTML='<div class="rating-stars" id="stars-'+a+'">'+s+'</div><div class="rating-info"><span class="rating-average" id="avg-'+a+'">0.0</span><span class="rating-count" id="count-'+a+'">(0 votes)</span></div><div class="rating-message" id="msg-'+a+'"></div>';var l=document.querySelectorAll("#stars-"+a+" .rating-star"),u=document.getElementById("avg-"+a),d=document.getElementById("count-"+a),f=document.getElementById("msg-"+a),v="rating_user_"+a,g=localStorage.getItem(v);g||(g="user_"+Date.now()+"_"+Math.random().toString(36).substr(2,6),localStorage.setItem(v,g));var p=null,m=null;function w(t){var e=(p=t||{total:0,count:0,users:{}}).count>0?p.total/p.count:0;u.textContent=e.toFixed(1),d.textContent="("+p.count+" vote"+(1!==p.count?"s":"")+")",m=p.users&&p.users[g]?p.users[g]:null,l.forEach(function(t){var e=parseInt(t.dataset.value,10);t.classList.toggle("active",null!==m&&e<=m)}),f.textContent=null!==m?"You rated "+m+" stars":p.count>0?"Average rating":"Be the first to rate!"}l.forEach(function(t){t.addEventListener("click",function(){!function(t){if(m!==t){var e=m;r.transaction(function(n){if(null===n)return{total:0,count:0,users:{}};var a=n.total||0,i=n.count||0,o=n.users||{};return null!==e?a=a-e+t:(a+=t,i+=1),o[g]=t,{total:a,count:i,users:o}},function(e,n,a){if(e)return console.warn("Rating error:",e),void(f.textContent="Error saving rating.");n&&(w(a.val()),f.textContent="You rated "+t+" stars")},!1)}}(parseInt(this.dataset.value,10))}),t.addEventListener("mouseenter",function(){var t=parseInt(this.dataset.value,10);l.forEach(function(e){var n=parseInt(e.dataset.value,10);e.classList.toggle("hover",n<=t)})}),t.addEventListener("mouseleave",function(){l.forEach(function(t){t.classList.remove("hover")})})}),r.on("value",function(t){w(t.val())}),r.once("value").then(function(t){w(t.val())})}catch(h){console.warn("Rating init error:",h),i(),t.innerHTML='<p style="color:#999;font-size:14px;">Rating unavailable.</p>'}else setTimeout(o,200)}function r(){if("undefined"!=typeof firebase&&firebase.initializeApp)o();else{var t=document.createElement("script");t.src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js",t.onload=function(){var t=document.createElement("script");t.src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js",t.onload=o,document.head.appendChild(t)},document.head.appendChild(t)}}}();
 /*]]>*/</script>
 </b:if>
 ```
 
-Don't forget to replace the blue colour-highlighted sections in JS with the info which have been [we saved before](#dummy-data).
+<p class='alert info'>Don't forget to replace the blue colour-highlighted sections in JS with the info which have been we saved before.</p>
 
 20.  Save the HTML
 
@@ -196,21 +198,37 @@ This article rating system was built using lightweight HTML, CSS and vanilla Jav
 
 ## FAQ (Frequently Asked Questions)
 
-Do I need a Firebase account to use this rating system?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Do I need a Firebase account to use this rating system?</summary>
+    <div class="faq-answer">
+      Yes. You need a Firebase project with Realtime Database enabled to store and retrieve article ratings.
+    </div>
+  </details>
 
-Yes. You need a Firebase project with Realtime Database enabled to store and retrieve article ratings.
+  <details class="faq-item">
+    <summary class="faq-question">Does every article have its own rating?</summary>
+    <div class="faq-answer">
+      Yes. The script automatically generates a unique post ID from each article's URL.
+    </div>
+  </details>
 
-Does every article have its own rating?
+  <details class="faq-item">
+    <summary class="faq-question">Can visitors change their rating later?</summary>
+    <div class="faq-answer">
+      Yes. If a visitor rates an article again from the same browser, the system updates their previous rating instead of creating a duplicate vote.
+    </div>
+  </details>
 
-Yes. The script automatically generates a unique post ID from each article's URL
+  <details class="faq-item">
+    <summary class="faq-question">Is this rating widget responsive?</summary>
+    <div class="faq-answer">
+      Yes. The layout is fully responsive and works smoothly on desktops, tablets, and mobile devices.
+    </div>
+  </details>
 
-Can visitors change their rating later?
-
-Yes. If a visitor rates an article again from the same browser, the system updates their previous rating instead of creating a duplicate vote.
-
-Is this rating widget responsive?
-
-Yes. The layout is fully responsive and works smoothly on desktops, tablets, and mobile devices.
+</div>
 
 ## Conclusion
 

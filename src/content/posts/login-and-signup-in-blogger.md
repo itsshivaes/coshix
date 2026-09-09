@@ -1,23 +1,21 @@
 ---
 title: "How to Add Login and Signup in Blogger Using Firebase"
 date: 2026-03-24
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIr_Ttf2Cmdk_g1wHX1mPl287PPlHXqSRkJvZXrEinZ3RW7eZiffeOZblBWa91bELidVAbqfitPW2zXA3UczftZqODUnndnNf2UWU2VXadNrXajGJ3oQ5ECkjt6ys-Y3aIRhUcF16jTvxddHuK4iuykESt3RxGM0FK-Ch4tv_u-cLLWjMo3zXYtppkHS0w/s1600-rw/firebase-login-feature-blogger.webp"
+image: "/images/posts/firebase-login-feature-blogger.webp"
+description: "Adding login and signup features to your Blogger website is one of the best ways to make it more attractive and engaging to users. By implementing login and signup features in your website, you can allow users to sign in securely to your website and give them access to amazing content and features in your website that are only available to logged-in users."
+authors: [shiva-e-s]
 categories: ["Blogger"]
 tags: ["Blogger","Codes","How To","Firebase","Login Feature","Web","CSS","JavaScript","HTML","JavaScript Components"]
 draft: false
 ---
 
-[![Login feature in Blogger](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIr_Ttf2Cmdk_g1wHX1mPl287PPlHXqSRkJvZXrEinZ3RW7eZiffeOZblBWa91bELidVAbqfitPW2zXA3UczftZqODUnndnNf2UWU2VXadNrXajGJ3oQ5ECkjt6ys-Y3aIRhUcF16jTvxddHuK4iuykESt3RxGM0FK-Ch4tv_u-cLLWjMo3zXYtppkHS0w/s1600-rw/firebase-login-feature-blogger.webp)](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIr_Ttf2Cmdk_g1wHX1mPl287PPlHXqSRkJvZXrEinZ3RW7eZiffeOZblBWa91bELidVAbqfitPW2zXA3UczftZqODUnndnNf2UWU2VXadNrXajGJ3oQ5ECkjt6ys-Y3aIRhUcF16jTvxddHuK4iuykESt3RxGM0FK-Ch4tv_u-cLLWjMo3zXYtppkHS0w/s1600-rw/firebase-login-feature-blogger.webp)
+![Login feature in Blogger](/images/posts/firebase-login-feature-blogger.webp)
 
 Adding login and signup features to your Blogger website is one of the best ways to make it more attractive and engaging to users. By implementing login and signup features in your website, you can allow users to sign in securely to your website and give them access to amazing content and features in your website that are only available to logged-in users.
 
 Adding this feature to your website, it helps to make your website feel like a professional and modern website instead of just looking like a simple blog. By using Firebase, you can implement a login system in your Blogger website without creating any backend. Firebase makes it easier to handle sign-in, sign-up, google sign in, password reset and other account management.
 
 In this tutorial, we are going to show you how to implement sign in and sign-up feature in your website with amazing features like a user dashboard, bookmarks and exclusive content. Are you scared of implementing your website performance by implementing it? Then don't worry, we are using [www.fineshopdesign.com](https://www.fineshopdesign.com)'s lazyload.js to avoid performance issues. So, without wasting much time, let's check how to implement the login feature in your Blogger website.
-
-Table of Contents
-
-document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfContents !== 'undefined') { new TableOfContents({ from: document.querySelector('#postBody'), to: document.querySelector('#toContent') }).generateToc(); } });
 
 ## Set Up Firebase for Blogger Login and Signup
 
@@ -128,7 +126,7 @@ service cloud.firestore {
 2.  Click the "**Pages**" option from the sidebar
 3.  Then create the following Pages
 
-**Info!** When you create pages, we recommend that you use the same names for pages. Otherwise, in later steps, you need to replace the permalink with a new one in the main JS
+<div class="alert info"> When you create pages, we recommend that you use the same names for pages. Otherwise, in later steps, you need to replace the permalink with a new one in the main JS</div>
 
 #### Login
 
@@ -175,18 +173,16 @@ service cloud.firestore {
 
 ### How to Add Login Feature Code in Blogger HTML
 
-**Warning!** Before following these steps, we recommend that you take a backup of your Blogger template to avoid issues if any errors occur during the implementation of this feature.
+<div class="alert warning">Before following these steps, we recommend that you take a backup of your Blogger template to avoid issues if any errors occur during the implementation of this feature.</div>
 
 15.  Click the "**Themes**" option from the sidebar
 16.  Find `]]></b:skin>` 
 17.  Paste the following CSS just above it
 
 ```
-/* Login and other related features (www.coshix.in) */.authBox,.dash-card,.exclusive-lock,.teorzoBookmarks ul li{background:#fff;color:#5a2323;border:1px solid #eadede;box-shadow:0 8px 24px rgba(90,35,35,.08)}.authBox{max-width:420px;margin:30px auto;padding:24px;border-radius:20px}.authBox h2,.dash-card h3,.exclusive-lock div{color:#6e2f2f}.authBox input,#loginEmail,#loginPass,#signupEmail,#signupPass,#username{width:100%;margin:8px 0;padding:12px 14px;background:#fff;color:#5a2323;border:1px solid #e7d6d6;border-radius:14px;outline:0;box-sizing:border-box}.authBox input::placeholder,#loginEmail::placeholder,#loginPass::placeholder,#signupEmail::placeholder,#signupPass::placeholder,#username::placeholder{color:#b28787}.authBox button,.dash-card button,.dash-card a button,#signupBtn{width:100%;text-align:center;margin:8px 0;padding:12px 14px;background:#fff;color:#6e2f2f;border:1px solid #e7d6d6;border-radius:14px;cursor:pointer;transition:.25s ease;box-sizing:border-box}.authBox button:hover,.dash-card button:hover,.dash-card a button:hover,#signupBtn:hover{background:#f9eeee;border-color:#d9b9b9}.dash-card{max-width:460px;margin:30px auto;padding:24px;border-radius:22px;text-align:center}.dash-pic{width:82px;height:82px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 14px;border:3px solid #f1dede}.dash-card p{color:#8b6666}.exclusive-lock{padding:18px;border-radius:18px;margin:15px 0;text-align:center;background:#fff7f7}.exclusive-lock a{display:inline-block;margin-top:10px;padding:10px 16px;background:#6e2f2f;color:#fff!important;border-radius:12px;text-decoration:none;font-weight:600}.exclusive-lock a:hover{background:#582020}.teorzoBookmarks ul{list-style:none;margin:0;padding:0}.teorzoBookmarks ul li{padding:14px 16px;border-radius:16px;margin:10px 0}.teorzoBookmarks ul li a{color:#6e2f2f;text-decoration:none;font-weight:600}.bm-delete{float:right;cursor:pointer;color:#b04a4a;font-size:18px}.loadingBtn{opacity:.75;pointer-events:none}.dark-mode .authBox,.dark-mode .dash-card,.dark-mode .exclusive-lock,.dark-mode .teorzoBookmarks ul li{background:#1e1a1b;color:#f3e6e6;border:1px solid #3a2d2f;box-shadow:0 8px 24px rgba(0,0,0,.25)}.dark-mode .authBox h2,.dark-mode .dash-card h3,.dark-mode .exclusive-lock div{color:#ffd9d9}.dark-mode .authBox input,.dark-mode #loginEmail,.dark-mode #loginPass,.dark-mode #signupEmail,.dark-mode #signupPass,.dark-mode #username{background:#151112;color:#f7eaea;border:1px solid #453638}.dark-mode .authBox input::placeholder,.dark-mode #loginEmail::placeholder,.dark-mode #loginPass::placeholder,.dark-mode #signupEmail::placeholder,.dark-mode #signupPass::placeholder,.dark-mode #username::placeholder{color:#bda3a3}.dark-mode .authBox button,.dark-mode .dash-card button,.dark-mode .dash-card a button,.dark-mode #signupBtn{background:#2b2324;color:#ffeaea;border:1px solid #4a383b}.dark-mode .authBox button:hover,.dark-mode .dash-card button:hover,.dark-mode .dash-card a button:hover,.dark-mode #signupBtn:hover{background:#382d2f;border-color:#6a4d51}.dark-mode .dash-pic{border-color:#4a383b}.dark-mode .dash-card p{color:#c9b1b1}.dark-mode .exclusive-lock{background:#241d1e}.dark-mode .exclusive-lock a{background:#c88f8f;color:#1b1112!important}.dark-mode .exclusive-lock a:hover{background:#ddb0b0}.dark-mode .teorzoBookmarks ul li a{color:#ffd6d6}.dark-mode .bm-delete{color:#ff9a9a}.teorzoBookmarkPost.bmFull{display:block;width:100%}.teorzoBookmarkPost.bmFull input{display:none}.teorzoBookmarkPost.bmFull .bmBtnFull{margin-top:20px;display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;border:1px solid var(--border-color);border-radius:14px;cursor:pointer;box-sizing:border-box}.teorzoBookmarkPost.bmFull .bmBtnFull svg{width:22px;height:22px;flex:0 0 22px}.teorzoBookmarkPost.bmFull .bmBtnFull span{font-size:14px;font-weight:600}.teorzoBookmarkPost.bmFull input:checked+label .bS{opacity:0}.teorzoBookmarkPost.bmFull{display:block;width:100%;margin:14px 0}.teorzoBookmarkPost.bmFull input{display:none}.teorzoBookmarkPost.bmFull .bmBtnFull{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px 18px;background:#fff;border:1px solid #ece3e3;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.04);cursor:pointer;box-sizing:border-box;transition:.25s ease;color:#3f3f46}.teorzoBookmarkPost.bmFull .bmBtnFull:hover{background:#faf7f7;border-color:#ddd1d1;box-shadow:0 8px 18px rgba(0,0,0,.06);transform:translateY(-1px)}.teorzoBookmarkPost.bmFull .bmBtnFull svg{width:22px;height:22px;flex:0 0 22px;stroke:#5b5b66;fill:none;stroke-width:1.8}.teorzoBookmarkPost.bmFull .bmBtnFull span{font-size:15px;font-weight:600;line-height:1}.teorzoBookmarkPost.bmFull input:checked+label{background:#f8efef;border-color:#d9bcbc;color:#7a3d3d}.teorzoBookmarkPost.bmFull input:checked+label svg{stroke:#7a3d3d}.teorzoBookmarkPost.bmFull input:checked+label .bS{opacity:0}.teorzoBookmarkPost.bmFull input:checked+label span{color:#7a3d3d}.dark-mode .teorzoBookmarkPost.bmFull .bmBtnFull{background:#1f1f23;border-color:#34343b;color:#f1f1f1;box-shadow:none}.dark-mode .teorzoBookmarkPost.bmFull .bmBtnFull:hover{background:#26262b;border-color:#44444c}.dark-mode .teorzoBookmarkPost.bmFull .bmBtnFull svg{stroke:#e5e7eb}.dark-mode .teorzoBookmarkPost.bmFull input:checked+label{background:#312526;border-color:#5a3e40}.dark-mode .teorzoBookmarkPost.bmFull input:checked+label,.dark-mode .teorzoBookmarkPost.bmFull input:checked+label span{color:#ffd6d6}.dark-mode .teorzoBookmarkPost.bmFull input:checked+label svg{stroke:#ffd6d6}#navProfileLink{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;overflow:hidden;background:#fff;border:1px solid #eadede;box-shadow:0 2px 8px rgba(0,0,0,.05)}#navProfileLink img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}#navProfileLink svg{width:16px;height:16px;display:block;fill:currentColor}.dark-mode #navProfileLink{background:#1e1a1b;border-color:#3a2d2f}.googleBtn{width:100%;margin:10px 0 0;padding:12px 14px;background:#fff;border:1px solid #eadede;border-radius:14px;cursor:pointer;font-weight:600;color:#5a2323;transition:.25s ease}.googleBtn:hover{background:#faf6f6}.authOr{display:flex;align-items:center;justify-content:center;margin:12px 0 4px}.authOr span{font-size:13px;opacity:.7;position:relative;padding:0 10px}.authOr span:before,.authOr span:after{content:"";position:absolute;top:50%;width:60px;height:1px;background:#e7d6d6}.authOr span:before{right:100%}.authOr span:after{left:100%}.dark-mode .googleBtn{background:#1f1f23;border-color:#34343b;color:#f5eaea}.dark-mode .googleBtn:hover{background:#26262b}.dark-mode .authOr span:before,.dark-mode .authOr span:after{background:#3a2d2f}.historyPage{max-width:860px;margin:0 auto;padding:10px 0}.exclusiveContent,.exclusive{display:none!important;visibility:hidden}.exclusive-lock{display:block}.userLoggedIn .exclusiveContent,.userLoggedIn .exclusive{display:block!important;visibility:visible}.userLoggedIn .exclusive-lock{display:none!important}.teorzoBookmarkPost.bmFull{display:none;width:100%}.userLoggedIn .teorzoBookmarkPost.bmFull{display:flex}
+/* Login and other related features (coshix.in) */.authBox,.dash-card,.exclusive-lock,.teorzoBookmarks ul li{background:#fff;color:#5a2323;border:1px solid #eadede;box-shadow:0 8px 24px rgba(90,35,35,.08)}.authBox{max-width:420px;margin:30px auto;padding:24px;border-radius:20px}.authBox h2,.dash-card h3,.exclusive-lock div{color:#6e2f2f}.authBox input,#loginEmail,#loginPass,#signupEmail,#signupPass,#username{width:100%;margin:8px 0;padding:12px 14px;background:#fff;color:#5a2323;border:1px solid #e7d6d6;border-radius:14px;outline:0;box-sizing:border-box}.authBox input::placeholder,#loginEmail::placeholder,#loginPass::placeholder,#signupEmail::placeholder,#signupPass::placeholder,#username::placeholder{color:#b28787}.authBox button,.dash-card button,.dash-card a button,#signupBtn{width:100%;text-align:center;margin:8px 0;padding:12px 14px;background:#fff;color:#6e2f2f;border:1px solid #e7d6d6;border-radius:14px;cursor:pointer;transition:.25s ease;box-sizing:border-box}.authBox button:hover,.dash-card button:hover,.dash-card a button:hover,#signupBtn:hover{background:#f9eeee;border-color:#d9b9b9}.dash-card{max-width:460px;margin:30px auto;padding:24px;border-radius:22px;text-align:center}.dash-pic{width:82px;height:82px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 14px;border:3px solid #f1dede}.dash-card p{color:#8b6666}.exclusive-lock{padding:18px;border-radius:18px;margin:15px 0;text-align:center;background:#fff7f7}.exclusive-lock a{display:inline-block;margin-top:10px;padding:10px 16px;background:#6e2f2f;color:#fff!important;border-radius:12px;text-decoration:none;font-weight:600}.exclusive-lock a:hover{background:#582020}.teorzoBookmarks ul{list-style:none;margin:0;padding:0}.teorzoBookmarks ul li{padding:14px 16px;border-radius:16px;margin:10px 0}.teorzoBookmarks ul li a{color:#6e2f2f;text-decoration:none;font-weight:600}.bm-delete{float:right;cursor:pointer;color:#b04a4a;font-size:18px}.loadingBtn{opacity:.75;pointer-events:none}.[ul:green]dark-mode[/ul] .authBox,.[ul:green]dark-mode[/ul] .dash-card,.[ul:green]dark-mode[/ul] .exclusive-lock,.[ul:green]dark-mode[/ul] .teorzoBookmarks ul li{background:#1e1a1b;color:#f3e6e6;border:1px solid #3a2d2f;box-shadow:0 8px 24px rgba(0,0,0,.25)}.[ul:green]dark-mode[/ul] .authBox h2,.[ul:green]dark-mode[/ul] .dash-card h3,.[ul:green]dark-mode[/ul] .exclusive-lock div{color:#ffd9d9}.[ul:green]dark-mode[/ul] .authBox input,.[ul:green]dark-mode[/ul] #loginEmail,.[ul:green]dark-mode[/ul] #loginPass,.[ul:green]dark-mode[/ul] #signupEmail,.[ul:green]dark-mode[/ul] #signupPass,.[ul:green]dark-mode[/ul] #username{background:#151112;color:#f7eaea;border:1px solid #453638}.[ul:green]dark-mode[/ul] .authBox input::placeholder,.[ul:green]dark-mode[/ul] #loginEmail::placeholder,.[ul:green]dark-mode[/ul] #loginPass::placeholder,.[ul:green]dark-mode[/ul] #signupEmail::placeholder,.[ul:green]dark-mode[/ul] #signupPass::placeholder,.[ul:green]dark-mode[/ul] #username::placeholder{color:#bda3a3}.[ul:green]dark-mode[/ul] .authBox button,.[ul:green]dark-mode[/ul] .dash-card button,.[ul:green]dark-mode[/ul] .dash-card a button,.[ul:green]dark-mode[/ul] #signupBtn{background:#2b2324;color:#ffeaea;border:1px solid #4a383b}.[ul:green]dark-mode[/ul] .authBox button:hover,.[ul:green]dark-mode[/ul] .dash-card button:hover,.[ul:green]dark-mode[/ul] .dash-card a button:hover,.[ul:green]dark-mode[/ul] #signupBtn:hover{background:#382d2f;border-color:#6a4d51}.[ul:green]dark-mode[/ul] .dash-pic{border-color:#4a383b}.[ul:green]dark-mode[/ul] .dash-card p{color:#c9b1b1}.[ul:green]dark-mode[/ul] .exclusive-lock{background:#241d1e}.[ul:green]dark-mode[/ul] .exclusive-lock a{background:#c88f8f;color:#1b1112!important}.[ul:green]dark-mode[/ul] .exclusive-lock a:hover{background:#ddb0b0}.[ul:green]dark-mode[/ul] .teorzoBookmarks ul li a{color:#ffd6d6}.[ul:green]dark-mode[/ul] .bm-delete{color:#ff9a9a}.teorzoBookmarkPost.bmFull{display:block;width:100%}.teorzoBookmarkPost.bmFull input{display:none}.teorzoBookmarkPost.bmFull .bmBtnFull{margin-top:20px;display:flex;align-items:center;gap:10px;width:100%;padding:14px 16px;border:1px solid var(--border-color);border-radius:14px;cursor:pointer;box-sizing:border-box}.teorzoBookmarkPost.bmFull .bmBtnFull svg{width:22px;height:22px;flex:0 0 22px}.teorzoBookmarkPost.bmFull .bmBtnFull span{font-size:14px;font-weight:600}.teorzoBookmarkPost.bmFull input:checked+label .bS{opacity:0}.teorzoBookmarkPost.bmFull{display:block;width:100%;margin:14px 0}.teorzoBookmarkPost.bmFull input{display:none}.teorzoBookmarkPost.bmFull .bmBtnFull{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px 18px;background:#fff;border:1px solid #ece3e3;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.04);cursor:pointer;box-sizing:border-box;transition:.25s ease;color:#3f3f46}.teorzoBookmarkPost.bmFull .bmBtnFull:hover{background:#faf7f7;border-color:#ddd1d1;box-shadow:0 8px 18px rgba(0,0,0,.06);transform:translateY(-1px)}.teorzoBookmarkPost.bmFull .bmBtnFull svg{width:22px;height:22px;flex:0 0 22px;stroke:#5b5b66;fill:none;stroke-width:1.8}.teorzoBookmarkPost.bmFull .bmBtnFull span{font-size:15px;font-weight:600;line-height:1}.teorzoBookmarkPost.bmFull input:checked+label{background:#f8efef;border-color:#d9bcbc;color:#7a3d3d}.teorzoBookmarkPost.bmFull input:checked+label svg{stroke:#7a3d3d}.teorzoBookmarkPost.bmFull input:checked+label .bS{opacity:0}.teorzoBookmarkPost.bmFull input:checked+label span{color:#7a3d3d}.[ul:green]dark-mode[/ul] .teorzoBookmarkPost.bmFull .bmBtnFull{background:#1f1f23;border-color:#34343b;color:#f1f1f1;box-shadow:none}.[ul:green]dark-mode[/ul] .teorzoBookmarkPost.bmFull .bmBtnFull:hover{background:#26262b;border-color:#44444c}.[ul:green]dark-mode[/ul] .teorzoBookmarkPost.bmFull .bmBtnFull svg{stroke:#e5e7eb}.[ul:green]dark-mode[/ul] .teorzoBookmarkPost.bmFull input:checked+label{background:#312526;border-color:#5a3e40}.[ul:green]dark-mode[/ul] .teorzoBookmarkPost.bmFull input:checked+label,.[ul:green]dark-mode[/ul] .teorzoBookmarkPost.bmFull input:checked+label span{color:#ffd6d6}.[ul:green]dark-mode[/ul] .teorzoBookmarkPost.bmFull input:checked+label svg{stroke:#ffd6d6}#navProfileLink{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;overflow:hidden;background:#fff;border:1px solid #eadede;box-shadow:0 2px 8px rgba(0,0,0,.05)}#navProfileLink img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}#navProfileLink svg{width:16px;height:16px;display:block;fill:currentColor}.[ul:green]dark-mode[/ul] #navProfileLink{background:#1e1a1b;border-color:#3a2d2f}.googleBtn{width:100%;margin:10px 0 0;padding:12px 14px;background:#fff;border:1px solid #eadede;border-radius:14px;cursor:pointer;font-weight:600;color:#5a2323;transition:.25s ease}.googleBtn:hover{background:#faf6f6}.authOr{display:flex;align-items:center;justify-content:center;margin:12px 0 4px}.authOr span{font-size:13px;opacity:.7;position:relative;padding:0 10px}.authOr span:before,.authOr span:after{content:"";position:absolute;top:50%;width:60px;height:1px;background:#e7d6d6}.authOr span:before{right:100%}.authOr span:after{left:100%}.[ul:green]dark-mode[/ul] .googleBtn{background:#1f1f23;border-color:#34343b;color:#f5eaea}.[ul:green]dark-mode[/ul] .googleBtn:hover{background:#26262b}.[ul:green]dark-mode[/ul] .authOr span:before,.[ul:green]dark-mode[/ul] .authOr span:after{background:#3a2d2f}.historyPage{max-width:860px;margin:0 auto;padding:10px 0}.exclusiveContent,.exclusive{display:none!important;visibility:hidden}.exclusive-lock{display:block}.userLoggedIn .exclusiveContent,.userLoggedIn .exclusive{display:block!important;visibility:visible}.userLoggedIn .exclusive-lock{display:none!important}.teorzoBookmarkPost.bmFull{display:none;width:100%}.userLoggedIn .teorzoBookmarkPost.bmFull{display:flex}
 ```
-
-**Note:**  
-Don't forget to replace `.dark-mode` in css with your template's dark mode class
+<div class="alert note">Don't forget to replace dark-mode in css with your template's dark mode class.</div>
 
 20.  Find `</head>` or `<head/>`
 21.  Paste the following JS just above it
@@ -233,20 +229,20 @@ Don't forget to replace `.dark-mode` in css with your template's dark mode class
 <script>/*<![CDATA[*/
 /* ----
   Firebase login with exclusive content, bookmark, user dashboard
-  Created by: www.coshix.in
-  Source code: https://www.coshix.in/2026/03/blogger-login-signup-firebase.html
+  Created by: coshix.in
+  Source code: https://coshix.in/blog/login-and-signup-in-blogger
 ---- */
 var firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  login: "/p/login.html",
-  signup: "/p/signup.html",
-  dashboard: "/p/dashboard.html",
-  bookmark: "/p/bookmarks.html"
+  apiKey: "[hl:blue]YOUR_API_KEY[/hl]",
+  authDomain: "[hl:blue]YOUR_AUTH_DOMAIN[/hl]",
+  projectId: "[hl:blue]YOUR_PROJECT_ID[/hl]",
+  storageBucket: "[hl:blue]YOUR_STORAGE_BUCKET[/hl]",
+  messagingSenderId: "[hl:blue]YOUR_MESSAGING_SENDER_ID[/hl]",
+  appId: "[hl:blue]YOUR_APP_ID[/hl]",
+  login: "[hl:blue]/p/login.html[/hl]",
+  signup: "[hl:blue]/p/signup.html[/hl]",
+  dashboard: "[hl:blue]/p/dashboard.html[/hl]",
+  bookmark: "[hl:blue]/p/bookmarks.html[/hl]"
 };
 
 /* Don't edit */
@@ -257,7 +253,7 @@ document.documentElement.classList.add("js");document.addEventListener("click",f
 32.  Replace the firebaseconfig info with your firebaseconfig info we [noted before](#how-to-create-a-firestore-database-and-set-rules), then if there are any change permalinks given, then also replace with your permalink.
 33.  Click to save the HTML
 
-**Warning!** After making every change in the main js we recommend that you obfuscate the JS to make it a more secure implementation. Use any online tool like [obfuscator.io](https://obfuscator.io/legacy-playground) to obfuscate the JS.
+<div class="alert warn"> After making every change in the main js we recommend that you obfuscate the JS to make it a more secure implementation. Use any online tool like [obfuscator.io](https://obfuscator.io/legacy-playground) to obfuscate the JS.</div>
 
 ### How to Add Exclusive Content in Blogger
 
@@ -266,27 +262,43 @@ Paste the following code just inside your post or page where you need to add exc
 ```
 <!-- Exclusive content (www.coshix.in) -->
   <div class="exclusiveContent">
-YOUR SECRET CONTENT HERE
+[hl:blue]YOUR SECRET CONTENT HERE[/hl]
 </div>
 ```
 
 ## FAQ
 
-Is the Firebase Authentication feature free?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Is the Firebase Authentication feature free?</summary>
+    <div class="faq-answer">
+      Yes, Firebase provides a free plan that includes authentication features, which is more than enough for most Blogger-based websites.
+    </div>
+  </details>
 
-Yes, Firebase provide a free plan that includes authentication like features, which is enough for most of the Blogger based websites.
+  <details class="faq-item">
+    <summary class="faq-question">Is implementing the login and signup feature using Firebase safe?</summary>
+    <div class="faq-answer">
+      Yes, this method is secure. Firebase Authentication is managed by <strong>Google</strong>, safely handling user credentials and providing built-in protection.
+    </div>
+  </details>
 
-Is implementing the login and signup feature using Firebase safe?
+  <details class="faq-item">
+    <summary class="faq-question">Can I implement this Firebase-based login and signup feature without coding knowledge?</summary>
+    <div class="faq-answer">
+      Yes, you can implement this feature without advanced coding knowledge, though a basic understanding of HTML, CSS, and JavaScript is helpful.
+    </div>
+  </details>
 
-Yes, this method is secure; Firebase Authentication is managed by **Google**. It handles every user's data safely and provides built-in protection.
+  <details class="faq-item">
+    <summary class="faq-question">Does this login and signup implementation include Google sign-in?</summary>
+    <div class="faq-answer">
+      Yes, Google sign-in support is included in this login and signup setup with the help of Firebase.
+    </div>
+  </details>
 
-Can I implement this Firebase-based login and signup feature without coding knowledge?
-
-Yes, you can implement this feature without any coding knowledge, but still a basic HTML, CSS and JavaScript knowledge is useful.
-
-Does this login and signup implementaion includes Google sign-in?
-
-Yes, we also added Google sign-in support in this Login and Signup feature with the help of Firebase.
+</div>
 
 ## Conclusion
 
@@ -294,4 +306,4 @@ By adding this login and signup feature to your website, you can increase your B
 
 Firebase is the best and easiest way to implement this feature in your Blogger website because Firebase have capability to handle authentication and data storage without any requirement for a custom server. This allows you to add a modern, professional website-like feel even in Blogger-based websites. By using Firebase here, you can also see there is no issue with performance, its becuase of **lazyload.js** by [Fineshop Design](https://www.fineshopdesign.com).
 
-Hope this tutorial helped you to implement login and signup features in your Blogger website without any errors. If you have any doubts related to implementation, then don't forget to drop a comment about it below. Don't forget to share this article with your Blogger using friends because it may also be useful to them. If you want to also implement local storage and Firebase based like and dislike posts system in your Blogger website, then visit our [Blogger like and dislike system using Firebase tutorial](/2026/03/like-and-dislike-feature-blogger.html). Thanks for reading this post.
+Hope this tutorial helped you to implement login and signup features in your Blogger website without any errors. If you have any doubts related to implementation, then don't forget to drop a comment about it below. Don't forget to share this article with your Blogger using friends because it may also be useful to them. If you want to also implement local storage and Firebase based like and dislike posts system in your Blogger website, then visit our [Blogger like and dislike system using Firebase tutorial](/blog/like-and-dislike-button-in-blogger-using-firebase). Thanks for reading this post.

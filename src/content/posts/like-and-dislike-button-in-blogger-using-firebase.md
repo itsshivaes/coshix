@@ -1,13 +1,15 @@
 ---
 title: "How to Add Like and Dislike Button in Blogger Using Firebase"
 date: 2026-03-06
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgJwM0sGX0MuuhY_OBNoD0KQLV02l6zJ3feY3k8tfxXR1ZPm30Wmoh6oZs6fuDzyeVx9OggS9-e7wmCYEbAmw832yo-PAc8SBn3fqGIHsM7FyJFppjIhE532ohWj58k_MELPXAZajKRfprPYvBkamXZtQ6DiDuBCM9gfGKZJ0mHj9x1HxK8imfpaRUXGaJB/s1600-rw/firebase-relatime%20%281%29.webp"
+authors: [shiva-e-s]
+description: "Adding a like and dislike feature to your Blogger website helps you to improve your website's user engagement. Several popular websites use this feature to allow users to express their opinion about a post easily and quickly. In Blogger, this feature is not available by default; to add it, we need to use CSS, HTML, JS and Firebase."
+image: "/images/posts/firebase-relatime%20%281%29.webp"
 categories: ["Blogger"]
 tags: ["Blogger","How To","Codes","Firebase","CSS","JavaScript","HTML","JavaScript Components"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgJwM0sGX0MuuhY_OBNoD0KQLV02l6zJ3feY3k8tfxXR1ZPm30Wmoh6oZs6fuDzyeVx9OggS9-e7wmCYEbAmw832yo-PAc8SBn3fqGIHsM7FyJFppjIhE532ohWj58k_MELPXAZajKRfprPYvBkamXZtQ6DiDuBCM9gfGKZJ0mHj9x1HxK8imfpaRUXGaJB/s1600-rw/firebase-relatime%20%281%29.webp)
+![Thumbnail](/images/posts/firebase-relatime%20%281%29.webp)
 
 Adding a like and dislike feature to your Blogger website helps you to improve your website's user engagement. Several popular websites use this feature to allow users to express their opinion about a post easily and quickly. In Blogger, this feature is not available by default; to add it, we need to use CSS, HTML, JS and Firebase. Firebase make easier to manage user interactions, it records and updates user interactions in real-time.
 
@@ -76,7 +78,7 @@ service cloud.firestore {
 2.  Click the **Themes** option from the sidebar
 3.  Click the drop-down icon near the **Customize** button on that page
 4.  Click **Edit HTML** from the drop-down menu
-5.  Find \]\]></b:skin> 
+5.  Find `]]></b:skin>`
 6.  Paste the following CSS above it
 
 ```
@@ -93,7 +95,7 @@ service cloud.firestore {
 .like-btn:hover svg, .dislike-btn:hover svg{fill:#000}
 ```
 
-9.  Find <data:post.body/> 
+9.  Find `<data:post.body/>`
 10.  Paste the following HTML code below it
 
 ```
@@ -102,38 +104,37 @@ service cloud.firestore {
 </b:if>
 ```
 
-12.  Find </head> tag
+12.  Find `</head>` tag
 13.  Place the following JS above it
 
 ```
 <script>/*<![CDATA[*//*@fineshopdesign/lazy.js*/ window.lazy=window.lazy||new Promise(e=>{const t="IS_LAZIED",n="true",o=["scroll","click"],i=["keydown","mouseover","touchmove","touchstart"],r=o.concat(i);function a(){try{return localStorage.getItem(t)===n}catch(e){return!0}}function l(e=!0){try{e?localStorage.setItem(t,n):localStorage.removeItem(t)}catch(e){}}function d(t){l(!0),e({type:t.type.toLowerCase()}),r.forEach(e=>window.removeEventListener(e,d))}if(a())e({type:"local"});else if(0!==document.documentElement.scrollTop||document.body&&0!==document.body.scrollTop)d({type:"scroll"});else{const e=()=>{window.removeEventListener("load",e),i.forEach(e=>window.addEventListener(e,d))};window.addEventListener("load",e),o.forEach(e=>window.addEventListener(e,d))}}); /*]]>*/</script>
 ```
 
-15.  Find </body> tag
+15.  Find `</body>` tag
 16.  Place the following JS above it
 
 ```
 <b:if cond='data:view.isPost'>
-  <script type='module'>/*<![CDATA[*//* Like - Dislike (www.coshix.in) */window.lazy.then(()=>{import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js").then(async({initializeApp})=>{const{getFirestore,doc,getDoc,setDoc,increment,onSnapshot}=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+  <script type='module'>/*<![CDATA[*//* Like - Dislike (coshix.in) */window.lazy.then(()=>{import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js").then(async({initializeApp})=>{const{getFirestore,doc,getDoc,setDoc,increment,onSnapshot}=await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
 
 const firebaseConfig={
-  apiKey:"YOUR_API_KEY",
-  authDomain:"YOUR_PROJECT.firebaseapp.com",
-  projectId:"YOUR_PROJECT_ID",
-  messagingSenderId:"YOUR_SENDER_ID",
-  appId:"YOUR_APP_ID"
+  apiKey:"[hl:blue]YOUR_API_KEY[/hl]",
+  authDomain:"[hl:blue]YOUR_PROJECT.firebaseapp.com[/hl]",
+  projectId:"[hl:blue]YOUR_PROJECT_ID[/hl]",
+  messagingSenderId:"[hl:blue]YOUR_SENDER_ID[/hl]",
+  appId:"[hl:blue]YOUR_APP_ID[/hl]"
 };
 
 const app=initializeApp(firebaseConfig),db=getFirestore(app),postId=(document.querySelector("article")?.getAttribute("data-id")||location.pathname).replace(/[^\w]/g,"_"),likeBtn=document.getElementById("likeBtn"),dislikeBtn=document.getElementById("dislikeBtn"),likeCount=document.getElementById("likeCount"),dislikeCount=document.getElementById("dislikeCount"),postRef=doc(db,"postLikes",postId),voteKey="postVote_"+postId;let busy=!1;getDoc(postRef).then(s=>{s.exists()||setDoc(postRef,{likes:0,dislikes:0},{merge:!0})});onSnapshot(postRef,s=>{if(!s.exists())return;likeCount&&(likeCount.textContent=s.data().likes||0);dislikeCount&&(dislikeCount.textContent=s.data().dislikes||0)});function setActive(v){likeBtn&&likeBtn.classList.remove("active-like");dislikeBtn&&dislikeBtn.classList.remove("active-dislike");v==="liked"&&likeBtn&&likeBtn.classList.add("active-like");v==="disliked"&&dislikeBtn&&dislikeBtn.classList.add("active-dislike")}setActive(localStorage.getItem(voteKey));async function vote(t){if(busy)return;busy=!0;likeBtn&&(likeBtn.disabled=!0);dislikeBtn&&(dislikeBtn.disabled=!0);let v=localStorage.getItem(voteKey);if(t==="like"){if(v==="liked"){await setDoc(postRef,{likes:increment(-1)},{merge:!0});localStorage.removeItem(voteKey);setActive(null)}else{await setDoc(postRef,{likes:increment(1)},{merge:!0});v==="disliked"&&await setDoc(postRef,{dislikes:increment(-1)},{merge:!0});localStorage.setItem(voteKey,"liked");setActive("liked")}}if(t==="dislike"){if(v==="disliked"){await setDoc(postRef,{dislikes:increment(-1)},{merge:!0});localStorage.removeItem(voteKey);setActive(null)}else{await setDoc(postRef,{dislikes:increment(1)},{merge:!0});v==="liked"&&await setDoc(postRef,{likes:increment(-1)},{merge:!0});localStorage.setItem(voteKey,"disliked");setActive("disliked")}}setTimeout(()=>{busy=!1;likeBtn&&(likeBtn.disabled=!1);dislikeBtn&&(dislikeBtn.disabled=!1)},300)}likeBtn&&(likeBtn.onclick=()=>vote("like"));dislikeBtn&&(dislikeBtn.onclick=()=>vote("dislike"))})});/*]]>*/</script>
 </b:if>
 ```
 
-Don't forget to replace the blue colour-highlighted sections in JS with the info which have been we saved before.
+<div class="alert info">Don't forget to replace the blue colour-highlighted sections in JS with the info which have been we saved before.</div>
 
 13.  Click  to save changes
 
-**Want to see how it works?**  
-[Demo](https://coshix-outputs.blogspot.com/2026/03/like-button-demo.html)
+<div class="alert info">Want to see how it works? <a href="https://coshix-outputs.blogspot.com/2026/03/like-button-demo.html" target="_blank">View Demo</a></div>
 
 ## Conclusion
 

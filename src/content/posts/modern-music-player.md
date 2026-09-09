@@ -1,23 +1,21 @@
 ---
 title: "How to Add a Modern Music Player in Your Website Using Pure CSS & JavaScript"
 date: 2026-06-01
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEifl9poHX57N5VQ8pO-1J8H9DvPu-qhlqJTJi33wP6oLjvfvwg0gyW2En0MNLHLB85eYsE3kAHFyxSkvVgYlt1X4ieAZb1Jpph4ul1LuuJ9GGTfPCWXr4EJlRACNjiTmzom3JNPpakHwiWHaTLT2FbCl2ck3bqBrw0oLHW7lUjNw2moVLI3HnccAne5NH5i/s1600-rw/modern-music-player.webp"
-categories: ["Codes"]
-tags: ["Codes","Common","How To","Music Player","Web","CSS","JavaScript","HTML","CSS Components","JavaScript Components"]
+description: "If you are running a blog or music streaming website, adding a modern and advanced-level music player is one of the best ways to make your website more interactive for users and to improve the browsing experience. Instead of relying on third-party widgets, many developers like to go with pure coding, which gives full control over the element."
+authors: [shiva-e-s]
+image: "/images/posts/modern-music-player.webp"
+categories: ["Common"]
+tags: ["Common","Codes","How To","Music Player","Web","CSS","JavaScript","HTML","CSS Components","JavaScript Components"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEifl9poHX57N5VQ8pO-1J8H9DvPu-qhlqJTJi33wP6oLjvfvwg0gyW2En0MNLHLB85eYsE3kAHFyxSkvVgYlt1X4ieAZb1Jpph4ul1LuuJ9GGTfPCWXr4EJlRACNjiTmzom3JNPpakHwiWHaTLT2FbCl2ck3bqBrw0oLHW7lUjNw2moVLI3HnccAne5NH5i/s1600-rw/modern-music-player.webp)
+![Thumbnail](/images/posts/modern-music-player.webp)
 
 If you are running a blog or music streaming website, adding a modern and advanced-level music player is **one of the best ways to make your website more interactive for users and to improve the browsing experience**. Instead of relying on third-party widgets, many developers like to go with pure coding, which gives full control over the element.
 
 In this guide, you will learn to add a modern music player to your website using pure CSS and JavaScript. The player includes **features such as multiple songs, a previous/next button, a replay button, and an up-next song view**. Everything will remain **lightweight and performance-friendly** as this music player doesn't rely on any external libraries.
 
 Since the design and functionality of this music player use pure code, **you can easily customise** colours, animations, layouts, controls and other stuff according to your requirements. **Interactive elements play a major role in bringing users to the website**, and one of the interactive elements is a music player. So without wasting much time, let's check how it works and how to add this music player to your website.
-
-Table of Contents
-
-document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfContents !== 'undefined') { new TableOfContents({ from: document.querySelector('#postBody'), to: document.querySelector('#toContent') }).generateToc(); } });
 
 ## Features of Music Player
 
@@ -38,8 +36,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 
 ## Music Player Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/05/music-player.html)
+<div class="alert info">Want to see how it works? <a href="https://coshix-outputs.blogspot.com/2026/05/music-player.html" target="_blank">View Demo</a></div>
 
 ## How to Add This Music Player to Your Website
 
@@ -50,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 3.  Find the `</head>` tag, paste the following CSS just above it and wrap it inside `<style></style>`. If you are using Blogger, then paste the following CSS just above. `]]></b:skin>`.
 
 ```
-/* Music Player Styles (Source: www.coshix.in) */
+/* Music Player Styles (Source: coshix.in) */
 .chxPlayer{display:grid;grid-template-columns:1fr .85fr;gap:24px;width:100%;max-width:1400px;margin:auto}
 .chxNow,.chxQueue{background:rgba(255,255,255,.78);backdrop-filter:blur(22px);border:1px solid #e4e4e4;border-radius:6px;padding:22px}
 .chxCover{position:relative;border-radius:6px;overflow:hidden;aspect-ratio:16/9;margin-bottom:20px}
@@ -105,22 +102,22 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
   }
 
 /* Dark Mode (Remove if not using) */
-.dark-mode .chxNow,.dark-mode .chxQueue{background:rgba(15,15,15,.72);backdrop-filter:blur(22px);border-color:#2f2f2f;color:#f1f1f1}
-.dark-mode .chxInfo p,.dark-mode .chxHead span,.dark-mode .chxSeekWrap span,.dark-mode .chxMeta p,.dark-mode .chxSong span{color:#a9a9a9}
-.dark-mode .chxSeek:before{background:#333}
-.dark-mode .chxControls button{background:#1f1f1f;border-color:#333;color:#f1f1f1}
-.dark-mode .chxControls button.active{background:#1c2147;border-color:#5b6dff;color:#8ea0ff}
-.dark-mode .chxControls button.orange{background:#3b2b12;border-color:#d78300;color:#ffb648}
-.dark-mode .chxVolume svg{stroke:#f1f1f1}
-.dark-mode .chxSong:hover{background:#232323}
-.dark-mode .chxSong.active{background:#1c2147;border-color:#5b6dff}
-.dark-mode .loadMoreBtn{background:#5b6dff}
-.dark-mode .loadMoreBtn:hover{opacity:.9}
-.dark-mode .chxList::-webkit-scrollbar{width:8px}
-.dark-mode .chxList::-webkit-scrollbar-track{background:#1f1f1f}
-.dark-mode .chxList::-webkit-scrollbar-thumb{background:#444;border-radius:20px}
-.dark-mode .chxList::-webkit-scrollbar-thumb:hover{background:#555}
-.dark-mode .chxMeta h4,.dark-mode .chxHead h3,.dark-mode .chxInfo h2{color:#fff}
+.[ul:green]dark-mode[/ul] .chxNow,.[ul:green]dark-mode[/ul] .chxQueue{background:rgba(15,15,15,.72);backdrop-filter:blur(22px);border-color:#2f2f2f;color:#f1f1f1}
+.[ul:green]dark-mode[/ul] .chxInfo p,.[ul:green]dark-mode[/ul] .chxHead span,.[ul:green]dark-mode[/ul] .chxSeekWrap span,.[ul:green]dark-mode[/ul] .chxMeta p,.[ul:green]dark-mode[/ul] .chxSong span{color:#a9a9a9}
+.[ul:green]dark-mode[/ul] .chxSeek:before{background:#333}
+.[ul:green]dark-mode[/ul] .chxControls button{background:#1f1f1f;border-color:#333;color:#f1f1f1}
+.[ul:green]dark-mode[/ul] .chxControls button.active{background:#1c2147;border-color:#5b6dff;color:#8ea0ff}
+.[ul:green]dark-mode[/ul] .chxControls button.orange{background:#3b2b12;border-color:#d78300;color:#ffb648}
+.[ul:green]dark-mode[/ul] .chxVolume svg{stroke:#f1f1f1}
+.[ul:green]dark-mode[/ul] .chxSong:hover{background:#232323}
+.[ul:green]dark-mode[/ul] .chxSong.active{background:#1c2147;border-color:#5b6dff}
+.[ul:green]dark-mode[/ul] .loadMoreBtn{background:#5b6dff}
+.[ul:green]dark-mode[/ul] .loadMoreBtn:hover{opacity:.9}
+.[ul:green]dark-mode[/ul] .chxList::-webkit-scrollbar{width:8px}
+.[ul:green]dark-mode[/ul] .chxList::-webkit-scrollbar-track{background:#1f1f1f}
+.[ul:green]dark-mode[/ul] .chxList::-webkit-scrollbar-thumb{background:#444;border-radius:20px}
+.[ul:green]dark-mode[/ul] .chxList::-webkit-scrollbar-thumb:hover{background:#555}
+.[ul:green]dark-mode[/ul] .chxMeta h4,.[ul:green]dark-mode[/ul] .chxHead h3,.[ul:green]dark-mode[/ul] .chxInfo h2{color:#fff}
 ```
 
 ### Adding the main code of the Music Player
@@ -182,11 +179,11 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 </div>
 
 <script>const songs = [{
-    title: "Album 1",
-    artist: "Artist_Name_1",
-    src: "music_link_1quot;,
-    cover: "img_link_1",
-    duration: "2:18"
+    title: "[hl:blue]Album 1[/hl]",
+    artist: "[hl:blue]Artist_Name_1[/hl]",
+    src: "[hl:blue]music_link_1[/hl]",
+    cover: "[hl:blue]img_link_1[/hl]",
+    duration: "[hl:blue]2:18[/hl]"
 }, {
     title: "Album 2",
     artist: "Artist_Name_2",
@@ -197,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 ],/* Risky editing area */audio=document.getElementById("audio"),cover=document.getElementById("cover"),title=document.getElementById("title"),artist=document.getElementById("artist"),playBtn=document.getElementById("playBtn"),playIcon=document.getElementById("playIcon"),prevBtn=document.getElementById("prevBtn"),nextBtn=document.getElementById("nextBtn"),progress=document.querySelector(".chxProgress"),seekBar=document.getElementById("seekBar"),current=document.getElementById("current"),duration=document.getElementById("duration"),playlist=document.getElementById("playlist"),songCount=document.getElementById("songCount"),volume=document.getElementById("volume"),repeatBtn=document.getElementById("repeatBtn"),shuffleBtn=document.getElementById("shuffleBtn");let index=0,isPlaying=!1,isRepeat=!1,isShuffle=!1,visibleSongs=5,isLoading=!1;function setLoadingState(loading){isLoading=loading;if(loading){playBtn.classList.add("loading");}else{playBtn.classList.remove("loading");}}function updateActiveHighlight(){document.querySelectorAll(".chxSong").forEach((song,idx)=>{if(idx===index){song.classList.add("active");}else{song.classList.remove("active");}});}function loadSong(t){let o=songs[t];title.textContent=o.title,artist.textContent=o.artist,cover.src=o.cover,audio.src=o.src;renderPlaylist();if(isPlaying){setLoadingState(true);audio.load();if(audio.readyState>=2){setLoadingState(false);playSong();}else{audio.addEventListener('canplay',function onCanPlay(){setLoadingState(false);playSong();audio.removeEventListener('canplay',onCanPlay);},{once:true});}}}function playSong(){audio.play().then(()=>{isPlaying=!0,playIcon.innerHTML='<rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/>';setLoadingState(false);updateActiveHighlight();}).catch(e=>{console.warn("Playback error:",e);setLoadingState(false);isPlaying=false;playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';});}function pauseSong(){audio.pause(),isPlaying=!1,playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';setLoadingState(false);}function nextSong(){if(isLoading&&audio.src){audio.pause();audio.removeEventListener('canplay',()=>{});setLoadingState(false);}index=isShuffle?Math.floor(Math.random()*songs.length):(index+1)%songs.length,loadSong(index);if(isPlaying){setLoadingState(true);audio.addEventListener('canplay',function onReady(){if(isPlaying){playSong();}setLoadingState(false);audio.removeEventListener('canplay',onReady);},{once:true});audio.load();if(audio.readyState>=2){setLoadingState(false);playSong();}}else{updateActiveHighlight();}}function prevSong(){if(isLoading&&audio.src){audio.pause();audio.removeEventListener('canplay',()=>{});setLoadingState(false);}index=(index-1+songs.length)%songs.length,loadSong(index);if(isPlaying){setLoadingState(true);audio.addEventListener('canplay',function onReady(){if(isPlaying){playSong();}setLoadingState(false);audio.removeEventListener('canplay',onReady);},{once:true});audio.load();if(audio.readyState>=2){setLoadingState(false);playSong();}}else{updateActiveHighlight();}}function formatTime(t){let o=Math.floor(t/60),e=Math.floor(t%60);return`${o}:${e<10?"0"+e:e}`;}function renderPlaylist(){playlist.innerHTML="";let displaySongs=songs.slice(0,visibleSongs);displaySongs.forEach((t,o)=>{let activeClass=o===index?"active":"";playlist.innerHTML+=`<div class="chxSong ${activeClass}" data-index="${o}" onclick="selectSong(${o})"><img src="${t.cover}"><div class="chxMeta"><h4>${t.title}</h4><p>${t.artist}</p></div><span>${t.duration}</span></div>`;});if(songs.length>5&&visibleSongs<songs.length){playlist.innerHTML+='<button class="loadMoreBtn" onclick="loadMoreSongs()">Load More</button>';}songCount.textContent=`${songs.length} Songs`;}function loadMoreSongs(){visibleSongs+=5,renderPlaylist();}function selectSong(t){if(isLoading){audio.pause();audio.removeEventListener('canplay',()=>{});setLoadingState(false);}index=t;loadSong(index);renderPlaylist();if(isPlaying){setLoadingState(true);audio.addEventListener('canplay',function onReady(){if(isPlaying){playSong();}setLoadingState(false);audio.removeEventListener('canplay',onReady);},{once:true});audio.load();if(audio.readyState>=2){setLoadingState(false);playSong();}}else{updateActiveHighlight();}}playBtn.onclick=()=>{if(isLoading){return;}isPlaying?pauseSong():(setLoadingState(true),playSong());};nextBtn.onclick=nextSong,prevBtn.onclick=prevSong,volume.oninput=t=>audio.volume=t.target.value,audio.addEventListener("timeupdate",()=>{if(audio.duration){let t=audio.currentTime/audio.duration*100;progress.style.width=t+"%",current.textContent=formatTime(audio.currentTime),duration.textContent=formatTime(audio.duration)}}),seekBar.addEventListener("click",t=>{let o=seekBar.getBoundingClientRect(),e=(t.clientX-o.left)/o.width;audio.currentTime=e*audio.duration}),audio.addEventListener("ended",()=>{isRepeat?(audio.currentTime=0,playSong()):nextSong()}),repeatBtn.onclick=()=>{isRepeat=!isRepeat,repeatBtn.classList.toggle("active",isRepeat)},shuffleBtn.onclick=()=>{isShuffle=!isShuffle,shuffleBtn.classList.toggle("active",isShuffle),shuffleBtn.classList.toggle("orange",isShuffle)};audio.addEventListener('waiting',()=>{if(isPlaying){setLoadingState(true);}});audio.addEventListener('playing',()=>{setLoadingState(false);});audio.addEventListener('canplay',()=>{if(isPlaying){setLoadingState(false);}});audio.addEventListener('error',(e)=>{console.warn("Audio loading error",e);setLoadingState(false);if(isPlaying){isPlaying=false;playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';}});loadSong(index),renderPlaylist();</script>
 ```
 
-**Note:** Don't forget to edit the blue background highlighted important sections to make it function properly.
+<div class="alert info">Don't forget to edit the blue background highlighted important sections to make it function properly.</div>
 
 ### To Add More Songs
 
@@ -214,7 +211,7 @@ duration:"3:45"
 }
 ```
 
-**Important:** Add a comma after every song block except the last one in JavaScript.  
+<div class="alert warning">Add a comma after every song block except the last one in JavaScript.</div>
   
 **Example:**
 
@@ -252,21 +249,37 @@ With the help of CSS and JavaScript, it also highlights the currently playing so
 
 ## FAQ (Frequently Asked Questions)
 
-Does this music player work on mobile devices?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Does this music player work on mobile devices?</summary>
+    <div class="faq-answer">
+      Yes, the music player is fully responsive and works on both desktop and mobile devices.
+    </div>
+  </details>
 
-Yes, the music player is fully responsive and works on both desktop and mobile devices.
+  <details class="faq-item">
+    <summary class="faq-question">Can I add my own songs?</summary>
+    <div class="faq-answer">
+      Yes, simply replace the sample song information inside the songs array with your own audio links, cover images, titles, and artist names.
+    </div>
+  </details>
 
-Can I add my own songs?
+  <details class="faq-item">
+    <summary class="faq-question">What audio formats are supported?</summary>
+    <div class="faq-answer">
+      The player supports most audio formats supported by the browser, such as MP3, WAV, and OGG.
+    </div>
+  </details>
 
-Yes, simply replace the sample song information inside the songs array with your own audio links, cover images, titles, and artist names.
+  <details class="faq-item">
+    <summary class="faq-question">Does this work in Blogger?</summary>
+    <div class="faq-answer">
+      Yes, this music player can be added to Blogger posts, pages, and templates.
+    </div>
+  </details>
 
-What audio formats are supported?
-
-The player supports most audio formats supported by the browser, such as MP3, WAV, and OGG.
-
-Does this work in Blogger?
-
-Yes, this music player can be added to Blogger posts, pages, and templates.
+</div>
 
 ## Conclusion
 

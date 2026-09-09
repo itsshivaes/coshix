@@ -1,13 +1,15 @@
 ---
 title: "How to Add Table of Contents in Blogger (Automatic TOC Guide)"
 date: 2026-03-20
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEghQGAV4VnotemaDi0WIJL0xj8uZCPdTCpe9HVH4tiwhIA3GCapyoYxTDf-1XTwWRevCiH7PqtbXD_TNApfmOVqQw5LNRKDQ6Ux92C2wv4Aw1xo8TdnIILqhkEldfuauVZl7UqC68oAH6uwIR_3Rd_2xJyxJOt1vlDpTvH1lHFnz1TtsYv1sP6FOl_4QTtd/s1600-rw/Table%20Of%20Content.webp"
-categories: ["Codes"]
-tags: ["Codes","How To","Table Of Content","Blogger","Web","CSS","JavaScript","HTML","Widgets"]
+image: "/images/posts/Table%20Of%20Content.webp"
+categories: ["Blogger"]
+authors: [shiva-e-s]
+tags: ["Blogger","How To","Table Of Content","Codes","Web","CSS","JavaScript","HTML","Widgets"]
+description: "When you write long posts, it is difficult to reach the exact position of the posts your visitors need, which later may also become the reason to visitor to ignore your website. To avoid this situation, we implement a table of content in our website. An automatically well-organised table of contents gives your website a professional touch. The Table of contents also helps your website visitors to save time by scrolling a lot."
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEghQGAV4VnotemaDi0WIJL0xj8uZCPdTCpe9HVH4tiwhIA3GCapyoYxTDf-1XTwWRevCiH7PqtbXD_TNApfmOVqQw5LNRKDQ6Ux92C2wv4Aw1xo8TdnIILqhkEldfuauVZl7UqC68oAH6uwIR_3Rd_2xJyxJOt1vlDpTvH1lHFnz1TtsYv1sP6FOl_4QTtd/s1600-rw/Table%20Of%20Content.webp)
+![Thumbnail](/images/posts/Table%20Of%20Content.webp)
 
 When you write long posts, it is difficult to reach the exact position of the posts your visitors need, which later may also become the reason to visitor to ignore your website. To avoid this situation, we implement a table of content in our website. An automatically well-organised table of contents gives your website a professional touch. The Table of contents also helps your website visitors to save time by scrolling a lot.
 
@@ -21,7 +23,7 @@ Blogger is one of the best platforms where a lot of bloggers start their bloggin
 2.  Click the **Themes** option from the sidebar
 3.  Click the **drop-down icon** near **the Customise** button on the Themes page
 4.  Click **Edit HTML** from that drop-down menu
-5.  Find </head> or for some themes it may be <head/>
+5.  Find `</head>` or for some themes it may be `<head/>`
 6.  Paste the following JS just above it
 
 ```
@@ -33,15 +35,15 @@ class TableOfContents { constructor({ from, to }) { this.fromElement = from; thi
   </b:if>
 ```
 
-7.  Find \]\]></b:skin>
+7.  Find `]]></b:skin>`
 8.  Paste the following CSS just above it
 
 ```
 /* Smooth Scroll */html{scroll-behavior:smooth}
-/* Table of Content (www.coshix.in) */#toc-container{margin:20px 0;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#eef2ff,#f8fafc);border:1px solid rgba(0,0,0,.06);box-shadow:0 4px 20px rgba(0,0,0,.05)}#toc-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:transparent;border:0;font-size:15px;font-weight:600;color:#111827;cursor:pointer}#toc-icon{transition:.25s}#toc{max-height:0;overflow:hidden;transition:max-height .25s ease;padding:0 16px}#toc-container.open #toc{max-height:500px;padding:10px 16px}#toc-container:not(.open) #toc{transition:none;padding:0 16px}#toc-container.open #toc-icon{transform:rotate(180deg)}#toc ol{padding-left:18px;margin:0}#toc li{margin:6px 0}#toc a{text-decoration:none;color:#374151;font-size:14px;transition:.2s}#toc a:hover{color:#6366f1;padding-left:4px}.darkMode #toc-container{background:linear-gradient(135deg,#0f172a,#111827);border:1px solid rgba(255,255,255,.06);box-shadow:0 4px 20px rgba(0,0,0,.4)}.darkMode #toc-toggle{color:#e5e7eb}
+/* Table of Content (coshix.in) */#toc-container{margin:20px 0;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,#eef2ff,#f8fafc);border:1px solid rgba(0,0,0,.06);box-shadow:0 4px 20px rgba(0,0,0,.05)}#toc-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:transparent;border:0;font-size:15px;font-weight:600;color:#111827;cursor:pointer}#toc-icon{transition:.25s}#toc{max-height:0;overflow:hidden;transition:max-height .25s ease;padding:0 16px}#toc-container.open #toc{max-height:500px;padding:10px 16px}#toc-container:not(.open) #toc{transition:none;padding:0 16px}#toc-container.open #toc-icon{transform:rotate(180deg)}#toc ol{padding-left:18px;margin:0}#toc li{margin:6px 0}#toc a{text-decoration:none;color:#374151;font-size:14px;transition:.2s}#toc a:hover{color:#6366f1;padding-left:4px}.[ul:green]dark-mode[/ul] #toc-container{background:linear-gradient(135deg,#0f172a,#111827);border:1px solid rgba(255,255,255,.06);box-shadow:0 4px 20px rgba(0,0,0,.4)}.[ul:green]dark-mode[/ul] #toc-toggle{color:#e5e7eb}
 ```
 
-9.  Find <data:post.body/>
+9.  Find `<data:post.body/>`
 10.  Replace it with the following code
 
 ```
@@ -55,12 +57,12 @@ class TableOfContents { constructor({ from, to }) { this.fromElement = from; thi
 15.  Paste the following code anywhere in that post ( **Recommend:** Top of the post or middle of the post )
 
 ```
-<!--[ TOC (www.coshix.in)]-->
-<div id='toc-container'><button id='toc-toggle'><span>Table of contents</span><svg height='18' id='toc-icon' viewBox='0 0 24 24' width='18'><path d='M6 9l6 6 6-6' fill='none' stroke='currentColor' stroke-width='2'/></svg></button><div id='toc'></div></div>
+<!--[ TOC (coshix.in)]-->
+<div id='toc-container'><button id='toc-toggle'><span>[hl:blue]Table of contents[/hl]</span><svg height='18' id='toc-icon' viewBox='0 0 24 24' width='18'><path d='M6 9l6 6 6-6' fill='none' stroke='currentColor' stroke-width='2'/></svg></button><div id='toc'></div></div>
 <script>/*<![CDATA[*//* Load TOC */document.addEventListener("DOMContentLoaded",function(){var e=document.querySelector(".postBody"),t=document.getElementById("toc"),c=document.getElementById("toc-container"),b=document.getElementById("toc-toggle");e&&t&&new TableOfContents({from:e,to:t}).generateToc(),b&&b.addEventListener("click",function(){c.classList.toggle("open")})});/*]]>*/</script>
 ```
 
-You can change the blue-highlighted text in the code with your likely text.
+<div class="alert info">You can change the blue-highlighted text in the code with your likely text.</div>
 
 16.  If you have done everything in your post, click the **Publish** button at the top to make the post public
 
@@ -71,8 +73,8 @@ You can change the blue-highlighted text in the code with your likely text.
 *   The web browser should not block JavaScript
 *   Do not use H1 in a post more than once. Some Blogger templates also use H1 in the Blogger post title, so if it's then don't even touch H1 in your post. 
 
-**Want to see how it works?**  
-[Demo](https://coshix-outputs.blogspot.com/2026/03/the-heading.html)
+<div class="alert info">Want to see how it works?
+<a href="https://coshix-outputs.blogspot.com/2026/03/the-heading.html" target="_blank">View Demo</a></div>
 
 ## Is the Table of Contents Good for SEO?
 
@@ -88,4 +90,4 @@ When your post is structured properly, like the proper use of heading tags in an
 
   
 
-Hope this tutorial helped you to successfully implement an automatic table of contents in your Blogger website. If you have any doubts related to the implementation or found any errors, then don't forget to comment down below, which will help us to solve the problem as soon as possible. Do you also want to add a quiz system to your website? Then don't forget to check out the "[How to Create a Quiz System in JavaScript with Timer, Explanation & Score (Step-by-Step Tutorial)](/2026/03/javascript-quiz-system.html)" article. Thanks for reading this article.
+Hope this tutorial helped you to successfully implement an automatic table of contents in your Blogger website. If you have any doubts related to the implementation or found any errors, then don't forget to comment down below, which will help us to solve the problem as soon as possible. Do you also want to add a quiz system to your website? Then don't forget to check out the "[How to Create a Quiz System in JavaScript with Timer, Explanation & Score (Step-by-Step Tutorial)](/blog/quiz-system-in-javascript-with-timer)" article. Thanks for reading this article.

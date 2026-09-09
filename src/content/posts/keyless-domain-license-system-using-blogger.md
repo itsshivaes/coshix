@@ -1,23 +1,21 @@
 ---
 title: "How to make a Keyless Domain License System using Blogger"
+description: "A domain-based license system helps to make your element or theme safe by verifying whether the domain exists or not in the post; if it does not exist, it redirects to the main domain with an alert message."
 date: 2026-04-29
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEikXv1J3b8VkE6ZmRBQm6UtW_DYuNk23KNv2_6xYTZfpj2VMVtuIgIv6QV322X6nAgsZN31yL72jpnwWufeQFa-_kXA5-tSn3xLIgREvPR6QHyGa4Qh08szIBdwQPBe81bed2s72OHXjgr_bNOH3fvCrmxshKuub_pbdrKX43fIpwQ6_N2m1dHU5GUVu6Yk/s1600-rw/domain-license-system-blogger.webp"
+authors: ["Shiva E S"]
+image: "/images/posts/domain-license-system-blogger.webp"
 categories: ["Blogger"]
 tags: ["Blogger","Codes","Web","License","How To","Common","JavaScript Components"]
 draft: false
 ---
 
-![Domain License System](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEikXv1J3b8VkE6ZmRBQm6UtW_DYuNk23KNv2_6xYTZfpj2VMVtuIgIv6QV322X6nAgsZN31yL72jpnwWufeQFa-_kXA5-tSn3xLIgREvPR6QHyGa4Qh08szIBdwQPBe81bed2s72OHXjgr_bNOH3fvCrmxshKuub_pbdrKX43fIpwQ6_N2m1dHU5GUVu6Yk/s1600-rw/domain-license-system-blogger.webp)
+![Domain License System](/images/posts/domain-license-system-blogger.webp)
 
 Protecting your premium elements or themes using the domain license system is one of the best ways to avoid leaking; however, the **client-side scripts are always not 100% secure** as you think. A domain-based license system helps to make your element or theme safe by verifying whether the domain exists or not in the post; if it does not exist, it redirects to the main domain with an alert message.
 
 Using Blogger feeds, we can make a lightweight, simple and easy-to-manage keyless license system at no cost. It was suitable for anyone who needs a keyless license system for their elements or theme without any traditional database or external server. In this guide, we share with you how to make a keyless license system for your custom elements or themes.
 
 We also try to make this guide simple and easy to understand step by step guide. Since it doesn't use any server setup, it doesn't require any big complex steps; you can authorise domains, like adding blog posts. So without wasting much time, let's check how to implement this keyless domain license system in your custom element or template.
-
-Table of Contents
-
-document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfContents !== 'undefined') { new TableOfContents({ from: document.querySelector('#postBody'), to: document.querySelector('#toContent') }).generateToc(); } });
 
 ## Requirement for this license system
 
@@ -43,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 4.  Look at the post edit page address in the browser
 5.  In the address bar, the first set of numbers is the blog ID, and the second set of numbers is the post ID. Note it anywhere
 
-![Thumbnail](data:image/png;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=)
+![Thumbnail](/images/posts/blog-id-post-id-blogger.jpg)
 
 ### Adding a license system
 
@@ -53,21 +51,21 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 ```
 /* ----
   Keyless Domain License System through Blogger
-  Created by: www.coshix.in
-  Source code: https://www.coshix.in/2026/04/keyless-license-system.html
+  Created by: coshix.in
+  Source code: https://coshix.in/blog/keyless-domain-license-system-using-blogger
 ---- */
 (function () {
 
   /* Demo configuration (replace with your own values) */
-  var BLOG_ID = "YOUR_BLOG_ID";
-  var POST_ID = "YOUR_LICENSE_POST_ID";
+  var BLOG_ID = "[hl:blue]YOUR_BLOG_ID[/hl]";
+  var POST_ID = "[hl:blue]YOUR_LICENSE_POST_ID[/hl]";
 
   function invalidLicense(){
     alert("License validation failed.");
   }
 
   function allowAccess(){
-    console.log("License valid, Thanks for purchasing!");
+    console.log("[ul:green]License valid, Thanks for purchasing![/ul]");
   }
 
   function verifyLicense(){
@@ -104,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
       "?alt=json-in-script&callback=" + cb;
 
     s.onerror = function(){
-      console.warn("Network error, allowing access");
+      console.warn("[ul:red]Network error, allowing access[/ul]");
     };
 
     document.body.appendChild(s);
@@ -140,27 +138,43 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 
 18.  Publish your license post
 
-**Success:** Now you have successfully implemented a keyless license system for your theme or element.
+<div class="alert success">Now you have successfully implemented a keyless license system for your theme or element.</div>
 
-**Warning:** Always make sure your license blog reader access is set to public, else it allows access to your theme or element to everyone, and also make sure the blog feed is set to full in Blogger settings.
+<div class="alert warning">Always make sure your license blog reader access is set to public, else it allows access to your theme or element to everyone, and also make sure the blog feed is set to full in Blogger settings.</div>
 
 ## FAQ
 
-What is the domain license system?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">What is the domain license system?</summary>
+    <div class="faq-answer">
+      Domain license system verifies whether the element or theme working website's domain is authorised or not, and if it is not authorised, it avoids giving access to that website.
+    </div>
+  </details>
 
-Domain license system verifies whether the element or theme working website's domain is authorised or not, and if it is not authorised, it avoids giving access to that website.
+  <details class="faq-item">
+    <summary class="faq-question">How does this Blogger feed-based license system work?</summary>
+    <div class="faq-answer">
+      It checks whether the domain name which running your element, theme, or other projects is in your blog post using Blogger feeds and takes action.
+    </div>
+  </details>
 
-How does this Blogger feed-based license system work?
+  <details class="faq-item">
+    <summary class="faq-question">Does this license system require any external server?</summary>
+    <div class="faq-answer">
+      No, it doesn't require any external server as we use Blogger feeds as the license serving source.
+    </div>
+  </details>
 
-It checks whether the domain name which running your element, theme, or other projects is in your blog post using Blogger feeds and takes action.
+  <details class="faq-item">
+    <summary class="faq-question">Can we use this method for any website besides Blogger?</summary>
+    <div class="faq-answer">
+      Yes, you can use this method anywhere, but it requires creating a blog in Blogger to store the license key, as it uses Blogger feeds.
+    </div>
+  </details>
 
-Does this license system require any external server?
-
-No, it doesn't require any external server as we use Blogger feeds as the license serving source.
-
-Can we use this method for any website besides Blogger?
-
-Yes, you can use this method anywhere, but it requires creating a blog in Blogger to store the license key, as it uses Blogger feeds.
+</div>
 
 ## Conclusion
 

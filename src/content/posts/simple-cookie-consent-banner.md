@@ -1,13 +1,15 @@
 ---
 title: "How to Create a Simple Cookie Consent Banner with CSS & JS"
 date: 2026-04-04
-image: "https://res.cloudinary.com/dy103qdge/image/upload/q_auto/f_auto/v1777385483/simple-cookie-consent_20_281_29_yxaemx.webp"
-categories: ["Codes"]
-tags: ["Codes","Common","Cookie Consent","How To","Web","SEO & Performance","CSS","JavaScript","HTML","CSS Components","Widgets"]
+description: "Adding cookie consent to your website is one of the important steps to gain trust from users and comply with privacy regulations. If you are running a blog, portfolio, downloading or a business website, cookie consent is must have element in your website to ensure better transparency between your website and its users. With a simple, responsive and modern design, it doesn't make your website interface messy or ugly. It improves users' trust by telling users for what purpose or why your website uses cookies."
+image: "/images/posts/simple-cookie-consent_20_281_29_yxaemx.webp"
+categories: ["Common"]
+tags: ["Common","Codes","Cookie Consent","How To","Web","SEO & Performance","CSS","JavaScript","HTML","CSS Components","Widgets"]
+authors: [shiva-e-s]
 draft: false
 ---
 
-![Simple Cookie Consent](https://res.cloudinary.com/dy103qdge/image/upload/q_auto/f_auto/v1777385483/simple-cookie-consent_20_281_29_yxaemx.webp)
+![Simple Cookie Consent](/images/posts/simple-cookie-consent_20_281_29_yxaemx.webp)
 
 Adding cookie consent to your website is one of the important steps to gain trust from users and comply with privacy regulations. If you are running a blog, portfolio, downloading or a business website, cookie consent is must have element in your website to ensure better transparency between your website and its users. With a simple, responsive and modern design, it doesn't make your website interface messy or ugly. It improves users' trust by telling users for what purpose or why your website uses cookies.
 
@@ -42,11 +44,11 @@ First of all, you need to open your website's .html file (e.g. index.html)
 2.  Paste the following CSS just above the `</head>` tag
 
 ```
-<style>/* Simple Cookie Consent (src: www.coshix.in) */.coshix-consent{position:fixed;bottom:20px;left:20px;z-index:999999;pointer-events:none}.coshix-consent .notice-core{pointer-events:all;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.75);color:#222;backdrop-filter:blur(8px) saturate(130%);-webkit-backdrop-filter:blur(8px);border:1px solid #e2e2e2;box-shadow:0 10px 30px rgba(0,0,0,.15);max-width:440px;transform:translateX(-120%);opacity:0}.coshix-consent .n-icon{display:flex;opacity:.9}.coshix-consent .n-text{flex:1;font-size:13.8px;line-height:1.5}.coshix-consent .n-text a{opacity:.8;text-decoration:underline!important;color:#222;font-weight:500}.coshix-consent .n-text a:hover{color:inherit}.coshix-consent .n-actions button{background:#111;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:transform .15s,box-shadow .2s,opacity .2s}.coshix-consent .n-actions button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}.coshix-consent .notice-core.showing{animation:.5s cubic-bezier(.2,.8,.3,1) forwards coshixSlide}@keyframes coshixSlide{to{transform:translateX(0);opacity:1}}@media (max-width:520px){.coshix-consent{left:0;right:0;bottom:0}.coshix-consent .notice-core{width:100%;max-width:100%;border-radius:0;padding:13px 14px;transform:translateY(100%);border-bottom:0!important;border-left:0!important;border-right:0!important}.coshix-consent .notice-core.showing{animation:.4s forwards coshixUp}@keyframes coshixUp{to{transform:translateY(0);opacity:1}}}
-/* Dark Mode (Remove if no dark mode) */body.dark-mode .coshix-consent .notice-core{background:rgba(20,20,20,.65);color:#e8e8e8;border:1px solid #444444;box-shadow:0 10px 30px rgba(0,0,0,.4)}body.dark-mode .coshix-consent .n-text a{color:#fff}body.dark-mode .coshix-consent .n-actions button{background:#fff;color:#111}</style>
+<style>/* Simple Cookie Consent (src: coshix.in) */.coshix-consent{position:fixed;bottom:20px;left:20px;z-index:999999;pointer-events:none}.coshix-consent .notice-core{pointer-events:all;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.75);color:#222;backdrop-filter:blur(8px) saturate(130%);-webkit-backdrop-filter:blur(8px);border:1px solid #e2e2e2;box-shadow:0 10px 30px rgba(0,0,0,.15);max-width:440px;transform:translateX(-120%);opacity:0}.coshix-consent .n-icon{display:flex;opacity:.9}.coshix-consent .n-text{flex:1;font-size:13.8px;line-height:1.5}.coshix-consent .n-text a{opacity:.8;text-decoration:underline!important;color:#222;font-weight:500}.coshix-consent .n-text a:hover{color:inherit}.coshix-consent .n-actions button{background:#111;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:transform .15s,box-shadow .2s,opacity .2s}.coshix-consent .n-actions button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}.coshix-consent .notice-core.showing{animation:.5s cubic-bezier(.2,.8,.3,1) forwards coshixSlide}@keyframes coshixSlide{to{transform:translateX(0);opacity:1}}@media (max-width:520px){.coshix-consent{left:0;right:0;bottom:0}.coshix-consent .notice-core{width:100%;max-width:100%;border-radius:0;padding:13px 14px;transform:translateY(100%);border-bottom:0!important;border-left:0!important;border-right:0!important}.coshix-consent .notice-core.showing{animation:.4s forwards coshixUp}@keyframes coshixUp{to{transform:translateY(0);opacity:1}}}
+/* Dark Mode (Remove if no dark mode) */body.[ul:green]dark-mode[/ul] .coshix-consent .notice-core{background:rgba(20,20,20,.65);color:#e8e8e8;border:1px solid #444444;box-shadow:0 10px 30px rgba(0,0,0,.4)}body.[ul:green]dark-mode[/ul] .coshix-consent .n-text a{color:#fff}body.[ul:green]dark-mode[/ul] .coshix-consent .n-actions button{background:#fff;color:#111}</style>
 ```
 
-**Info!** If your theme supports a dark theme, then replace `dark-mode` with your website's dark mode class, or else remove the CSS inside the style tag from `/* Dark Mode (Remove if no dark mode) */` to reduce CSS size.
+<div class="alert info">If your theme supports a dark theme, then replace dark-mode with your website's dark mode class, or else remove the CSS inside the style tag from `/* Dark Mode (Remove if no dark mode) */` to reduce CSS size.</div>
 
 ### Adding HTML code to the website
 
@@ -54,7 +56,7 @@ First of all, you need to open your website's .html file (e.g. index.html)
 7.  Paste the following HTML code just below it or anywhere inside the body tag
 
 ```
-<!--======= Cookie Consent (src: www.coshix.in) ======-->
+<!--======= Cookie Consent (src: coshix.in) ======-->
 <div class="coshix-consent" id="noticeLayer">
   <div class="notice-core">
     <div class="n-icon">
@@ -68,7 +70,7 @@ First of all, you need to open your website's .html file (e.g. index.html)
 </div>
 ```
 
-**Info!** Don't forget to replace `/privacy-policy` with your website's policy page link.
+<div class="alert info">Don't forget to replace "/privacy-policy" with your website's policy page link.</div>
 
 ### Adding JavaScript to the Website
 
@@ -76,12 +78,12 @@ First of all, you need to open your website's .html file (e.g. index.html)
 12.  Paste the following JS just above it
 
 ```
-<script>/* Simple Cookie Consent JS (src: www.coshix.in) */!function(){var e=document.getElementById("noticeLayer"),t=document.getElementById("acceptNow"),o=e.querySelector(".notice-core");document.body.appendChild(e),localStorage.getItem("coshixConsent_ok_v6")?e.style.display="none":setTimeout((function(){o.classList.add("showing")}),200),t.onclick=function(){localStorage.setItem("coshixConsent_ok_v6","1"),e.style.display="none"}}();</script>
+<script>/* Simple Cookie Consent JS (src: coshix.in) */!function(){var e=document.getElementById("noticeLayer"),t=document.getElementById("acceptNow"),o=e.querySelector(".notice-core");document.body.appendChild(e),localStorage.getItem("coshixConsent_ok_v6")?e.style.display="none":setTimeout((function(){o.classList.add("showing")}),200),t.onclick=function(){localStorage.setItem("coshixConsent_ok_v6","1"),e.style.display="none"}}();</script>
 ```
 
 14.  Save your HTML file
 
-**Done!** Now check that your website's cookie consent banner is showing and working properly.
+<div class="alert success">Done! Now check that your website's cookie consent banner is showing and working properly.</div>
 
 ## How to Add a Cookie Consent Banner in Blogger
 
@@ -98,8 +100,8 @@ First of all, you need to open your website's .html file (e.g. index.html)
 7.  Paste the following CSS just above it
 
 ```
-/* Simple Cookie Consent (src: www.coshix.in) */.coshix-consent{position:fixed;bottom:20px;left:20px;z-index:999999;pointer-events:none}.coshix-consent .notice-core{pointer-events:all;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.75);color:#222;backdrop-filter:blur(8px) saturate(130%);-webkit-backdrop-filter:blur(8px);border:1px solid #e2e2e2;box-shadow:0 10px 30px rgba(0,0,0,.15);max-width:440px;transform:translateX(-120%);opacity:0}.coshix-consent .n-icon{display:flex;opacity:.9}.coshix-consent .n-text{flex:1;font-size:13.8px;line-height:1.5}.coshix-consent .n-text a{opacity:.8;text-decoration:underline!important;color:#222;font-weight:500}.coshix-consent .n-text a:hover{color:inherit}.coshix-consent .n-actions button{background:#111;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:transform .15s,box-shadow .2s,opacity .2s}.coshix-consent .n-actions button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}.coshix-consent .notice-core.showing{animation:.5s cubic-bezier(.2,.8,.3,1) forwards coshixSlide}@keyframes coshixSlide{to{transform:translateX(0);opacity:1}}@media (max-width:520px){.coshix-consent{left:0;right:0;bottom:0}.coshix-consent .notice-core{width:100%;max-width:100%;border-radius:0;padding:13px 14px;transform:translateY(100%);border-bottom:0!important;border-left:0!important;border-right:0!important}.coshix-consent .notice-core.showing{animation:.4s forwards coshixUp}@keyframes coshixUp{to{transform:translateY(0);opacity:1}}}
-/* Dark Mode (Remove if no dark mode) */body.dark-mode .coshix-consent .notice-core{background:rgba(20,20,20,.65);color:#e8e8e8;border:1px solid #444444;box-shadow:0 10px 30px rgba(0,0,0,.4)}body.dark-mode .coshix-consent .n-text a{color:#fff}body.dark-mode .coshix-consent .n-actions button{background:#fff;color:#111}
+/* Simple Cookie Consent (src: coshix.in) */.coshix-consent{position:fixed;bottom:20px;left:20px;z-index:999999;pointer-events:none}.coshix-consent .notice-core{pointer-events:all;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.75);color:#222;backdrop-filter:blur(8px) saturate(130%);-webkit-backdrop-filter:blur(8px);border:1px solid #e2e2e2;box-shadow:0 10px 30px rgba(0,0,0,.15);max-width:440px;transform:translateX(-120%);opacity:0}.coshix-consent .n-icon{display:flex;opacity:.9}.coshix-consent .n-text{flex:1;font-size:13.8px;line-height:1.5}.coshix-consent .n-text a{opacity:.8;text-decoration:underline!important;color:#222;font-weight:500}.coshix-consent .n-text a:hover{color:inherit}.coshix-consent .n-actions button{background:#111;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:transform .15s,box-shadow .2s,opacity .2s}.coshix-consent .n-actions button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}.coshix-consent .notice-core.showing{animation:.5s cubic-bezier(.2,.8,.3,1) forwards coshixSlide}@keyframes coshixSlide{to{transform:translateX(0);opacity:1}}@media (max-width:520px){.coshix-consent{left:0;right:0;bottom:0}.coshix-consent .notice-core{width:100%;max-width:100%;border-radius:0;padding:13px 14px;transform:translateY(100%);border-bottom:0!important;border-left:0!important;border-right:0!important}.coshix-consent .notice-core.showing{animation:.4s forwards coshixUp}@keyframes coshixUp{to{transform:translateY(0);opacity:1}}}
+/* Dark Mode (Remove if no dark mode) */body.[ul:green]dark-mode[/ul] .coshix-consent .notice-core{background:rgba(20,20,20,.65);color:#e8e8e8;border:1px solid #444444;box-shadow:0 10px 30px rgba(0,0,0,.4)}body.[ul:green]dark-mode[/ul] .coshix-consent .n-text a{color:#fff}body.[ul:green]dark-mode[/ul] .coshix-consent .n-actions button{background:#fff;color:#111}
 ```
 
 ### Adding JavaScript in Blogger
@@ -108,7 +110,7 @@ First of all, you need to open your website's .html file (e.g. index.html)
 11.  Paste the following JS just above it
 
 ```
-<script>/*<![CDATA[*//* Simple Cookie Consent JS (src: www.coshix.in) */!function(){var e=document.getElementById("noticeLayer"),t=document.getElementById("acceptNow"),o=e.querySelector(".notice-core");document.body.appendChild(e),localStorage.getItem("coshixConsent_ok_v6")?e.style.display="none":setTimeout((function(){o.classList.add("showing")}),200),t.onclick=function(){localStorage.setItem("coshixConsent_ok_v6","1"),e.style.display="none"}}();/*]]>*/</script>
+<script>/*<![CDATA[*//* Simple Cookie Consent JS (src: coshix.in) */!function(){var e=document.getElementById("noticeLayer"),t=document.getElementById("acceptNow"),o=e.querySelector(".notice-core");document.body.appendChild(e),localStorage.getItem("coshixConsent_ok_v6")?e.style.display="none":setTimeout((function(){o.classList.add("showing")}),200),t.onclick=function(){localStorage.setItem("coshixConsent_ok_v6","1"),e.style.display="none"}}();/*]]>*/</script>
 ```
 
 ### Adding HTML code in Blogger
@@ -117,7 +119,7 @@ First of all, you need to open your website's .html file (e.g. index.html)
 15.  Paste the following HTML code just below it
 
 ```
-<!--======= Cookie Consent (src: www.coshix.in) ======-->
+<!--======= Cookie Consent (src: coshix.in) ======-->
 <div class="coshix-consent" id="noticeLayer">
   <div class="notice-core">
     <div class="n-icon">
@@ -131,30 +133,46 @@ First of all, you need to open your website's .html file (e.g. index.html)
 </div>
 ```
 
-**Done!** Now check that your Blogger website's cookie consent banner is showing and working properly.
+<div class="alert success">Done! Now check that your Blogger website's cookie consent banner is showing and working properly.</div>
 
 ## Cookie Consent Banner Preview
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/04/simple-cookie-consent-banner.html)
+<div class="alert info">Want to see how it works?  
+<a href="https://coshix-outputs.blogspot.com/2026/04/simple-cookie-consent-banner.html" target="_blank">View Demo</a></div>
 
 ## FAQ
 
-What is a Cookie Consent Banner?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">What is a Cookie Consent Banner?</summary>
+    <div class="faq-answer">
+      It is an important banner shown on websites to inform users about the use of cookies.
+    </div>
+  </details>
 
-It is an important banner shown on websites to inform users about the use of cookies.
+  <details class="faq-item">
+    <summary class="faq-question">Is the Cookie Consent Banner required for every website?</summary>
+    <div class="faq-answer">
+      It strictly doesn't require every website, but if your website uses analytics, ads or any third-party services, then we highly recommend that you implement the Cookie Consent Banner on your website.
+    </div>
+  </details>
 
-Is the Cookie Consent Banner required for every website?
+  <details class="faq-item">
+    <summary class="faq-question">Will adding a Cookie Consent Banner affect page speed?</summary>
+    <div class="faq-answer">
+      No, if you use simple and optimised code (Like in this tutorial) will not affect your website's page speed.
+    </div>
+  </details>
 
-It strictly doesn't require every website, but if your website uses analytics, ads or any third-party services, then we highly recommend that you implement the Cookie Consent Banner on your website.
+  <details class="faq-item">
+    <summary class="faq-question">Can I implement the Cookie Consent Banner on my website without using third-party plugins?</summary>
+    <div class="faq-answer">
+      Yes, you can implement the Cookie Consent banner even without the help third party plugins. You can implement it just using lightweight CSS and JavaScript.
+    </div>
+  </details>
 
-Will adding a Cookie Consent Banner affect page speed?
-
-No, if you use simple and optimised code (Like in this tutorial) will not affect your website's page speed.
-
-Can I implement the Cookie Consent Banner on my website without using third-party plugins?
-
-Yes, you can implement the Cookie Consent banner even without the help third party plugins. You can implement it just using lightweight CSS and JavaScript.
+</div>
 
 ## Conclusion
 
@@ -166,4 +184,4 @@ Every user requires a fast-loading and useful website that also respects their p
 
   
 
-This small improvement can improve your website's user experience and make your website more trustworthy. If you have any doubts related to this post, then don't forget to drop a comment below. If you also like to add a table of contents in your Blogger website posts, then don't forget to check the "[Automatic TOC Guide](/2026/03/add-table-of-contents-blogger.html)" tutorial. Thanks for reading this post.
+This small improvement can improve your website's user experience and make your website more trustworthy. If you have any doubts related to this post, then don't forget to drop a comment below. If you also like to add a table of contents in your Blogger website posts, then don't forget to check the "[Automatic TOC Guide](/blog/table-of-contents-in-blogger)" tutorial. Thanks for reading this post.

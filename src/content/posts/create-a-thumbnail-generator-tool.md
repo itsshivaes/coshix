@@ -1,13 +1,15 @@
 ---
 title: "Create a Thumbnail Generator Tool Using HTML, CSS & JavaScript"
 date: 2026-05-04
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigmDSzP0641Dx0g8bkFKdh-agVkv1zPqBFXDIcXFam9SHhTUAQgb4q-RIqspRRF_0VqGoBts2ZVqAO-g_Ah0hvr9PpW8dAGkMeiyUDPGtmKMz6dU5rKakt9XaJW2b1pyG5eshgLBFTUnUxYVtVyAAqHryvIiMlUxdzdkT23xT8q2WKAhL67LVe9dfOUxaG/s1600-rw/thumbnail-generator-tool-pure-js.webp"
-categories: ["Codes"]
-tags: ["Codes","Web","Common","Thumbnail Generator","How To","Tools","CSS","JavaScript","HTML","JavaScript Components"]
+description: "This thumbnail generator tool uses the HTML5 Canvas API to dynamically generate thumbnails with a live preview for users. This tool allows users to customise everything, including fonts, colours, shapes, icons, gradients, labels, texts, and even export file formats like users can export images in PNG, JPG and WEBP formats."
+authors: [shiva-e-s]
+image: "/images/posts/thumbnail-generator-tool-pure-js.webp"
+categories: ["Common"]
+tags: ["Common","Web","Codes","Thumbnail Generator","How To","Tools","CSS","JavaScript","HTML","JavaScript Components"]
 draft: false
 ---
 
-![Thumbnail generator tool](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEigmDSzP0641Dx0g8bkFKdh-agVkv1zPqBFXDIcXFam9SHhTUAQgb4q-RIqspRRF_0VqGoBts2ZVqAO-g_Ah0hvr9PpW8dAGkMeiyUDPGtmKMz6dU5rKakt9XaJW2b1pyG5eshgLBFTUnUxYVtVyAAqHryvIiMlUxdzdkT23xT8q2WKAhL67LVe9dfOUxaG/s1600-rw/thumbnail-generator-tool-pure-js.webp)
+![Thumbnail generator tool](/images/posts/thumbnail-generator-tool-pure-js.webp)
 
 Creating attractive thumbnails is one of the most important factors for improving CTR. **CTR stands for Click Through Rate**, and it is an **important factor in ranking your blog, YouTube channel, etc**. In this guide, we are going to share with you a beautiful and advanced thumbnail generator source code that just uses **Pure CSS and JavaScript**, and it doesn't require any backend services, which is also the highlight of this tool.
 
@@ -15,14 +17,9 @@ This thumbnail generator tool uses the **HTML5 Canvas API** to dynamically gener
 
 At the end of this tutorial, you will have a proper working thumbnail generator tool on your website **without relying on any paid backend services.** Whether you are building a tool website or using it for educational purposes, this source code will help you to build a powerful thumbnail generator. So without wasting much time, let's create this thumbnail generator tool.
 
-Table of Contents
-
-document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfContents !== 'undefined') { new TableOfContents({ from: document.querySelector('#postBody'), to: document.querySelector('#toContent') }).generateToc(); } });
-
 ## Live Tool Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/05/thumbnail-generator.html)
+<div class="alert info">Want to see how it works? <a href="https://coshix-outputs.blogspot.com/2026/05/thumbnail-generator.html" target="_blank">View Demo</a></div>
 
 ## Features of the Thumbnail Generator Tool
 
@@ -1490,21 +1487,37 @@ Every input field in this tool, such as font, colour, shapes, gradients, etc., i
 
 ## Frequently Asked Questions (FAQ)
 
-Does this thumbnail generator require a backend?
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Does this thumbnail generator require a backend?</summary>
+    <div class="faq-answer">
+      No, this tool works completely on the frontend using HTML, CSS, and JavaScript.
+    </div>
+  </details>
 
-No, this tool works completely on the frontend using HTML, CSS, and JavaScript.
+  <details class="faq-item">
+    <summary class="faq-question">Can I use this tool for YouTube thumbnails?</summary>
+    <div class="faq-answer">
+      Yes, you can create thumbnails suitable for YouTube, blogs, and social media.
+    </div>
+  </details>
 
-Can I use this tool for YouTube thumbnails?
+  <details class="faq-item">
+    <summary class="faq-question">Does this tool store user data?</summary>
+    <div class="faq-answer">
+      No, this tool does not store or upload any user data. Everything runs locally in your browser.
+    </div>
+  </details>
 
-Yes, you can create thumbnails suitable for YouTube, blogs, and social media.
+  <details class="faq-item">
+    <summary class="faq-question">Can I add this tool to my Blogger or WordPress site?</summary>
+    <div class="faq-answer">
+      Yes, you can easily add this tool into Blogger or WordPress by embedding the HTML, CSS, and JavaScript code.
+    </div>
+  </details>
 
-Does this tool store user data?
-
-No, this tool does not store or upload any user data. Everything runs locally in your browser.
-
-Can I add this tool to my Blogger or WordPress site?
-
-Yes, you can easily add this tool into Blogger or WordPress by embedding the HTML, CSS, and JavaScript code.
+</div>
 
 ## Conclusion
 

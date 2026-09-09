@@ -1,13 +1,15 @@
 ---
 title: "How to Add a Modern Ripple Click Effect Using Pure CSS & JavaScript"
 date: 2026-05-13
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEijF9SMUef8zSBfV8suiOp5Csdm9PlR0hwZJESvHg9nDGKDsrnJ0xPwBwvMJR4ZZo4Lk86fC7uqye2bNdaQLTYCbpLMFfzG0En1AnSpGDe-CVgzwirxJ38JP5O2qrY9TsARqaFnAqO7R76LUOoUPPEL5lIb5v7KEy4xhihtPewRJWwarzNX1O20yMKRY6me/s1600-rw/ripple-click-effect.webp"
+image: "/images/posts/ripple-click-effect.webp"
 categories: ["Common"]
+authors: [shiva-e-s]
+description: "Adding a ripple effect to your website is one of the best ways to make your website feel modern and attractive to its users. Nowadays, Many popular websites use ripple click effect in their website to provide their users with visual feedback when users click links, buttons or other elements in the website. A well-made ripple click effect can improve user experience by providing smoother animation and a modern design."
 tags: ["Common","Codes","How To","Web","Ripple effect","CSS","JavaScript","CSS Components"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEijF9SMUef8zSBfV8suiOp5Csdm9PlR0hwZJESvHg9nDGKDsrnJ0xPwBwvMJR4ZZo4Lk86fC7uqye2bNdaQLTYCbpLMFfzG0En1AnSpGDe-CVgzwirxJ38JP5O2qrY9TsARqaFnAqO7R76LUOoUPPEL5lIb5v7KEy4xhihtPewRJWwarzNX1O20yMKRY6me/s1600-rw/ripple-click-effect.webp)
+![Thumbnail](/images/posts/ripple-click-effect.webp)
 
 Adding a ripple effect to your website is one of the best ways to **make your website feel modern and attractive** to its users. Nowadays, Many popular websites use ripple click effect in their website to provide their users with visual feedback when users click links, buttons or other elements in the website. **A well-made ripple click effect can improve user experience** by providing smoother animation and a modern design.
 
@@ -15,14 +17,10 @@ From this tutorial, you will learn how to add a modern ripple click effect to yo
 
 Whether you are building a personal blog, a modern Blogger template, a portfolio website or any other type of website, this ripple effect **can provide a modern and professional touch to your website**. Just by following the steps provided below, you can also add a ripple click effect to your website easily. So without wasting much time, let's check how it works and how we can implement this on your website.
 
-Table of Contents
-
-document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfContents !== 'undefined') { new TableOfContents({ from: document.querySelector('#postBody'), to: document.querySelector('#toContent') }).generateToc(); } });
-
 ## Live Ripple Effect Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/05/ripple-effect.html)
+<div class="alert info">Want to see how it works?
+<a href="https://coshix-outputs.blogspot.com/2026/05/ripple-effect.html" target="_blank">View Demo</a></div>
 
 ## Features of This Ripple Effect
 
@@ -42,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 ```
 /* Body Ripple Effect (www.coshix.in) */.rpL{position:fixed;left:0;top:0;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:999999;transform:translate(-50%,-50%) scale(0);opacity:0;background:radial-gradient(circle,rgba(79,70,229,.62) 0%,rgba(37,99,235,.42) 36%,rgba(0,0,0,.12) 58%,transparent 78%);box-shadow:0 0 14px rgba(79,70,229,.32),0 0 24px rgba(37,99,235,.18);mix-blend-mode:multiply;will-change:transform,opacity}.rpL:after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1.2px solid rgba(79,70,229,.4)}.rpL.a{animation:rA .42s cubic-bezier(.22,1,.36,1)}@keyframes rA{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(5.5)}}
   
-  /* Dark mode (Remove if not using) */.dark-mode .rpL{background:radial-gradient(circle,rgba(255,255,255,.82) 0%,rgba(147,197,253,.42) 34%,rgba(255,255,255,.12) 56%,transparent 78%);box-shadow:0 0 16px rgba(255,255,255,.22),0 0 26px rgba(147,197,253,.14);mix-blend-mode:screen}.dark-mode .rpL:after{border-color:rgba(255,255,255,.32)}
+  /* Dark mode (Remove if not using) */.[ul:green]dark-mode[/ul] .rpL{background:radial-gradient(circle,rgba(255,255,255,.82) 0%,rgba(147,197,253,.42) 34%,rgba(255,255,255,.12) 56%,transparent 78%);box-shadow:0 0 16px rgba(255,255,255,.22),0 0 26px rgba(147,197,253,.14);mix-blend-mode:screen}.[ul:green]dark-mode[/ul] .rpL:after{border-color:rgba(255,255,255,.32)}
 ```
 
-**Note:** If your theme supports dark mode, then don't forget to replace the marked dark-mode class in the CSS with yours.
+<div class="alert info">If your theme supports dark mode, then don't forget to replace the marked dark-mode class in the CSS with yours.</div>
 
 #### Button Ripple Effect CSS
 
@@ -84,22 +82,37 @@ The **CSS handles its scaling effect, animation glow, etc**. JavaScript controls
 The use of only pure CSS and JavaScript ensures it remains **smooth and performance-friendly across both desktop and mobile devices**.
 
 ## FAQ (Frequently Asked Questions)
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Does this ripple effect affect website speed?</summary>
+    <div class="faq-answer">
+      No, this ripple effect uses lightweight CSS and JavaScript.
+    </div>
+  </details>
 
-Does this ripple effect affect website speed?
+  <details class="faq-item">
+    <summary class="faq-question">Does this work in Blogger?</summary>
+    <div class="faq-answer">
+      Yes, this ripple effect works perfectly in Blogger websites.
+    </div>
+  </details>
 
-No, this ripple effect uses lightweight CSS and JavaScript
+  <details class="faq-item">
+    <summary class="faq-question">Can I use this ripple effect on buttons only?</summary>
+    <div class="faq-answer">
+      Yes, you can use the button ripple effect separately.
+    </div>
+  </details>
 
-Does this work in Blogger?
+  <details class="faq-item">
+    <summary class="faq-question">Will this work on all modern browsers?</summary>
+    <div class="faq-answer">
+      Yes, the ripple effect works on most modern browsers including Chrome, Edge and Firefox.
+    </div>
+  </details>
 
-Yes, this ripple effect works perfectly in Blogger websites
-
-Can I use this ripple effect on buttons only?
-
-Yes, you can use the button ripple effect separately.
-
-Will this work on all modern browsers?
-
-Yes, the ripple effect works on most modern browsers including Chrome, Edge and Firefox.
+</div>
 
 ## Conclusion
 

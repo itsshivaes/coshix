@@ -1,23 +1,21 @@
 ---
 title: "How to Create a Modern YouTube Video Playlist Player Using Pure JavaScript"
 date: 2026-06-08
-image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg7DxM4lMLARtg6vK1KOnzl9mJ83ZiE6vbQJyDTDJrJHwi7QFMmm5nV4A30XtiXlZVUZdSe4myO67JoeeieLMdwPu18IGZ_pxvZ99-IWKNGgWQxDdgc2Rq9hWvSbTVr-avwqBVwNbCJDN7SKqAgmNbQp028CTVG-FYZ5YDfg1qel_WeZBvZcJ9b1oo7EjIJ/s1600-rw/yt-video-player.webp"
-categories: ["Web"]
-tags: ["Web","Codes","Common","How To","YouTube Video Playlist Player","CSS","JavaScript","HTML","CSS Components","JavaScript Components"]
+description: "Adding video content to your website is one of the best ways to make it more engaging for users. Embedding YouTube videos on websites is a common practise across blogs, educational websites, news websites, and entertainment websites. Adding a YouTube player with a playlist section is one of the cleaner ways to add multiple YouTube videos to your website."
+authors: [shiva-e-s]
+image: "/images/posts/yt-video-player.webp"
+categories: ["Common"]
+tags: ["Common","Codes","Web","How To","YouTube Video Playlist Player","CSS","JavaScript","HTML","CSS Components","JavaScript Components"]
 draft: false
 ---
 
-![Thumbnail](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg7DxM4lMLARtg6vK1KOnzl9mJ83ZiE6vbQJyDTDJrJHwi7QFMmm5nV4A30XtiXlZVUZdSe4myO67JoeeieLMdwPu18IGZ_pxvZ99-IWKNGgWQxDdgc2Rq9hWvSbTVr-avwqBVwNbCJDN7SKqAgmNbQp028CTVG-FYZ5YDfg1qel_WeZBvZcJ9b1oo7EjIJ/s1600-rw/yt-video-player.webp)
+![Thumbnail](/images/posts/yt-video-player.webp)
 
 Adding video content to your website is one of the **best ways to make it more engaging for users**. Embedding YouTube videos on websites is a common practise across blogs, educational websites, news websites, and entertainment websites. Adding a **YouTube player with a playlist section is one of the cleaner ways to add multiple YouTube videos to your website**.
 
 In this guide, you will learn how to create a **modern YouTube playlist player using pure CSS and JavaScript**, which means it does not rely on any external frameworks. This player includes features like YouTube Thumbnail, playlist navigation, search function, play-next controls, etc. As it uses pure CSS and JavaScript, **everything will remain lightweight and performance-friendly**.
 
 Whether you are running an entertainment website or any other type of website, this player helps you to embed multiple YouTube videos more efficiently. By following this guide carefully, you will learn to add a modern YouTube video playlist player to your website. So, without wasting much time, let's check how it works and how to implement it in your website.
-
-Table of Contents
-
-document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfContents !== 'undefined') { new TableOfContents({ from: document.querySelector('#postBody'), to: document.querySelector('#toContent') }).generateToc(); } });
 
 ## Features of This YouTube Video Playlist Player
 
@@ -36,8 +34,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
 
 ## Modern YouTube Video Playlist Player Demo
 
-**Want to see how it works?**  
-[View Demo](https://coshix-outputs.blogspot.com/2026/06/modern-yt-player.html)
+<div class="alert info">Want to see how it works? <a href="https://coshix-outputs.blogspot.com/2026/06/modern-yt-player.html" target="_blank">View Demo</a></div>
 
 
 ## How to Add This Modern YouTube Video Playlist Player to Your Website
@@ -60,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
   --active-hover:#e3dbff;
 }
 /* Dark mode start (Remove if not using)*/  
-.dark-mode .ytPlayer{
+.[ul:green]dark-mode[/ul] .ytPlayer{
 --bg:#0f1117;
 --card:#181c24;
 --text:#f3f4f6;
@@ -190,26 +187,26 @@ document.addEventListener('DOMContentLoaded', function() { if (typeof TableOfCon
   </div>
 <!-- Playlist Area end -->
 </div>
-<script>//JS for Modern YT Player (Source:www.coshix.in)
+<script>//JS for Modern YT Player (Source:coshix.in)
 const videos = [
 {
-id:"Video_1_ID",
-title:"Video 1 title"
+id:"[hl:blue]Video_1_ID[/hl]",
+title:"[hl:blue]Video 1 title[/hl]"
 },
 {
-id:"Video_2_ID",
-title:"Video 2 title"
+id:"[hl:blue]Video_2_ID[/hl]",
+title:"[hl:blue]Video 2 title[/hl]"
 },
 {
-id:"Video_3_ID",
-title:"Video 3 title"
+id:"[hl:blue]Video_3_ID[/hl]",
+title:"[hl:blue]Video 3 title[/hl]"
 }
 ];
 /* Risky edit section */const player=document.getElementById("player"),playlist=document.getElementById("playlist"),search=document.getElementById("search"),loader=document.getElementById("loader");let current=0;function loadVideo(e){current=e;const t=videos[e];document.getElementById("coverImg").src=`https://i.ytimg.com/vi/${t.id}/hqdefault.jpg`,document.getElementById("currentTitle").textContent=t.title,document.querySelectorAll(".videoItem").forEach((t,n)=>{t.classList.toggle("active",n===e)}),player.src&&(player.src=`https://www.youtube.com/embed/${t.id}?autoplay=1&rel=0&modestbranding=0`)}function renderPlaylist(e=""){playlist.innerHTML="",videos.filter(t=>t.title.toLowerCase().includes(e.toLowerCase())).forEach(e=>{const t=videos.findIndex(t=>t.id===e.id);playlist.insertAdjacentHTML("beforeend",`\n<div class="videoItem"\nonclick="loadVideo(${t})">\n\n<img\nloading="lazy"\nsrc="https://img.youtube.com/vi/${e.id}/mqdefault.jpg"\nalt="${e.title}">\n\n<div>\n<div class="videoTitle">\n${e.title}\n</div>\n</div>\n\n</div>\n`)}),document.getElementById("count").textContent=`${videos.length} Videos`}document.getElementById("prevBtn").onclick=()=>{current=(current-1+videos.length)%videos.length,loadVideo(current)},document.getElementById("nextBtn").onclick=()=>{current=(current+1)%videos.length,loadVideo(current)},document.getElementById("copyBtn").onclick=()=>{navigator.clipboard.writeText(`https://youtu.be/${videos[current].id}`),alert("Video link copied!")},search.addEventListener("input",e=>{renderPlaylist(e.target.value)}),renderPlaylist(),loadVideo(0),document.getElementById("playBtn").onclick=()=>{loader.classList.remove("hide"),player.src=`https://www.youtube.com/embed/${videos[current].id}?autoplay=1&rel=0&modestbranding=1`,document.getElementById("videoCover").style.display="none",player.style.display="block",setTimeout(()=>{loader.classList.add("hide")},1e3)};
 </script>
 ```
 
-**Note:** Don't forget to edit the blue background highlighted important sections to make it function properly.
+<div class="alert info">Don't forget to edit the blue background highlighted important sections to make it function properly.</div>
 
 ### Adding More Videos to The Playlist
 
@@ -270,22 +267,38 @@ This player includes a dynamic playlist, which automatically displays a video li
 The CSS provide style to this player, which includes its layout, colours, responsiveness, animation, corner radius, etc. Since it was built with pure CSS and JavaScript without using external libraries, the player remains performance-friendly and easy to modify according to your requirements.
 
 ## FAQ (Frequently Asked Questions)
+<div class="faq-container">
+  
+  <details class="faq-item">
+    <summary class="faq-question">Does this YouTube playlist player work on mobile devices?</summary>
+    <div class="faq-answer">
+      Yes, the player is fully responsive and works properly on both desktop and mobile devices.
+    </div>
+  </details>
 
-Does this YouTube playlist player work on mobile devices?
+  <details class="faq-item">
+    <summary class="faq-question">Can I add my own YouTube videos?</summary>
+    <div class="faq-answer">
+      Yes, simply replace the sample video IDs and titles inside the JavaScript videos array with your own YouTube videos.
+    </div>
+  </details>
 
-Yes, the player is fully responsive and works properly on both desktop and mobile devices.
+  <details class="faq-item">
+    <summary class="faq-question">Does this player support video search?</summary>
+    <div class="faq-answer">
+      Yes, users can search for videos using the built-in search box.
+    </div>
+  </details>
 
-Can I add my own YouTube videos?
+  <details class="faq-item">
+    <summary class="faq-question">Does this player support dark mode?</summary>
+    <div class="faq-answer">
+      Yes, the player includes dark mode styles.
+    </div>
+  </details>
 
-Yes, simply replace the sample video IDs and titles inside the JavaScript videos array with your own YouTube videos.
+</div>
 
-Does this player support video search?
-
-Yes, users can search for videos using the built-in search box.
-
-Does this player support dark mode?
-
-Yes, the player includes dark mode styles.
 
 ## Conclusion
 
