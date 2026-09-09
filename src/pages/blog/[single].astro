@@ -238,18 +238,50 @@ const relatedPosts = allPosts
 
       <section class="comments-section">
         <h3 class="comments-title">Comments</h3>
+        <button id="load-comments-btn" class="load-comments-btn">Load Comments</button>
         <div id="disqus_thread"></div>
+        
         <script is:inline>
-          var disqus_config = function () {
-            this.page.url = window.location.href;
-            this.page.identifier = window.location.pathname;
-          };
-          (function() {
-            var d = document, s = d.createElement('script');
-            s.src = 'https://coshix.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-          })();
+          /* Fineshop's Interaction-Based Lazy Script */
+          window.lazy = window.lazy || new Promise(e => {
+            const t = "IS_LAZIED", n = "true", o = ["scroll", "click"], i = ["keydown", "mouseover", "touchmove", "touchstart"], r = o.concat(i);
+            function a() { try { return localStorage.getItem(t) === n } catch (e) { return !0 } }
+            function l(e = !0) { try { e ? localStorage.setItem(t, n) : localStorage.removeItem(t) } catch (e) { } }
+            function d(t) { l(!0), e({ type: t.type.toLowerCase() }), r.forEach(e => window.removeEventListener(e, d)) }
+            if (a()) e({ type: "local" });
+            else if (0 !== document.documentElement.scrollTop || document.body && 0 !== document.body.scrollTop) d({ type: "scroll" });
+            else {
+              const e = () => { window.removeEventListener("load", e), i.forEach(e => window.addEventListener(e, d)) };
+              window.addEventListener("load", e), o.forEach(e => window.addEventListener(e, d))
+            }
+          });
+
+          /* Load Disqus on Click after Lazy resolve */
+          window.lazy.then(() => {
+            const loadBtn = document.getElementById('load-comments-btn');
+            if (loadBtn) {
+              loadBtn.addEventListener('click', function() {
+                // UI feedback
+                this.textContent = 'Loading comments...';
+                this.style.opacity = '0.6';
+                this.style.cursor = 'not-allowed';
+                
+                // Init Disqus
+                window.disqus_config = function () {
+                  this.page.url = window.location.href;
+                  this.page.identifier = window.location.pathname;
+                };
+                var d = document, s = d.createElement('script');
+                s.src = 'https://coshix.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                
+                // Hide button once loaded
+                s.onload = () => { this.style.display = 'none'; };
+                
+                (d.head || d.body).appendChild(s);
+              });
+            }
+          });
         </script>
         <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
       </section>
@@ -772,8 +804,36 @@ const relatedPosts = allPosts
   .share-btn.twitter { background: #09090b; color: #ffffff !important; }
   .share-btn.copy-link { background: var(--bg-main); color: var(--text-main); border-color: var(--border-color); }
   .share-btn.copy-link:hover { background: var(--border-color); }
+
+  /* --- COMMENTS SECTION & LAZY BUTTON --- */
   .comments-section { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
   .comments-title { font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin-bottom: 1.25rem; }
+  
+  .load-comments-btn {
+    width: 100%;
+    display: block;
+    padding: 0.85rem;
+    background: var(--bg-main);
+    border: 1px dashed var(--border-color);
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .load-comments-btn:hover {
+    background: var(--sidebar-hover);
+    border-color: #4f46e5;
+    color: #4f46e5;
+  }
+  
+  html.dark .load-comments-btn:hover {
+    color: #818cf8;
+  }
 
   /* --- RESPONSIVENESS & MOBILE EDGE-TO-EDGE --- */
   @media (max-width: 768px) {

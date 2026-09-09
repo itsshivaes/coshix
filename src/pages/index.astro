@@ -34,6 +34,9 @@ const formatDate = (dateStr: string) => {
   if (!dateStr) return "";
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 };
+
+// Base64 transparent placeholder to prevent broken image icon before loading
+const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 ---
 
 <Base title="Coshix - Powering Web Creators">
@@ -52,8 +55,8 @@ const formatDate = (dateStr: string) => {
 
           <article class="post-card horizontal-card">
             {pinnedPost.data?.image && (
-              <div class="card-thumb-h">
-                <img src={pinnedPost.data.image} alt={pinnedPost.data.title} loading="lazy" />
+              <div class="card-thumb-h skeleton-bg">
+                <img src={placeholderImg} data-src={pinnedPost.data.image} alt={pinnedPost.data.title} class="lazy-image" />
                 {pinnedPost.data?.commentsCount && (
                   <div class="comment-badge">💬 {pinnedPost.data.commentsCount}</div>
                 )}
@@ -74,7 +77,6 @@ const formatDate = (dateStr: string) => {
               <div class="card-footer">
                 <span class="update-tag">Updated</span>
                 <span class="date-label">{pinnedPost.data?.date ? formatDate(pinnedPost.data.date) : ""}</span>
-                <!-- Inline styles guarantee the text stays hidden but readable by Lighthouse -->
                 <a href={getPostUrl(pinnedPost)} class="read-more-link">
                   Read more<span style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;"> about {pinnedPost.data?.title}</span>
                 </a>
@@ -95,8 +97,8 @@ const formatDate = (dateStr: string) => {
           {latestPosts.map(post => (
             <article class="post-card vertical-card">
               {post.data?.image && (
-                <div class="card-thumb">
-                  <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                <div class="card-thumb skeleton-bg">
+                  <img src={placeholderImg} data-src={post.data.image} alt={post.data.title} class="lazy-image" />
                   {post.data?.commentsCount && (
                     <div class="comment-badge">💬 {post.data.commentsCount}</div>
                   )}
@@ -146,8 +148,8 @@ const formatDate = (dateStr: string) => {
             {bloggerPosts.map(post => (
               <article class="post-card vertical-card">
                 {post.data?.image && (
-                  <div class="card-thumb">
-                    <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                  <div class="card-thumb skeleton-bg">
+                    <img src={placeholderImg} data-src={post.data.image} alt={post.data.title} class="lazy-image" />
                     {post.data?.commentsCount && (
                       <div class="comment-badge">💬 {post.data.commentsCount}</div>
                     )}
@@ -191,8 +193,8 @@ const formatDate = (dateStr: string) => {
             {commonPosts.map(post => (
               <article class="post-card vertical-card">
                 {post.data?.image && (
-                  <div class="card-thumb">
-                    <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                  <div class="card-thumb skeleton-bg">
+                    <img src={placeholderImg} data-src={post.data.image} alt={post.data.title} class="lazy-image" />
                     {post.data?.commentsCount && (
                       <div class="comment-badge">💬 {post.data.commentsCount}</div>
                     )}
@@ -276,6 +278,32 @@ const formatDate = (dateStr: string) => {
   </div>
 
   <style>
+    /* --- SKELETON ANIMATIONS & LAZY LOADING --- */
+    .skeleton-bg {
+      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%) !important;
+      background-size: 400% 100% !important;
+      animation: skeletonLoading 1.5s infinite ease-in-out;
+    }
+    
+    html.dark .skeleton-bg {
+  background-image: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%) !important;
+}
+
+    @keyframes skeletonLoading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .lazy-image {
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+    
+    .lazy-image.loaded {
+      opacity: 1;
+    }
+
+    /* --- LAYOUT --- */
     .blog-home-layout {
       display: grid;
       grid-template-columns: 1fr 320px;
@@ -477,7 +505,7 @@ const formatDate = (dateStr: string) => {
     }
 
     .update-tag {
-      background: #0369a1; /* Darkened for better contrast against white text */
+      background: #0369a1;
       color: #ffffff;
       font-size: 0.55rem;
       font-weight: 700;
@@ -492,7 +520,7 @@ const formatDate = (dateStr: string) => {
     }
 
     .read-more-link {
-      color: #4338ca; /* Darkened for better contrast in light mode */
+      color: #4338ca; 
       font-weight: 700;
       text-decoration: none;
     }
@@ -697,4 +725,40 @@ const formatDate = (dateStr: string) => {
       }
     }
   </style>
+
+  <!-- Fineshop Lazy Load Script & Skeleton Loader Logic -->
+  <script is:inline>
+    /* 1. Fineshop's Interaction-Based Lazy Script */
+    window.lazy = window.lazy || new Promise(e => {
+      const t = "IS_LAZIED", n = "true", o = ["scroll", "click"], i = ["keydown", "mouseover", "touchmove", "touchstart"], r = o.concat(i);
+      function a() { try { return localStorage.getItem(t) === n } catch (e) { return !0 } }
+      function l(e = !0) { try { e ? localStorage.setItem(t, n) : localStorage.removeItem(t) } catch (e) { } }
+      function d(t) { l(!0), e({ type: t.type.toLowerCase() }), r.forEach(e => window.removeEventListener(e, d)) }
+      if (a()) e({ type: "local" });
+      else if (0 !== document.documentElement.scrollTop || document.body && 0 !== document.body.scrollTop) d({ type: "scroll" });
+      else {
+        const e = () => { window.removeEventListener("load", e), i.forEach(e => window.addEventListener(e, d)) };
+        window.addEventListener("load", e), o.forEach(e => window.addEventListener(e, d))
+      }
+    });
+
+    /* 2. Execute Image Swap when Promise resolves */
+    window.lazy.then(() => {
+      const lazyImages = document.querySelectorAll('img.lazy-image');
+      lazyImages.forEach(img => {
+        if (img.dataset.src) {
+          // When the real image finishes downloading, fade it in and remove the skeleton animation
+          img.onload = () => {
+            img.classList.add('loaded');
+            if (img.parentElement && img.parentElement.classList.contains('skeleton-bg')) {
+              img.parentElement.classList.remove('skeleton-bg');
+            }
+          };
+          // Swap data-src to src
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+      });
+    });
+  </script>
 </Base>
