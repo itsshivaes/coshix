@@ -87,7 +87,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
     <!-- Optimized Google Fonts to prevent render-blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
     <noscript>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
@@ -690,8 +689,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         --text-muted: #86868b;
         --border-color: #27272a;
         
-        /* Frosted Glass Header Dark */
-        --header-bg: rgba(10, 10, 10, 0.75);
+        /* Frosted Glass Header Dark - OPACITY LOWERED TO PRESERVE BLUR IN PRODUCTION */
+        --header-bg: rgba(10, 10, 10, 0.5);
         --cookie-bg: rgba(20, 20, 20, 0.85);
         
         /* Sidebar Styling Dark */
@@ -749,12 +748,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         box-sizing: border-box;
       }
 
-      /* Frosted Glass Navbar */
+      /* Frosted Glass Navbar - PRODUCTION SAFE WITH !IMPORTANT */
       .top-navbar {
         height: 65px;
-        background-color: var(--header-bg);
-        backdrop-filter: saturate(180%) blur(20px);
-        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        background-color: var(--header-bg) !important;
+        backdrop-filter: saturate(180%) blur(20px) !important;
+        -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
         border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
@@ -910,10 +909,31 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       img:not(.lazy) { opacity: 1; transition: opacity 0.3s ease-in-out; }
 
       pre { position: relative; }
-      .copy-code-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #cbd5e1; font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: 0.3rem; cursor: pointer; transition: all 0.15s ease; font-family: inherit; }
-      html[dir="rtl"] .copy-code-btn, html.Rtl .copy-code-btn { right: auto; left: 0.5rem; }
-      .copy-code-btn:hover { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
-      .copy-code-btn.copied { background: #10b981; color: #ffffff; border-color: #10b981; }
+      
+      /* Allow Shiki to render correctly */
+      .content-body pre { 
+        background: transparent !important; 
+        padding: 1.25rem !important; 
+        margin: 0 !important; 
+        border: none !important; 
+        border-radius: 0 !important; 
+        overflow-x: auto !important; 
+        max-width: 100% !important; 
+      }
+      
+      .content-body pre code { 
+        background: transparent !important; 
+        padding: 0 !important; 
+        border: none !important; 
+        word-break: normal; 
+        white-space: pre !important; 
+        -webkit-font-smoothing: antialiased; 
+        -moz-osx-font-smoothing: grayscale; 
+        font-weight: 500; 
+        font-size: 0.9rem; 
+        letter-spacing: 0.2px;
+        /* NO !important color here so Shiki colors work */
+      }
 
       .back-to-top-btn { position: fixed; bottom: 5rem; right: 2rem; background: #4f46e5; color: #ffffff; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); opacity: 0; visibility: hidden; transform: translateY(15px); transition: all 0.25s ease; z-index: 10; }
       html[dir="rtl"] .back-to-top-btn, html.Rtl .back-to-top-btn { right: auto; left: 2rem; }
