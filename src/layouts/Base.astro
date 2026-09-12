@@ -209,7 +209,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         padding: 0.45rem 1rem; border-radius: 0.5rem; color: #1d2229; font-size: 0.85rem; cursor: pointer;
         width: 320px; text-align: left; font-family: inherit; transition: all 0.2s ease; margin-left: 1.5rem;
       }
-      html .dark .search-trigger { color:var(--text-muted);}
+      html.dark .search-trigger { color:var(--text-muted);}
       html[dir="rtl"] .search-trigger, html.Rtl .search-trigger { margin-left: 0; margin-right: 1.5rem; text-align: right; }
       
       .search-trigger:hover {
