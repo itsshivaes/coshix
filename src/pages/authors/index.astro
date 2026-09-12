@@ -5,7 +5,9 @@ import { Image } from "astro:assets";
 import { marked } from "marked";
 
 export async function getStaticPaths() {
-  const authors = await getCollection("authors");
+  const authors = await getCollection("authors").catch(() => []);
+  if (!authors || authors.length === 0) return [];
+  
   return authors.map((author) => ({
     params: { single: author.slug || author.id },
     props: { author },
@@ -13,44 +15,27 @@ export async function getStaticPaths() {
 }
 
 const { author } = Astro.props;
-const { title, description, image } = author.data;
 
-// Parse bio if it exists
-const htmlContent = marked.parse(author.body || "");
+if (!author) {
+  return Astro.redirect('/404');
+}
 
-// Fetch all posts to filter by this exact author
-const allPosts = await getCollection("posts");
+const title = author.data?.title || "Author";
+const description = author.data?.description || "";
+const image = author.data?.image || "";
+
+// Parse bio safely if it exists
+const htmlContent = author.body ? marked.parse(author.body) : "";
+
+// Fetch all posts to filter by this exact author safely
+const allPosts = await getCollection("posts").catch(() => []);
 const authorPosts = allPosts
-  .filter((post) => post.data.authors && post.data.authors.includes(title))
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  .filter((post) => post.data?.authors && Array.isArray(post.data.authors) && post.data.authors.includes(title))
+  .sort((a, b) => new Date(b.data?.date || 0).getTime() - new Date(a.data?.date || 0).getTime());
 
-const popularPosts = allPosts
-  .filter(p => {
-    const identifier = p.slug || p.id || "";
-    return !identifier.includes("index") && p.data?.title !== "Posts";
-  })
-  .sort((a, b) => new Date(b.data?.date || 0).getTime() - new Date(a.data?.date || 0).getTime())
-  .slice(0, 5);
-
-const categoryMap = new Map();
-allPosts.forEach(post => {
-  const identifier = post.slug || post.id || "";
-  if (!identifier.includes("index") && post.data?.title !== "Posts") {
-    const cat = post.data?.categories?.[0] || "General";
-    categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
-  }
-});
-const allLabels = Array.from(categoryMap.entries()).map(([name, count]) => ({ name, count }));
-
-const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return "";
-  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-};
-
-const cleanAltText = (title: string) => {
-  if (!title) return "Blog post";
-  return title.replace(/\b(image|picture|photo|thumbnail|logo|graphic)s?\b\s*(of)?\s*/gi, '').trim() || "Blog post";
+const cleanAltText = (text: string) => {
+  if (!text) return "Blog post";
+  return text.replace(/\b(image|picture|photo|thumbnail|logo|graphic)s?\b\s*(of)?\s*/gi, '').trim() || "Blog post";
 };
 ---
 
@@ -60,146 +45,89 @@ const cleanAltText = (title: string) => {
   image={image}
   schemaType="page"
 >
-  <div class="blog-home-layout">
+  <div class="archive-container">
     
-    <!-- Left Main Content -->
-    <div class="content-feed">
-      <!-- Compact Author Header -->
-      <div class="compact-author-header">
-        {image && (
-          <Image src={image} alt={title} width={75} height={75} class="compact-author-avatar" loading="eager" />
-        )}
-        <div class="compact-author-info">
-          <h1 class="compact-author-title">{title}</h1>
-          {description && <p class="compact-author-bio">{description}</p>}
-          {htmlContent && <div class="compact-author-full-bio" set:html={htmlContent} />}
-        </div>
-      </div>
-
-      <!-- Compact Recent Posts Grid -->
-      {authorPosts.length > 0 && (
-        <div class="dashboard-posts-section">
-          <div class="dashboard-section-header">
-            <h2 class="dashboard-heading">Latest posts by {title}</h2>
-            <span class="dashboard-dots">···</span>
-          </div>
-          
-          <div class="archive-cards-grid">
-            {authorPosts.map((post, index) => {
-              const postCategory = post.data?.categories?.[0] || "General";
-              const categorySlug = postCategory.toLowerCase().replace(/ /g, '-');
-              const hasUpdated = !!post.data?.updatedDate;
-              const displayDate = hasUpdated ? post.data.updatedDate : post.data?.date;
-              const dateStr = displayDate ? formatDate(displayDate) : "";
-              
-              return (
-                <article class="post-card vertical-card">
-                  {post.data.image && (
-                    <div class="card-thumb">
-                      <Image 
-                        src={post.data.image} 
-                        alt={cleanAltText(post.data.title)} 
-                        width={600}
-                        height={350}
-                        loading={index < 8 ? "eager" : "lazy"} 
-                      />
-                      {post.data?.commentsCount && (
-                        <div class="comment-badge">💬 {post.data.commentsCount}</div>
-                      )}
-                    </div>
-                  )}
-                  <div class="card-content">
-                    <div class="card-meta-top">
-                      <a href={`/categories/${categorySlug}`} class="cat-link">
-                        in {postCategory}
-                      </a>
-                    </div>
-                    <a href={getPostUrl(post)} class="title-anchor">
-                      <h3 class="card-title">{post.data.title}</h3>
-                    </a>
-                    {post.data?.description && (
-                      <p class="card-snippet">{post.data.description}</p>
-                    )}
-                    <div class="card-footer">
-                      <span class="update-tag">Updated</span>
-                      <span class="date-label">{dateStr}</span>
-                      <a href={getPostUrl(post)} class="read-more-link">Read more</a>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </div>
+    <!-- Compact Author Header -->
+    <div class="compact-author-header">
+      {image && (
+        <Image src={image} alt={title} width={75} height={75} class="compact-author-avatar" loading="eager" />
       )}
+      <div class="compact-author-info">
+        <h1 class="compact-author-title">{title}</h1>
+        {description && <p class="compact-author-bio">{description}</p>}
+        {htmlContent && <div class="compact-author-full-bio" set:html={htmlContent} />}
+      </div>
     </div>
 
-    <!-- Right Sidebar -->
-    <aside class="sidebar-feed">
-      <!-- Popular Posts Widget -->
-      <div class="sidebar-widget">
+    <!-- Recent Posts Section -->
+    {authorPosts.length > 0 && (
+      <div class="dashboard-posts-section">
         <div class="section-heading">
-          <span class="heading-title">Popular Posts</span>
+          <span class="heading-title">Latest posts by {title}</span>
           <span class="heading-dots">···</span>
         </div>
-        <div class="popular-list">
-          {popularPosts.map((post, idx) => (
-            <div class="popular-row">
-              <span class="pop-num">#{idx + 1}</span>
-              <div class="pop-details">
-                <div class="pop-submeta">
-                  {post.data?.date ? formatDate(post.data.date) : ""} — 
-                  <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="pop-cat">
-                    {post.data?.categories?.[0] || "General"}
+        
+        <div class="archive-cards-grid">
+          {authorPosts.map((post, index) => {
+            const postCategory = post.data?.categories?.[0] || "General";
+            const categorySlug = postCategory.toLowerCase().replace(/ /g, '-');
+            const hasUpdated = !!post.data?.updatedDate;
+            const displayDate = hasUpdated ? post.data.updatedDate : post.data?.date;
+            const dateStr = displayDate ? new Date(displayDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
+            
+            return (
+              <article class="post-card vertical-card">
+                {post.data?.image && (
+                  <div class="card-thumb">
+                    <Image 
+                      src={post.data.image} 
+                      alt={cleanAltText(post.data?.title)} 
+                      width={600}
+                      height={350}
+                      loading={index < 8 ? "eager" : "lazy"} 
+                    />
+                    {post.data?.commentsCount && (
+                      <div class="comment-badge">💬 {post.data.commentsCount}</div>
+                    )}
+                  </div>
+                )}
+                <div class="card-content">
+                  <div class="card-meta-top">
+                    <a href={`/categories/${categorySlug}`} class="cat-link">
+                      in {postCategory}
+                    </a>
+                  </div>
+                  <a href={`/blog/${post.slug || post.id}`} class="title-anchor">
+                    <h3 class="card-title">{post.data?.title}</h3>
                   </a>
+                  {post.data?.description && (
+                    <p class="card-snippet">{post.data.description}</p>
+                  )}
+                  <div class="card-footer">
+                    <span class="update-tag">Updated</span>
+                    <span class="date-label">{dateStr}</span>
+                    <a href={`/blog/${post.slug || post.id}`} class="read-more-link">Read more</a>
+                  </div>
                 </div>
-                <a href={getPostUrl(post)} class="pop-title-anchor">
-                  <h4 class="pop-post-title">{post.data?.title}</h4>
-                </a>
-              </div>
-            </div>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </div>
-
-      <!-- Labels Widget -->
-      <div class="sidebar-widget">
-        <div class="section-heading">
-          <span class="heading-title">Labels</span>
-          <span class="heading-dots">···</span>
-        </div>
-        <div class="labels-grid">
-          {allLabels.map(label => (
-            <a href={`/categories/${label.name.toLowerCase()}`} class="label-pill">
-              <span class="label-name">{label.name}</span>
-              <span class="label-count">({label.count})</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </aside>
+    )}
 
   </div>
 </Base>
 
 <style is:global>
-  /* --- LAYOUT WRAPPER & GRID --- */
-  .blog-home-layout {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 2rem;
-    max-width: 1550px; /* Expanded max-width to allow 4 columns next to sidebar */
+  /* --- LAYOUT WRAPPER MATCHING ARCHIVE --- */
+  .archive-container {
+    max-width: 1000px;
     margin: 0 auto;
-    align-items: start;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .content-feed {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    min-width: 0;
+    gap: 1.5rem;
+    box-sizing: border-box;
   }
 
   /* --- COMPACT AUTHOR HEADER --- */
@@ -251,26 +179,24 @@ const cleanAltText = (title: string) => {
   }
   .compact-author-full-bio p { margin: 0; }
 
-  /* --- DASHBOARD POSTS SECTION --- */
-  .dashboard-section-header {
+  /* --- SECTION HEADING --- */
+  .section-heading {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    justify-content: space-between;
     border-bottom: 1px dashed var(--border-color);
     padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
   }
 
-  .dashboard-heading {
-    font-size: 0.9rem;
+  .heading-title {
+    font-size: 1rem;
     font-weight: 700;
     color: var(--text-main);
-    margin: 0;
   }
 
-  .dashboard-dots {
+  .heading-dots {
     color: var(--text-muted);
-    font-weight: bold;
     letter-spacing: 2px;
     cursor: pointer;
   }
@@ -343,14 +269,10 @@ const cleanAltText = (title: string) => {
   .cat-link {
     font-size: 0.68rem;
     font-weight: 600;
-    color: #4338ca;
+    color: #818cf8;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-  }
-
-  html.dark .cat-link {
-    color: #818cf8;
   }
 
   .cat-link:hover {
@@ -418,169 +340,22 @@ const cleanAltText = (title: string) => {
     text-decoration: underline;
   }
 
-  /* --- SIDEBAR WIDGETS --- */
-  .sidebar-feed {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    position: sticky;
-    top: 5rem;
-  }
-
-  .section-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    border-bottom: 1px dashed var(--border-color);
-    padding-bottom: 0.4rem;
-  }
-
-  .heading-title {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--text-main);
-  }
-
-  .heading-dots {
-    color: var(--text-muted);
-    letter-spacing: 2px;
-    cursor: pointer;
-  }
-
-  .sidebar-widget {
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
-
-  .popular-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .popular-row {
-    display: flex;
-    gap: 0.6rem;
-    align-items: flex-start;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .popular-row:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  .pop-num {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    min-width: 18px;
-  }
-
-  .pop-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    min-width: 0;
-  }
-
-  .pop-submeta {
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .pop-cat {
-    color: #818cf8;
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .pop-title-anchor {
-    text-decoration: none;
-  }
-
-  .pop-post-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin: 0;
-    line-height: 1.3;
-  }
-
-  .pop-post-title:hover {
-    color: #818cf8;
-  }
-
-  .labels-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.45rem;
-  }
-
-  .label-pill {
-    background: var(--bg-main);
-    border: 1px solid var(--border-color);
-    padding: 0.35rem 0.5rem;
-    border-radius: 0.35rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-decoration: none;
-    font-size: 0.72rem;
-    transition: background 0.15s ease;
-  }
-
-  .label-pill:hover {
-    background: var(--sidebar-hover);
-    border-color: #818cf8;
-  }
-
-  .label-name {
-    color: var(--text-main);
-    font-weight: 500;
-  }
-
-  .label-count {
-    color: var(--text-muted);
-    font-size: 0.68rem;
-  }
-
-  /* --- RESPONSIVE BREAKPOINTS --- */
-  @media (max-width: 1350px) {
-    .archive-cards-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (max-width: 1100px) {
+  /* --- RESPONSIVE ADJUSTMENTS --- */
+  @media (max-width: 1024px) {
     .archive-cards-grid {
       grid-template-columns: repeat(2, 1fr);
-    }
-    .blog-home-layout {
-      grid-template-columns: 1fr;
-    }
-    .sidebar-feed {
-      position: static;
     }
   }
 
   @media (max-width: 640px) {
-    .archive-cards-grid {
-      grid-template-columns: 1fr;
-    }
     .compact-author-header {
       flex-direction: column;
       text-align: center;
       padding: 1.25rem 1rem;
       gap: 0.75rem;
+    }
+    .archive-cards-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
