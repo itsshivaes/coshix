@@ -36,38 +36,29 @@ const contactCollection = defineCollection({
 
 // Authors collection schema
 const authorsCollection = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/authors" }),
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/authors' }),
   schema: z.object({
     title: z.string(),
     meta_title: z.string().optional(),
     image: z.string().optional(),
     description: z.string().optional(),
-    social: z
-      .object({
-        facebook: z.url().optional(),
-        x: z.url().optional(),
-        instagram: z.url().optional(),
-        linkedin: z.url().optional(),
-        github: z.url().optional(),
-        website: z.url().optional(),
-        youtube: z.url().optional(),
-      })
-      .optional(),
   }),
 });
 
 // Posts collection schema
 const postsCollection = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/posts" }),
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/posts' }),
   schema: z.object({
     title: z.string(),
     meta_title: z.string().optional(),
     description: z.string().optional(),
-    date: z.coerce.date().optional(),
+    date: z.date().optional(),
+    updatedDate: z.date().optional(),
     image: z.string().optional(),
-    categories: z.array(z.string()).default(() => ["others"]),
-    authors: z.array(z.string()).default(() => ["Admin"]),
-    tags: z.array(z.string()).default(() => ["others"]),
+    categories: z.array(z.string()).optional(),
+    tags: z.array(z.string()).optional(),
+    authors: z.array(z.string()).optional(),
+    commentsCount: z.number().optional(),
     draft: z.boolean().optional(),
   }),
 });

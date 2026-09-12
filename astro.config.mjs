@@ -10,7 +10,7 @@ import { defineConfig, sharpImageService } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   site: "https://coshix.in",
-  base: "/",
+  // base: "/", // Remove or comment this out for custom root domains!
   trailingSlash: "never",
   image: { service: sharpImageService() },
   vite: { plugins: [tailwindcss()] },
