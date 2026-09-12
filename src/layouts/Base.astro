@@ -110,22 +110,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
     </script>
 
-    <!-- Google Translate Script Setup -->
-    <script type="text/javascript" is:inline>
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          autoDisplay: false
-        }, 'google_translate_element');
-      }
-    </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
-
-    <!-- Lazy Loaded Google Analytics 4 -->
+    <!-- Lazy Loaded Third-Party Scripts (Google Analytics & Google Translate) -->
     <script is:inline>
       /*<![CDATA[*//*@fineshopdesign/lazy.js*/ window.lazy=window.lazy||new Promise(e=>{const t="IS_LAZIED",n="true",o=["scroll","click"],i=["keydown","mouseover","touchmove","touchstart"],r=o.concat(i);function a(){try{return localStorage.getItem(t)===n}catch(e){return!0}}function l(e=!0){try{e?localStorage.setItem(t,n):localStorage.removeItem(t)}catch(e){}}function d(t){l(!0),e({type:t.type.toLowerCase()}),r.forEach(e=>window.removeEventListener(e,d))}if(a())e({type:"local"});else if(0!==document.documentElement.scrollTop||document.body&&0!==document.body.scrollTop)d({type:"scroll"});else{const e=()=>{window.removeEventListener("load",e),i.forEach(e=>window.addEventListener(e,d))};window.addEventListener("load",e),o.forEach(e=>window.addEventListener(e,d))}}); /*]]>*/
       
       window.lazy.then(() => {
+        // 1. Load Google Analytics
         const gaScript = document.createElement('script');
         gaScript.async = true;
         gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-FJ05EPHXTK';
@@ -135,6 +125,19 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         function gtag(){window.dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-FJ05EPHXTK');
+
+        // 2. Load Google Translate safely
+        window.googleTranslateElementInit = function() {
+          new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            autoDisplay: false
+          }, 'google_translate_element');
+        };
+        const gtScript = document.createElement('script');
+        gtScript.type = 'text/javascript';
+        gtScript.async = true;
+        gtScript.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        document.head.appendChild(gtScript);
       });
     </script>
   </head>
@@ -657,8 +660,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         });
       });
     </script>
-
-    <style is:global>
+    
+    <style is:global is:inline>
       /* Clean, Modern macOS Colors */
       :root {
         --bg-main: #ffffff;
@@ -772,7 +775,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       /* Search Bar  */
       .search-trigger {
         display: flex; align-items: center; gap: 0.5rem; background: var(--sidebar-hover); border: 1px solid transparent;
-        padding: 0.45rem 1rem; border-radius: 0.5rem; color: var(--text-muted); font-size: 0.85rem; cursor: pointer;
+        padding: 0.45rem 1rem; border-radius: 0.5rem; color: #1d2229; font-size: 0.85rem; cursor: pointer;
         width: 320px; text-align: left; font-family: inherit; transition: all 0.2s ease; margin-left: 1.5rem;
       }
       html[dir="rtl"] .search-trigger, html.Rtl .search-trigger { margin-left: 0; margin-right: 1.5rem; text-align: right; }
@@ -870,7 +873,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       .sidebar-section { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.5rem;}
       .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.05em; padding: 0.5rem 0.75rem; }
       .sidebar-link { display: flex; align-items: center; padding: 0.6rem 0.75rem; border-radius: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.15s ease; }
-      .sidebar-link:hover { background-color: var(--sidebar-hover); color: var(--text-main); }
+      .sidebar-link:hover { background: var(--sidebar-hover); color: var(--text-main); }
       .sidebar-link.active { background-color: var(--sidebar-active); color: var(--sidebar-active-text); font-weight: 600; }
 
       .sidebar-social-section { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
