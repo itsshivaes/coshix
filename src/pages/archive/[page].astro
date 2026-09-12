@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 
 export async function getStaticPaths({ paginate }) {
   const posts = await getCollection("posts");
@@ -36,11 +37,17 @@ const formatDate = (dateStr: string) => {
 
     <!-- Posts Grid -->
     <div class="archive-cards-grid">
-      {page.data.map(post => (
+      {page.data.map((post, index) => (
         <article class="post-card vertical-card">
           {post.data?.image && (
             <div class="card-thumb">
-              <img src={post.data.image} alt={post.data.title} loading="lazy" />
+              <Image 
+                src={post.data.image} 
+                alt={post.data.title} 
+                width={600} 
+                height={350} 
+                loading={index < 8 ? "eager" : "lazy"} 
+              />
               {post.data?.commentsCount && (
                 <div class="comment-badge">💬 {post.data.commentsCount}</div>
               )}

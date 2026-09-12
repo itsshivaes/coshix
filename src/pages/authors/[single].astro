@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import { Image } from "astro:assets";
 import { marked } from "marked";
 
 export async function getStaticPaths() {
@@ -22,6 +23,11 @@ const allPosts = await getCollection("posts");
 const authorPosts = allPosts
   .filter((post) => post.data.authors && post.data.authors.includes(title))
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const cleanAltText = (title: string) => {
+  if (!title) return "Blog post";
+  return title.replace(/\b(image|picture|photo|thumbnail|logo|graphic)s?\b\s*(of)?\s*/gi, '').trim() || "Blog post";
+};
 ---
 
 <Base 
@@ -30,12 +36,12 @@ const authorPosts = allPosts
   image={image}
   schemaType="page"
 >
-  <div class="author-dashboard-wrapper">
+  <div class="archive-container">
     
     <!-- Compact Author Header -->
     <div class="compact-author-header">
       {image && (
-        <img src={image} alt={title} class="compact-author-avatar" />
+        <Image src={image} alt={title} width={75} height={75} class="compact-author-avatar" loading="eager" />
       )}
       <div class="compact-author-info">
         <h1 class="compact-author-title">{title}</h1>
@@ -44,16 +50,16 @@ const authorPosts = allPosts
       </div>
     </div>
 
-    <!-- Compact Recent Posts Grid -->
+    <!-- Recent Posts Section -->
     {authorPosts.length > 0 && (
       <div class="dashboard-posts-section">
-        <div class="dashboard-section-header">
-          <h2 class="dashboard-heading">Latest posts by {title}</h2>
-          <span class="dashboard-dots">...</span>
+        <div class="section-heading">
+          <span class="heading-title">Latest posts by {title}</span>
+          <span class="heading-dots">···</span>
         </div>
         
-        <div class="dashboard-posts-grid">
-          {authorPosts.map((post) => {
+        <div class="archive-cards-grid">
+          {authorPosts.map((post, index) => {
             const postCategory = post.data?.categories?.[0] || "General";
             const categorySlug = postCategory.toLowerCase().replace(/ /g, '-');
             const hasUpdated = !!post.data?.updatedDate;
@@ -61,36 +67,37 @@ const authorPosts = allPosts
             const dateStr = displayDate ? new Date(displayDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
             
             return (
-              <article class="compact-post-card">
+              <article class="post-card vertical-card">
                 {post.data.image && (
-                  <a href={`/blog/${post.slug || post.id}`} class="compact-card-img-link">
-                    <img 
+                  <div class="card-thumb">
+                    <Image 
                       src={post.data.image} 
-                      alt={post.data.title} 
-                      class="compact-card-img"
-                      loading="lazy" 
+                      alt={cleanAltText(post.data.title)} 
+                      width={600}
+                      height={350}
+                      loading={index < 8 ? "eager" : "lazy"} 
                     />
-                  </a>
+                    {post.data?.commentsCount && (
+                      <div class="comment-badge">💬 {post.data.commentsCount}</div>
+                    )}
+                  </div>
                 )}
-                <div class="compact-card-body">
-                  <div class="compact-card-top">
-                    <a href={`/categories/${categorySlug}`} class="compact-card-category">
-                      IN {postCategory.toUpperCase()}
+                <div class="card-content">
+                  <div class="card-meta-top">
+                    <a href={`/categories/${categorySlug}`} class="cat-link">
+                      in {postCategory}
                     </a>
                   </div>
-                  <h3 class="compact-card-title">
-                    <a href={`/blog/${post.slug || post.id}`}>
-                      {post.data.title}
-                    </a>
-                  </h3>
-                  <div class="compact-card-footer">
-                    <div class="compact-card-date-wrap">
-                      {hasUpdated && <span class="badge-updated">UPDATED</span>}
-                      <span class="compact-card-date">{dateStr}</span>
-                    </div>
-                    <a href={`/blog/${post.slug || post.id}`} class="compact-card-read-more">
-                      Read more
-                    </a>
+                  <a href={`/blog/${post.slug || post.id}`} class="title-anchor">
+                    <h3 class="card-title">{post.data.title}</h3>
+                  </a>
+                  {post.data?.description && (
+                    <p class="card-snippet">{post.data.description}</p>
+                  )}
+                  <div class="card-footer">
+                    <span class="update-tag">Updated</span>
+                    <span class="date-label">{dateStr}</span>
+                    <a href={`/blog/${post.slug || post.id}`} class="read-more-link">Read more</a>
                   </div>
                 </div>
               </article>
@@ -104,10 +111,13 @@ const authorPosts = allPosts
 </Base>
 
 <style is:global>
-  /* --- LAYOUT WRAPPER --- */
-  .author-dashboard-wrapper {
-    width: 100%;
-    display: block;
+  /* --- LAYOUT WRAPPER MATCHING ARCHIVE --- */
+  .archive-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     box-sizing: border-box;
   }
 
@@ -120,7 +130,6 @@ const authorPosts = allPosts
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     padding: 1.5rem 2rem;
-    margin-bottom: 2.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   }
 
@@ -161,206 +170,183 @@ const authorPosts = allPosts
   }
   .compact-author-full-bio p { margin: 0; }
 
-  /* --- DASHBOARD POSTS SECTION --- */
-  .dashboard-section-header {
+  /* --- SECTION HEADING --- */
+  .section-heading {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 0.4rem;
     margin-bottom: 1rem;
-    padding: 0 0.5rem;
   }
 
-  .dashboard-heading {
-    font-size: 1.1rem;
+  .heading-title {
+    font-size: 1rem;
     font-weight: 700;
     color: var(--text-main);
-    margin: 0;
   }
 
-  .dashboard-dots {
+  .heading-dots {
     color: var(--text-muted);
-    font-weight: bold;
     letter-spacing: 2px;
     cursor: pointer;
   }
 
-  /* --- COMPACT GRID UI & EXACT HOVER EFFECTS --- */
-  .dashboard-posts-grid {
+  /* --- 4-COLUMN ARCHIVE-MATCHED GRID --- */
+  .archive-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
   }
 
-  .compact-post-card {
+  .post-card.vertical-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: border-color 0.15s ease;
   }
 
-  .compact-post-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px -4px rgba(79, 70, 229, 0.1);
+  .post-card.vertical-card:hover {
     border-color: #4f46e5;
   }
 
-  html.dark .compact-post-card:hover {
-    box-shadow: 0 8px 16px -4px rgba(129, 140, 248, 0.15);
-    border-color: #6366f1;
-  }
-
-  .compact-card-img-link {
-    display: block;
+  .card-thumb {
+    position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
-    border-bottom: 1px solid var(--border-color);
+    height: 140px;
+    background: var(--bg-main);
     overflow: hidden;
   }
 
-  .compact-card-img {
+  .card-thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
-  .compact-card-body {
-    padding: 1.25rem;
+  .comment-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.12rem 0.4rem;
+    border-radius: 2rem;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-main);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .card-content {
+    padding: 0.85rem;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-  }
-
-  .compact-card-top {
-    margin-bottom: 0.5rem;
-  }
-
-  .compact-card-category {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    transition: color 0.2s ease;
-  }
-
-  .compact-post-card:hover .compact-card-category {
-    color: #4f46e5;
-  }
-  html.dark .compact-post-card:hover .compact-card-category {
-    color: #818cf8;
-  }
-
-  .compact-card-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    line-height: 1.4;
-    margin: 0 0 1rem 0;
-    flex-grow: 1;
-  }
-
-  .compact-card-title a {
-    color: var(--text-main);
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .compact-post-card:hover .compact-card-title a {
-    color: #6366f1; 
-  }
-  html.dark .compact-post-card:hover .compact-card-title a {
-    color: #a5b4fc;
-  }
-
-  /* --- CARD FOOTER & DIVIDER --- */
-  .compact-card-footer {
-    display: flex;
+    flex: 1;
     justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    margin-top: auto;
-    border-top: 1px solid var(--border-color); 
-    padding-top: 0.85rem;
+    min-width: 0;
   }
 
-  .compact-card-date-wrap {
-    display: flex;
-    align-items: center;
+  .card-meta-top {
+    margin-bottom: 0.2rem;
   }
 
-  .badge-updated {
-    background: #0284c7; 
-    color: #ffffff;
-    padding: 0.15rem 0.4rem;
-    border-radius: 0.25rem;
-    font-size: 0.6rem;
-    font-weight: 700;
-    margin-right: 0.5rem;
-    letter-spacing: 0.02em;
-  }
-
-  html.dark .badge-updated {
-    background: #0ea5e9;
-  }
-
-  .compact-card-date {
-    color: var(--text-muted);
-    font-weight: 500;
-  }
-
-  .compact-card-read-more {
-    color: var(--text-main);
+  .cat-link {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #818cf8;
     text-decoration: none;
-    font-weight: 700;
-    font-size: 0.8rem;
-    transition: color 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
-  .compact-post-card:hover .compact-card-read-more {
-    color: #4f46e5;
+  .cat-link:hover {
+    text-decoration: underline;
   }
-  html.dark .compact-post-card:hover .compact-card-read-more {
+
+  .title-anchor {
+    text-decoration: none;
+  }
+
+  .card-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.35rem 0;
+    line-height: 1.3;
+  }
+
+  .card-title:hover {
     color: #818cf8;
   }
 
-  /* --- RESPONSIVE ADJUSTMENTS (COMPACT MOBILE) --- */
-  @media (max-width: 768px) {
+  .card-snippet {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.5rem;
+  }
+
+  .update-tag {
+    background: #0284c7;
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 0.05rem 0.25rem;
+    border-radius: 0.2rem;
+    text-transform: uppercase;
+  }
+
+  .date-label {
+    color: var(--text-muted);
+    margin-right: auto;
+  }
+
+  .read-more-link {
+    color: #818cf8;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .read-more-link:hover {
+    text-decoration: underline;
+  }
+
+  /* --- RESPONSIVE ADJUSTMENTS --- */
+  @media (max-width: 1024px) {
+    .archive-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
     .compact-author-header {
       flex-direction: column;
       text-align: center;
       padding: 1.25rem 1rem;
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
     }
-    .compact-author-avatar {
-      width: 65px;
-      height: 65px;
-    }
-    .compact-author-title {
-      font-size: 1.35rem;
-    }
-    .compact-author-bio {
-      font-size: 0.9rem;
-    }
-    .dashboard-heading {
-      font-size: 1rem;
-    }
-    .dashboard-posts-grid {
+    .archive-cards-grid {
       grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-    .compact-card-body {
-      padding: 1rem;
-    }
-    .compact-card-title {
-      font-size: 1rem;
-      margin: 0 0 0.75rem 0;
-    }
-    .compact-card-footer {
-      padding-top: 0.75rem;
     }
   }
 </style>

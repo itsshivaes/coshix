@@ -10,6 +10,25 @@ const searchData = allPosts.map(post => ({
   date: post.data.date ? new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""
 }));
 
+// Languages matching Lantro UI
+const languages = [
+  { code: 'en', name: 'English' },
+  { code: 'es', name: 'Spanish' },
+  { code: 'fr', name: 'French' },
+  { code: 'de', name: 'German' },
+  { code: 'hi', name: 'Hindi' },
+  { code: 'bn', name: 'Bengali' },
+  { code: 'ar', name: 'Arabic' },
+  { code: 'id', name: 'Indonesian' },
+  { code: 'ru', name: 'Russian' },
+  { code: 'nl', name: 'Dutch' },
+  { code: 'zh-CN', name: 'Chinese' },
+  { code: 'ja', name: 'Japanese' },
+  { code: 'ko', name: 'Korean' },
+  { code: 'th', name: 'Thai' },
+  { code: 'pl', name: 'Polish' }
+];
+
 interface Props {
   title?: string;
   description?: string;
@@ -74,6 +93,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
     </noscript>
     
+    <!-- Inline Script to apply Theme & RTL instantly before render to prevent flickering -->
     <script is:inline>
       const savedTheme = localStorage.getItem('theme') || 'system';
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -82,7 +102,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       } else {
         document.documentElement.classList.remove('dark');
       }
+
+      const savedLang = localStorage.getItem('user_selected_lang') || 'en';
+      const rtlLangs = ["ar", "fa", "ur", "he", "ps", "yi", "sd", "ug"];
+      if (rtlLangs.includes(savedLang.split('-')[0].toLowerCase())) {
+        document.documentElement.dir = 'rtl';
+        document.documentElement.classList.add('Rtl');
+      }
     </script>
+
+    <!-- Google Translate Script Setup -->
+    <script type="text/javascript" is:inline>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async defer></script>
 
     <!-- Lazy Loaded Google Analytics 4 -->
     <script is:inline>
@@ -103,17 +141,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
   </head>
   <body class="app-body">
     
+    <!-- Hidden Google Translate Element to prevent breaking layout -->
+    <div id="google_translate_element" style="display:none;"></div>
+
     <header class="top-navbar">
       <div class="nav-left">
         <button id="mobileMenuToggle" class="icon-btn mobile-only hamburger-btn" aria-label="Open Menu">
           <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
 
-        <a href="/" class="brand-logo">
+        <a href="/" class="brand-logo notranslate" translate="no">
           <img src="/images/logo.webp" alt="Coshix Logo" class="brand-logo-img" />
           <span class="brand-name">Coshix</span>
         </a>
 
+        <!-- Search Bar placed cleanly next to logo with custom spacing -->
         <button id="searchOpenBtnDesktop" class="search-trigger desktop-only" aria-label="Search">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <span class="search-text-label">Looking for something?</span>
@@ -126,7 +168,30 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </button>
 
-        <div class="theme-dropdown-container">
+        <!-- Custom Translate Dropdown -->
+        <div class="dropdown-container">
+          <button id="langMenuBtn" class="icon-btn" aria-label="Select Language">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 8l6 6"></path>
+              <path d="M4 14l6-6 2-3"></path>
+              <path d="M2 5h12M7 2v3"></path>
+              <path d="M22 22l-5-10-5 10M14 18h6"></path>
+            </svg>
+          </button>
+
+          <div id="langMenu" class="dropdown-menu lang-menu-scroll notranslate" translate="no">
+            <div class="dropdown-menu-header">Language</div>
+            {languages.map(lang => (
+              <button class="dropdown-option lang-option" data-lang={lang.code}>
+                <svg class="check-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                {lang.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Theme Dropdown -->
+        <div class="dropdown-container">
           <button id="themeMenuBtn" class="icon-btn" aria-label="Toggle theme">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="5"></circle>
@@ -141,17 +206,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             </svg>
           </button>
 
-          <div id="themeMenu" class="theme-menu">
-            <div class="theme-menu-header">Appearance</div>
-            <button class="theme-option" data-theme="light">
+          <div id="themeMenu" class="dropdown-menu">
+            <div class="dropdown-menu-header">Appearance</div>
+            <button class="dropdown-option theme-option" data-theme="light">
               <svg class="check-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               Light
             </button>
-            <button class="theme-option" data-theme="dark">
+            <button class="dropdown-option theme-option" data-theme="dark">
               <svg class="check-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               Dark
             </button>
-            <button class="theme-option" data-theme="system">
+            <button class="dropdown-option theme-option" data-theme="system">
               <svg class="check-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
               System
             </button>
@@ -184,9 +249,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         <div class="mobile-drawer-body">
           <div class="sidebar-section">
             <a href="/" class="sidebar-link" data-path="/">Home</a>
-            <a href="/categories/blogger" class="sidebar-link" data-path="/blogger">Blogger</a>
-            <a href="/categories/common" class="sidebar-link" data-path="/common">Common</a>
-            <a href="/archive/1" class="sidebar-link" data-path="/archive/1">Blog Archive</a>
+            <a href="/categories/blogger" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
+            <a href="/categories/common" class="sidebar-link" data-path="/categories/common">Common</a>
+            <a href="/archive/1" class="sidebar-link" data-path="/archive">Blog Archive</a>
             <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
 
@@ -215,15 +280,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       </div>
     </div>
 
+    <!-- MAIN GRID CONTAINER -->
     <div class="dashboard-container">
       
+      <!-- DESKTOP SIDEBAR -->
       <aside class="sidebar desktop-sidebar">
         <div class="sidebar-inner">
           <div class="sidebar-section">
             <a href="/" class="sidebar-link" data-path="/">Home</a>
-            <a href="/categories/blogger" class="sidebar-link" data-path="/blogger">Blogger</a>
-            <a href="/categories/common" class="sidebar-link" data-path="/common">Common</a>
-            <a href="/archive/1" class="sidebar-link" data-path="/archive/1">Blog Archive</a>
+            <a href="/categories/blogger" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
+            <a href="/categories/common" class="sidebar-link" data-path="/categories/common">Common</a>
+            <a href="/archive/1" class="sidebar-link" data-path="/archive">Blog Archive</a>
             <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
 
@@ -251,6 +318,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         </div>
       </aside>
 
+      <!-- PAGE CONTENT -->
       <div class="content-wrapper">
         <main class="main-content">
           <slot />
@@ -258,7 +326,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
 
         <footer class="site-footer">
           <div class="footer-content">
-            <p>&copy; {new Date().getFullYear()} Coshix. All rights reserved.</p>
+            <p class="notranslate" translate="no">&copy; {new Date().getFullYear()} Coshix. All rights reserved.</p>
             <div class="footer-links">
               <a href="/privacy-policy">Privacy Policy</a>
               <a href="/disclaimer">Disclaimer</a>
@@ -283,20 +351,38 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
     </script>
 
+    <!-- UI Interaction Script -->
     <script define:vars={{ searchData }}>
+      
+      /* --- Dropdown Menus Logic --- */
       const themeBtn = document.getElementById('themeMenuBtn');
       const themeMenu = document.getElementById('themeMenu');
-      const options = document.querySelectorAll('.theme-option');
+      const langBtn = document.getElementById('langMenuBtn');
+      const langMenu = document.getElementById('langMenu');
+
+      const closeAllMenus = () => {
+        themeMenu?.classList.remove('show');
+        langMenu?.classList.remove('show');
+      };
 
       themeBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
-        themeMenu?.classList.toggle('show');
+        const isShowing = themeMenu?.classList.contains('show');
+        closeAllMenus();
+        if (!isShowing) themeMenu?.classList.add('show');
       });
 
-      document.addEventListener('click', () => {
-        themeMenu?.classList.remove('show');
+      langBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isShowing = langMenu?.classList.contains('show');
+        closeAllMenus();
+        if (!isShowing) langMenu?.classList.add('show');
       });
 
+      document.addEventListener('click', closeAllMenus);
+
+      /* --- Theme Switching --- */
+      const options = document.querySelectorAll('.theme-option');
       const setTheme = (theme) => {
         localStorage.setItem('theme', theme);
         const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -314,7 +400,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             opt.classList.remove('active');
           }
         });
-        themeMenu?.classList.remove('show');
+        closeAllMenus();
       };
 
       const currentTheme = localStorage.getItem('theme') || 'system';
@@ -325,7 +411,58 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         opt.addEventListener('click', () => setTheme(opt.getAttribute('data-theme')));
       });
 
-      // Mobile Menu Drawer Interactivity
+      /* --- Translation Switching Logic with RTL Support --- */
+      const langOptions = document.querySelectorAll('.lang-option');
+      const rtlLangs = ["ar", "fa", "ur", "he", "ps", "yi", "sd", "ug"];
+      const defaultLanguage = 'en';
+
+      const setLanguage = (langCode) => {
+        localStorage.setItem('user_selected_lang', langCode);
+        
+        langOptions.forEach(opt => {
+          if (opt.getAttribute('data-lang') === langCode) {
+            opt.classList.add('active');
+          } else {
+            opt.classList.remove('active');
+          }
+        });
+
+        if (rtlLangs.includes(langCode.split('-')[0].toLowerCase())) {
+          document.documentElement.dir = 'rtl';
+          document.documentElement.classList.add('Rtl');
+        } else {
+          document.documentElement.dir = 'ltr';
+          document.documentElement.classList.remove('Rtl');
+        }
+
+        const domain = location.hostname;
+        if (langCode === defaultLanguage) {
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+        } else {
+          const cookieString = `/en/${langCode}`;
+          document.cookie = `googtrans=${cookieString}; path=/;`;
+          document.cookie = `googtrans=${cookieString}; path=/; domain=${domain};`;
+        }
+        window.location.reload();
+      };
+
+      const currentLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
+      langOptions.forEach(opt => {
+        if (opt.getAttribute('data-lang') === currentLang) {
+          opt.classList.add('active');
+        }
+        opt.addEventListener('click', (e) => {
+          e.preventDefault();
+          const selectedLang = opt.getAttribute('data-lang');
+          if (selectedLang !== currentLang) {
+            setLanguage(selectedLang);
+          }
+          closeAllMenus();
+        });
+      });
+
+      /* --- Mobile Menu Drawer Interactivity --- */
       const mobileMenuToggle = document.getElementById('mobileMenuToggle');
       const mobileMenuClose = document.getElementById('mobileMenuClose');
       const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
@@ -346,18 +483,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         if (e.target === mobileDrawerOverlay) closeMobileDrawer();
       });
 
-      // Dynamic Active Sidebar Link Highlighter
+      /* --- Dynamic Active Sidebar Link Highlighter --- */
       const highlightActiveLinks = () => {
         let currentPath = window.location.pathname.replace(/\/$/, "") || "/";
         const links = document.querySelectorAll(".sidebar-link");
 
         links.forEach(link => {
-          const linkPath = link.getAttribute("data-path")?.replace(/\/$/, "") || "/";
+          const pathAttr = link.getAttribute("data-path");
+          const linkPath = (pathAttr || link.getAttribute("href"))?.replace(/\/$/, "") || "/";
           
           if (linkPath === currentPath || (linkPath !== "/" && currentPath.startsWith(linkPath))) {
-            document.querySelectorAll(`.sidebar-link[data-path="${link.getAttribute('data-path')}"]`).forEach(l => {
-              l.classList.add("active");
-            });
+            link.classList.add("active");
           } else {
             link.classList.remove("active");
           }
@@ -370,7 +506,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         highlightActiveLinks();
       }
 
-      // Search Modal Functionality & Live Filtering
+      /* --- Search Modal Functionality & Live Filtering --- */
       const searchModal = document.getElementById('searchModal');
       const searchOpenBtnDesktop = document.getElementById('searchOpenBtnDesktop');
       const searchOpenBtnMobile = document.getElementById('searchOpenBtnMobile');
@@ -436,7 +572,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         `).join('');
       });
 
-      // Lazy Load Images on Scroll using IntersectionObserver
+      /* --- Lazy Load Images on Scroll --- */
       document.addEventListener("DOMContentLoaded", () => {
         const lazyImages = document.querySelectorAll("img[data-src]");
 
@@ -466,7 +602,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         }
       });
 
-      // Automatically Add Copy Buttons to Code Blocks
+      /* --- Automatically Add Copy Buttons to Code Blocks --- */
       document.addEventListener("DOMContentLoaded", () => {
         const codeBlocks = document.querySelectorAll("pre");
 
@@ -502,7 +638,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         });
       });
 
-      // Sticky Back to Top Button Logic
+      /* --- Sticky Back to Top Button Logic --- */
       document.addEventListener("DOMContentLoaded", () => {
         const backToTopBtn = document.getElementById("backToTopBtn");
 
@@ -524,62 +660,85 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
     </script>
 
     <style is:global>
+      /* Clean, Modern macOS Colors */
       :root {
-        --bg-main: #f8fafc;
+        --bg-main: #ffffff;
         --bg-card: #ffffff;
-        --text-main: #0f172a;
+        --text-main: #1d1d1f;
         --text-muted: #64748b;
-        --border-color: #e2e8f0;
-        --sidebar-bg: #f8fafc;
-        --sidebar-hover: #f1f5f9;
-        --sidebar-active: #e0e7ff;
+        --border-color: #e5e7eb;
+        
+        /* Frosted Glass Header */
+        --header-bg: rgba(255, 255, 255, 0.85);
+        --cookie-bg: rgba(255, 255, 255, 0.95);
+        
+        /* Sidebar Styling (Matches Header/White) */
+        --sidebar-bg: var(--header-bg);
+        --sidebar-hover: #f3f4f6;
+        --sidebar-active: #eef2ff;
         --sidebar-active-text: #4f46e5;
-        /* Scrollbar light mode variables */
-        --scrollbar-bg: #f1f5f9;
-        --scrollbar-thumb: #cbd5e1;
-        --scrollbar-thumb-hover: #94a3b8;
+        
+        --scrollbar-bg: #ffffff;
+        --scrollbar-thumb: #d1d5db;
+        --scrollbar-thumb-hover: #9ca3af;
       }
 
       html.dark {
-        --bg-main: #09090b;
-        --bg-card: #18181b;
-        --text-main: #f4f4f5;
-        --text-muted: #a1a1aa;
+        --bg-main: #000000;
+        --bg-card: #0a0a0a;
+        --text-main: #f5f5f7;
+        --text-muted: #86868b;
         --border-color: #27272a;
-        --sidebar-bg: #09090b;
+        
+        /* Frosted Glass Header Dark */
+        --header-bg: rgba(10, 10, 10, 0.75);
+        --cookie-bg: rgba(20, 20, 20, 0.85);
+        
+        /* Sidebar Styling Dark */
+        --sidebar-bg: var(--header-bg);
         --sidebar-hover: #27272a;
-        --sidebar-active: #27272a;
+        --sidebar-active: rgba(129, 140, 248, 0.15);
         --sidebar-active-text: #818cf8;
-        /* Scrollbar dark mode variables */
-        --scrollbar-bg: #09090b;
-        --scrollbar-thumb: #27272a;
-        --scrollbar-thumb-hover: #3f3f46;
+
+        --scrollbar-bg: #000000;
+        --scrollbar-thumb: #38383a;
+        --scrollbar-thumb-hover: #48484a;
       }
 
-      /* Custom Scrollbar Styles */
-      html {
-        scrollbar-width: thin;
-        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+      /* --- RTL & Dropdown Positioning Fixes --- */
+      html.Rtl, html[dir="rtl"] { direction: rtl; text-align: right; }
+      
+      /* Fix Dropdown Menus in RTL Mode (Pin them to the left side of their container instead of right) */
+      html.Rtl .dropdown-container .dropdown-menu, 
+      html[dir="rtl"] .dropdown-container .dropdown-menu { 
+        right: auto !important; 
+        left: 0 !important; 
+      }
+      
+      html.Rtl .dropdown-option, html[dir="rtl"] .dropdown-option { text-align: right; }
+      html.Rtl .search-trigger kbd, html[dir="rtl"] .search-trigger kbd { margin-left: 0; margin-right: auto; }
+      html.Rtl .sidebar, html[dir="rtl"] .sidebar { border-right: none; border-left: 1px solid var(--border-color); }
+      html.Rtl .back-to-top-btn, html[dir="rtl"] .back-to-top-btn { right: auto; left: 2rem; }
+      html.Rtl .copy-code-btn, html[dir="rtl"] .copy-code-btn { right: auto; left: 0.5rem; }
+      
+      /* Mirror the grid layout columns for RTL */
+      html.Rtl .dashboard-container, html[dir="rtl"] .dashboard-container {
+        direction: rtl;
       }
 
-      ::-webkit-scrollbar {
-        width: 12px;
-        height: 12px;
+      /* Hide Google Translate UI Overlay & Headers */
+      .VIpgJd-ZVi9od-aZ2wEe-wOHMyf, .VIpgJd-ZVi9od-aZ2wEe-OiiCO, .VIpgJd-ZVi9od-ORHb-OiiCO, .VIpgJd-y60Sfe-XLBlAb, .VIpgJd-ZVi9od-SmfZ, .goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, .goog-te-spinner-pos, .goog-tooltip, .goog-tooltip:hover, .skiptranslate {
+        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
       }
+      body { top: 0 !important; position: static !important; }
+      font[style] { background-color: transparent !important; box-shadow: none !important; }
 
-      ::-webkit-scrollbar-track {
-        background: var(--scrollbar-bg);
-      }
-
-      ::-webkit-scrollbar-thumb {
-        background: var(--scrollbar-thumb);
-        border-radius: 8px;
-        border: 3px solid var(--scrollbar-bg);
-      }
-
-      ::-webkit-scrollbar-thumb:hover {
-        background: var(--scrollbar-thumb-hover);
-      }
+      /* Custom Scrollbar */
+      html { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg); }
+      ::-webkit-scrollbar { width: 12px; height: 12px; }
+      ::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
+      ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 8px; border: 3px solid var(--scrollbar-bg); }
+      ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
       body.app-body {
         margin: 0;
@@ -590,10 +749,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         box-sizing: border-box;
       }
 
-      /* Navbar */
+      /* Frosted Glass Navbar */
       .top-navbar {
         height: 65px;
-        background-color: var(--bg-card);
+        background-color: var(--header-bg);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
         border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
@@ -604,335 +765,91 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         z-index: 50;
       }
 
-      .nav-left {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-      }
+      .nav-left { display: flex; align-items: center; gap: 1.5rem; }
+      .brand-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+      .brand-logo-img { width: 32px; height: 32px; object-fit: contain; border-radius: 0.375rem; }
+      .brand-name { font-size: 1.15rem; font-weight: 700; color: var(--text-main); }
+      
+      .nav-right { display: flex; align-items: center; gap: 0.75rem; }
 
-      .brand-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        text-decoration: none;
-      }
-
-      .brand-logo-img {
-        width: 32px;
-        height: 32px;
-        object-fit: contain;
-        border-radius: 0.375rem;
-      }
-
-      .brand-name {
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: var(--text-main);
-      }
-
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-      }
-
+      /* Search Bar placed cleanly next to logo with custom spacing */
       .search-trigger {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--bg-main);
-        border: 1px solid var(--border-color);
-        padding: 0.4rem 0.8rem;
-        border-radius: 0.5rem;
-        color: var(--text-muted);
-        font-size: 0.85rem;
-        cursor: pointer;
-        width: 280px;
-        text-align: left;
-        font-family: inherit;
+        display: flex; align-items: center; gap: 0.5rem; background: var(--sidebar-hover); border: 1px solid transparent;
+        padding: 0.45rem 1rem; border-radius: 0.5rem; color: var(--text-muted); font-size: 0.85rem; cursor: pointer;
+        width: 320px; text-align: left; font-family: inherit; transition: all 0.2s ease; margin-left: 1.5rem;
       }
-
+      html[dir="rtl"] .search-trigger, html.Rtl .search-trigger { margin-left: 0; margin-right: 1.5rem; text-align: right; }
+      
+      .search-trigger:hover {
+        background: var(--bg-card);
+        border-color: var(--border-color);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
       .search-trigger kbd {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        padding: 0.1rem 0.3rem;
-        border-radius: 0.25rem;
-        font-size: 0.7rem;
-        color: var(--text-main);
-        margin-left: auto;
+        background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.15rem 0.4rem; border-radius: 0.25rem;
+        font-size: 0.65rem; font-weight: 600; color: var(--text-muted); margin-left: auto; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
       }
+      html[dir="rtl"] .search-trigger kbd, html.Rtl .search-trigger kbd { margin-left: 0; margin-right: auto; }
 
-      /* Search Modal Styles */
+      /* Search Modal */
       .search-modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
-        justify-content: center;
-        align-items: flex-start;
-        padding-top: 10vh;
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: flex-start; padding-top: 10vh;
       }
-
-      .search-modal-overlay.show {
-        display: flex;
-      }
-
-      .search-modal-box {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 0.75rem;
-        width: 100%;
-        max-width: 600px;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-
-      .search-modal-input-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1rem 1.25rem;
-        border-bottom: 1px solid var(--border-color);
-        color: var(--text-muted);
-      }
-
-      .search-modal-input-wrapper input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        outline: none;
-        font-size: 1rem;
-        color: var(--text-main);
-        font-family: inherit;
-      }
-
-      .search-close-kbd {
-        background: var(--bg-main);
-        border: 1px solid var(--border-color);
-        color: var(--text-muted);
-        padding: 0.2rem 0.5rem;
-        border-radius: 0.25rem;
-        font-size: 0.75rem;
-        cursor: pointer;
-        font-family: inherit;
-      }
-
-      .search-results-container {
-        padding: 1rem;
-        max-height: 350px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      .search-placeholder-text {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-        text-align: center;
-        margin: 1rem 0;
-      }
-
-      .search-result-item {
-        display: block;
-        padding: 0.75rem 1rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        background: var(--bg-main);
-        border: 1px solid var(--border-color);
-        transition: border-color 0.15s;
-      }
-
-      .search-result-item:hover {
-        border-color: #4f46e5;
-      }
-
-      .search-result-meta {
-        font-size: 0.7rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        color: #4f46e5;
-        margin-bottom: 0.2rem;
-        letter-spacing: 0.05em;
-      }
-
-      .search-result-title {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--text-main);
-      }
+      .search-modal-overlay.show { display: flex; }
+      .search-modal-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; width: 100%; max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); overflow: hidden; }
+      .search-modal-input-wrapper { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); color: var(--text-muted); }
+      .search-modal-input-wrapper input { flex: 1; background: transparent; border: none; outline: none; font-size: 1rem; color: var(--text-main); font-family: inherit; }
+      .search-close-kbd { background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; cursor: pointer; font-family: inherit; }
+      .search-results-container { padding: 1rem; max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+      .search-placeholder-text { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin: 1rem 0; }
+      .search-result-item { display: block; padding: 0.75rem 1rem; border-radius: 0.5rem; text-decoration: none; background: var(--bg-main); border: 1px solid var(--border-color); transition: border-color 0.15s; }
+      .search-result-item:hover { border-color: #4f46e5; }
+      .search-result-meta { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: #4f46e5; margin-bottom: 0.2rem; letter-spacing: 0.05em; }
+      .search-result-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
 
       .icon-btn {
-        background: transparent;
-        border: 1px solid var(--border-color);
-        color: var(--text-muted);
-        width: 38px;
-        height: 38px;
-        border-radius: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background 0.15s;
+        background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); width: 38px; height: 38px;
+        border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s;
       }
+      .icon-btn:hover { background: var(--sidebar-hover); color: var(--text-main); }
 
-      .icon-btn:hover {
-        background: var(--sidebar-hover);
-        color: var(--text-main);
-      }
+      /* Mobile Drawer */
+      .mobile-drawer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 1000; justify-content: flex-start; animation: fadeInOverlay 0.2s ease; }
+      .mobile-drawer-overlay.show { display: flex; }
+      .mobile-drawer-content { background: var(--bg-card); width: 82%; max-width: 320px; height: 100%; display: flex; flex-direction: column; box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15); animation: slideInDrawer 0.25s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; }
+      .mobile-drawer-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: flex-start; align-items: center; }
+      .drawer-close-btn { background: transparent; border: none; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-family: inherit; }
+      .drawer-close-btn:hover { background: var(--sidebar-hover); color: var(--text-main); }
+      .mobile-drawer-body { padding: 1.25rem 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
+      @keyframes slideInDrawer { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+      @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
 
-      /* Mobile Navigation Drawer Styles */
-      .mobile-drawer-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
-        justify-content: flex-start;
-        animation: fadeInOverlay 0.2s ease;
-      }
+      /* Dropdowns */
+      .dropdown-container { position: relative; }
+      .dropdown-menu { display: none; position: absolute; right: 0; top: 45px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2); width: 180px; padding: 0.5rem; z-index: 100; }
+      .dropdown-menu.show { display: block; }
+      .dropdown-menu-header { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; padding: 0.5rem 0.75rem; letter-spacing: 0.05em; }
+      .dropdown-option { width: 100%; display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; background: transparent; border: none; border-radius: 0.375rem; color: var(--text-main); font-size: 0.9rem; cursor: pointer; text-align: left; font-family: inherit; }
+      html[dir="rtl"] .dropdown-option, html.Rtl .dropdown-option { text-align: right; }
+      .dropdown-option:hover { background: var(--sidebar-hover); }
+      .lang-menu-scroll { max-height: 350px; overflow-y: auto; }
+      .check-icon { visibility: hidden; color: #4f46e5; }
+      .dropdown-option.active .check-icon { visibility: visible; }
 
-      .mobile-drawer-overlay.show {
-        display: flex;
-      }
-
-      .mobile-drawer-content {
-        background: var(--bg-card);
-        width: 82%;
-        max-width: 320px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
-        animation: slideInDrawer 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        overflow-y: auto;
-      }
-
-      .mobile-drawer-header {
-        padding: 1rem 1.25rem;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-      }
-
-      .drawer-close-btn {
-        background: transparent;
-        border: none;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        font-family: inherit;
-      }
-
-      .drawer-close-btn:hover {
-        background: var(--sidebar-hover);
-        color: var(--text-main);
-      }
-
-      .mobile-drawer-body {
-        padding: 1.25rem 1rem;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-
-      @keyframes slideInDrawer {
-        from { transform: translateX(-100%); }
-        to { transform: translateX(0); }
-      }
-
-      @keyframes fadeInOverlay {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-
-      /* Theme Dropdown Styles */
-      .theme-dropdown-container {
-        position: relative;
-      }
-
-      .theme-menu {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 45px;
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 0.75rem;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-        width: 180px;
-        padding: 0.5rem;
-        z-index: 100;
-      }
-
-      .theme-menu.show {
-        display: block;
-      }
-
-      .theme-menu-header {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        padding: 0.5rem 0.75rem;
-        letter-spacing: 0.05em;
-      }
-
-      .theme-option {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.6rem 0.75rem;
-        background: transparent;
-        border: none;
-        border-radius: 0.375rem;
-        color: var(--text-main);
-        font-size: 0.9rem;
-        cursor: pointer;
-        text-align: left;
-        font-family: inherit;
-      }
-
-      .theme-option:hover {
-        background: var(--sidebar-hover);
-      }
-
-      .check-icon {
-        visibility: hidden;
-        color: #4f46e5;
-      }
-
-      .theme-option.active .check-icon {
-        visibility: visible;
-      }
-
-      /* Dashboard Grid & Sticky Sidebar */
+      /* DASHBOARD GRID & STICKY SIDEBAR */
       .dashboard-container {
         display: grid;
         grid-template-columns: 240px 1fr;
         align-items: start;
-        min-width: 0 !important; /* Precautionary fix for flexbox blowout */
+        width: 100%;
+        min-width: 0 !important;
       }
 
       .sidebar {
         background-color: var(--sidebar-bg);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
         border-right: 1px solid var(--border-color);
         min-height: calc(100vh - 65px);
         position: sticky;
@@ -940,352 +857,126 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         display: flex;
         flex-direction: column;
         overflow-y: auto;
+        z-index: 40;
+      }
+      html[dir="rtl"] .sidebar, html.Rtl .sidebar {
+        border-right: none;
+        border-left: 1px solid var(--border-color);
       }
 
       .sidebar-inner {
-        padding: 1.5rem 1rem;
+        padding: 1.5rem 0.75rem;
         display: flex;
         flex-direction: column;
         flex: 1;
       }
 
-      .sidebar-section {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-      }
+      .sidebar-section { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.5rem;}
+      .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.05em; padding: 0.5rem 0.75rem; }
+      .sidebar-link { display: flex; align-items: center; padding: 0.6rem 0.75rem; border-radius: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.15s ease; }
+      .sidebar-link:hover { background-color: var(--sidebar-hover); color: var(--text-main); }
+      .sidebar-link.active { background-color: var(--sidebar-active); color: var(--sidebar-active-text); font-weight: 600; }
 
-      .sidebar-title {
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        letter-spacing: 0.05em;
-        padding: 0.5rem 0.75rem;
-      }
-
-      .sidebar-link {
-        display: flex;
-        align-items: center;
-        padding: 0.6rem 0.75rem;
-        border-radius: 0.5rem;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-        transition: all 0.15s ease;
-      }
-
-      .sidebar-link:hover {
-        background-color: var(--sidebar-hover);
-        color: var(--text-main);
-      }
-
-      .sidebar-link.active {
-        background-color: var(--sidebar-active);
-        color: var(--sidebar-active-text);
-        font-weight: 600;
-      }
-
-      /* Sidebar Social Area Styles (Pinned to Bottom, Exactly 4 Items) */
-      .sidebar-social-section {
-        margin-top: auto;
-        padding-top: 1rem;
-        border-top: 1px solid var(--border-color);
-      }
-
-      .social-section-title {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--text-main);
-        text-align: center;
-        margin-bottom: 0.75rem;
-      }
-
-      .social-icons-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.4rem;
-        justify-items: center;
-      }
-
-      .social-icon-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        color: var(--text-muted);
-        border: 1px solid var(--border-color);
-        background: var(--bg-card);
-        transition: all 0.15s ease;
-      }
-
-      .social-icon-link:hover {
-        color: #4f46e5;
-        border-color: #4f46e5;
-        background: var(--sidebar-hover);
-      }
+      .sidebar-social-section { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+      .social-section-title { font-size: 0.8rem; font-weight: 600; color: var(--text-main); text-align: center; margin-bottom: 0.75rem; }
+      .social-icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; justify-items: center; }
+      .social-icon-link { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: var(--text-muted); border: 1px solid var(--border-color); background: var(--bg-card); transition: all 0.15s ease; }
+      .social-icon-link:hover { color: #4f46e5; border-color: #4f46e5; background: var(--sidebar-hover); }
 
       .content-wrapper {
         display: flex;
         flex-direction: column;
         min-height: calc(100vh - 65px);
         justify-content: space-between;
-        min-width: 0 !important; /* Precautionary fix for flexbox blowout */
+        min-width: 0 !important;
       }
 
       .main-content {
-        padding: 2rem;
-        max-width: 1300px;
+        padding: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
         width: 100%;
         box-sizing: border-box;
-        min-width: 0 !important; /* Precautionary fix for flexbox blowout */
+        min-width: 0 !important;
       }
 
-      /* Footer Styles */
-      .site-footer {
-        background-color: var(--bg-card);
-        border-top: 1px solid var(--border-color);
-        padding: 1.5rem 2rem;
-        margin-top: auto;
-      }
+      .site-footer { background-color: transparent; border-top: 1px solid var(--border-color); padding: 1.5rem 2.5rem; margin-top: auto; }
+      .footer-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); }
+      .footer-links { display: flex; gap: 1.5rem; }
+      .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.15s ease; }
+      .footer-links a:hover { color: var(--text-main); }
 
-      .footer-content {
-        max-width: 1300px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 0.85rem;
-        color: var(--text-muted);
-      }
+      img.lazy { opacity: 0; transition: opacity 0.3s ease-in-out; }
+      img:not(.lazy) { opacity: 1; transition: opacity 0.3s ease-in-out; }
 
-      .footer-links {
-        display: flex;
-        gap: 1.5rem;
-      }
+      pre { position: relative; }
+      .copy-code-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #cbd5e1; font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: 0.3rem; cursor: pointer; transition: all 0.15s ease; font-family: inherit; }
+      html[dir="rtl"] .copy-code-btn, html.Rtl .copy-code-btn { right: auto; left: 0.5rem; }
+      .copy-code-btn:hover { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+      .copy-code-btn.copied { background: #10b981; color: #ffffff; border-color: #10b981; }
 
-      .footer-links a {
-        color: var(--text-muted);
-        text-decoration: none;
-        transition: color 0.15s ease;
-      }
+      .back-to-top-btn { position: fixed; bottom: 5rem; right: 2rem; background: #4f46e5; color: #ffffff; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); opacity: 0; visibility: hidden; transform: translateY(15px); transition: all 0.25s ease; z-index: 10; }
+      html[dir="rtl"] .back-to-top-btn, html.Rtl .back-to-top-btn { right: auto; left: 2rem; }
+      .back-to-top-btn.show { opacity: 1; visibility: visible; transform: translateY(0); }
+      .back-to-top-btn:hover { background: #4338ca; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4); }
 
-      .footer-links a:hover {
-        color: var(--text-main);
-      }
+      /* Dark mode component overrides */
+      html.dark .post-card-featured-horizontal, html.dark .post-card-grid, html.dark .popular-card, html.dark .post-card, html.dark .post-card-horizontal-sm, html.dark .pagination-container, html.dark nav[aria-label="Pagination"], html.dark .search-modal-box, html.dark .mobile-drawer-content, html.dark .dropdown-menu { background-color: var(--bg-card) !important; border-color: var(--border-color) !important; color: var(--text-main) !important; }
+      html.dark .pagination-container, html.dark nav[aria-label="Pagination"] { color: var(--text-main) !important; }
+      html.dark .pagination-container a, html.dark .pagination-container button, html.dark nav[aria-label="Pagination"] a, html.dark nav[aria-label="Pagination"] button { background-color: var(--bg-card) !important; color: var(--text-main) !important; border-color: var(--border-color) !important; }
+      html.dark .pagination-container a:hover, html.dark .pagination-container button:hover, html.dark nav[aria-label="Pagination"] a:hover, html.dark nav[aria-label="Pagination"] button:hover { background-color: var(--sidebar-hover) !important; color: var(--text-main) !important; }
+      html.dark .featured-title, html.dark .grid-title, html.dark .popular-title, html.dark .post-title, html.dark .list-title, html.dark .search-result-title, html.dark .card-body-side h2 { color: var(--text-main) !important; }
+      html.dark .card-desc, html.dark .card-footer-row, html.dark .card-footer-row-sm, html.dark .card-footer-sm, html.dark .date-text, html.dark .page-indicator { color: var(--text-muted) !important; border-color: var(--border-color) !important; }
+      html.dark .card-image-side, html.dark .card-image-wrapper-top, html.dark .card-thumb-sm, html.dark .search-result-item, html.dark .page-btn.disabled { background-color: #27272a !important; border-color: var(--border-color) !important; color: var(--text-muted) !important; }
+      html.dark .page-btn { background-color: var(--bg-card); border-color: var(--border-color); color: var(--text-main); }
+      html.dark .popular-item { border-bottom-color: var(--border-color) !important; }
 
-      /* Lazy loading fade-in styles */
-      img.lazy {
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-      }
-
-      img:not(.lazy) {
-        opacity: 1;
-        transition: opacity 0.3s ease-in-out;
-      }
-
-      /* Code Block Copy Button Styles */
-      pre {
-        position: relative;
-      }
-
-      .copy-code-btn {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #cbd5e1;
-        font-size: 0.7rem;
-        font-weight: 600;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.3rem;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        font-family: inherit;
-      }
-
-      .copy-code-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: #ffffff;
-      }
-
-      .copy-code-btn.copied {
-        background: #10b981;
-        color: #ffffff;
-        border-color: #10b981;
-      }
-
-      /* Sticky Back to Top Button Styles */
-      .back-to-top-btn {
-        position: fixed;
-        bottom: 5rem;
-        right: 2rem;
-        background: #4f46e5;
-        color: #ffffff;
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(15px);
-        transition: all 0.25s ease;
-        z-index: 10;
-      }
-
-      .back-to-top-btn.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-      }
-
-      .back-to-top-btn:hover {
-        background: #4338ca;
-        transform: translateY(-3px);
-        box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
-      }
-
-      /* Dark mode card & pagination overrides for existing inline components */
-      html.dark .post-card-featured-horizontal,
-      html.dark .post-card-grid,
-      html.dark .popular-card,
-      html.dark .post-card,
-      html.dark .post-card-horizontal-sm,
-      html.dark .pagination-container,
-      html.dark nav[aria-label="Pagination"],
-      html.dark .search-modal-box,
-      html.dark .mobile-drawer-content {
-        background-color: var(--bg-card) !important;
-        border-color: var(--border-color) !important;
-        color: var(--text-main) !important;
-      }
-
-      /* Force pagination text and unselected numbers/buttons to look correct in dark mode */
-      html.dark .pagination-container,
-      html.dark nav[aria-label="Pagination"] {
-        color: var(--text-main) !important;
-      }
-
-      html.dark .pagination-container a,
-      html.dark .pagination-container button,
-      html.dark nav[aria-label="Pagination"] a,
-      html.dark nav[aria-label="Pagination"] button {
-        background-color: var(--bg-card) !important;
-        color: var(--text-main) !important;
-        border-color: var(--border-color) !important;
-      }
-
-      html.dark .pagination-container a:hover,
-      html.dark .pagination-container button:hover,
-      html.dark nav[aria-label="Pagination"] a:hover,
-      html.dark nav[aria-label="Pagination"] button:hover {
-        background-color: var(--sidebar-hover) !important;
-        color: var(--text-main) !important;
-      }
-
-      html.dark .featured-title,
-      html.dark .grid-title,
-      html.dark .popular-title,
-      html.dark .post-title,
-      html.dark .list-title,
-      html.dark .search-result-title,
-      html.dark .card-body-side h2 {
-        color: var(--text-main) !important;
-      }
-
-      html.dark .card-desc,
-      html.dark .card-footer-row,
-      html.dark .card-footer-row-sm,
-      html.dark .card-footer-sm,
-      html.dark .date-text,
-      html.dark .page-indicator {
-        color: var(--text-muted) !important;
-        border-color: var(--border-color) !important;
-      }
-
-      html.dark .card-image-side,
-      html.dark .card-image-wrapper-top,
-      html.dark .card-thumb-sm,
-      html.dark .search-result-item,
-      html.dark .page-btn.disabled {
-        background-color: #27272a !important;
-        border-color: var(--border-color) !important;
-        color: var(--text-muted) !important;
-      }
-
-      html.dark .page-btn {
-        background-color: var(--bg-card);
-        border-color: var(--border-color);
-        color: var(--text-main);
-      }
-
-      html.dark .popular-item {
-        border-bottom-color: var(--border-color) !important;
-      }
-
-      .mobile-only {
-        display: none !important;
-      }
-      .desktop-only {
-        display: flex !important;
-      }
+      .mobile-only { display: none !important; }
+      .desktop-only { display: flex !important; }
 
       @media (max-width: 768px) {
-        .dashboard-container {
-          grid-template-columns: 1fr !important;
-        }
-        .desktop-sidebar {
-          display: none !important;
-        }
-        .top-navbar {
-          padding: 0 1rem !important;
-          height: 65px !important;
-        }
-        .desktop-only {
-          display: none !important;
-        }
-        .mobile-only {
-          display: flex !important;
-        }
-        .nav-left {
-          gap: 0.75rem !important;
-        }
-        .main-content {
-          padding: 1rem !important;
-        }
-        .footer-content {
-          flex-direction: column;
-          gap: 0.75rem;
-          text-align: center;
-        }
-        .back-to-top-btn {
-          bottom: 5.5rem;
-          right: 1.25rem;
-          width: 38px;
-          height: 38px;
-        }
+        .dashboard-container { grid-template-columns: 1fr !important; }
+        .desktop-sidebar { display: none !important; }
+        .top-navbar { padding: 0 1rem !important; height: 65px !important; }
+        .desktop-only { display: none !important; }
+        .mobile-only { display: flex !important; }
+        .nav-left { gap: 0.75rem !important; width: auto !important; }
+        .main-content { padding: 1.5rem 1rem !important; }
+        .footer-content { flex-direction: column; gap: 0.75rem; text-align: center; }
+        .back-to-top-btn { bottom: 5.5rem; right: 1.25rem; width: 38px; height: 38px; }
       }
+
+      /* Compact Mac OS Golden Gate Cookie Consent */
+      .cookie-banner {
+        position: fixed; bottom: 2rem; left: 50%; transform: translate(-50%, 150%); z-index: 9999;
+        width: max-content; max-width: 90%; padding: 0.85rem 1.25rem; background: var(--cookie-bg);
+        backdrop-filter: saturate(200%) blur(25px); -webkit-backdrop-filter: saturate(200%) blur(25px);
+        border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 3rem; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.05);
+        display: flex; align-items: center; gap: 1.5rem; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      html.dark .cookie-banner { border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05); }
+      .cookie-banner.show { transform: translate(-50%, 0); }
+      .cookie-text { font-size: 0.85rem; font-weight: 500; color: var(--text-main); margin: 0; }
+      .cookie-text a { color: #4f46e5; text-decoration: underline; text-underline-offset: 2px; }
+      .cookie-actions { display: flex; gap: 0.5rem; }
+      .cookie-btn { padding: 0.4rem 1rem; border-radius: 2rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s ease; }
+      .cookie-btn-outline { background: rgba(0,0,0,0.05); color: var(--text-main); }
+      html.dark .cookie-btn-outline { background: rgba(255,255,255,0.1); }
+      .cookie-btn-outline:hover { background: rgba(0,0,0,0.1); }
+      html.dark .cookie-btn-outline:hover { background: rgba(255,255,255,0.2); }
+      .cookie-btn-solid { background: #4f46e5; color: white; box-shadow: 0 2px 8px rgba(79,70,229,0.3); }
+      .cookie-btn-solid:hover { background: #4338ca; }
+      @media (max-width: 640px) { .cookie-banner { flex-direction: column; border-radius: 1.5rem; text-align: center; gap: 1rem; } }
     </style>
 
+    <!-- Compact Cookie Banner HTML -->
     <div id="cookieConsentBanner" class="cookie-banner">
-      <div class="cookie-content">
-        <div class="cookie-text">
-          <h3>We value your privacy</h3>
-          <p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. Read our <a href="/privacy-policy">Privacy Policy</a> to learn more.</p>
-        </div>
-        <div class="cookie-actions">
-          <button id="cookieReject" class="cookie-btn cookie-btn-outline">Reject All</button>
-          <button id="cookieAccept" class="cookie-btn cookie-btn-solid">Accept All</button>
-        </div>
+      <p class="cookie-text">
+        We use cookies to improve your experience. See our <a href="/privacy-policy">Privacy Policy</a>.
+      </p>
+      <div class="cookie-actions">
+        <button id="cookieReject" class="cookie-btn cookie-btn-outline">Reject</button>
+        <button id="cookieAccept" class="cookie-btn cookie-btn-solid">Accept</button>
       </div>
     </div>
 
@@ -1313,110 +1004,5 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         });
       });
     </script>
-
-    <style>
-      .cookie-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
-        padding: 1.25rem 2rem;
-        background: var(--bg-card);
-        border-top: 1px solid var(--border-color);
-        box-shadow: 0 -10px 25px -5px rgba(0, 0, 0, 0.08);
-        transform: translateY(100%); /* Avoids Layout Shift */
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-
-      .cookie-banner.show {
-        transform: translateY(0); /* Avoids Layout Shift */
-      }
-
-      .cookie-content {
-        max-width: 1300px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 2rem;
-      }
-
-      .cookie-text {
-        flex: 1;
-      }
-
-      .cookie-text h3 {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--text-main);
-        margin: 0 0 0.2rem 0;
-      }
-
-      .cookie-text p {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        margin: 0;
-        line-height: 1.4;
-      }
-
-      .cookie-text a {
-        color: #4f46e5;
-        text-decoration: underline;
-      }
-
-      html.dark .cookie-text a {
-        color: #818cf8;
-      }
-
-      .cookie-actions {
-        display: flex;
-        gap: 0.75rem;
-        flex-shrink: 0;
-      }
-
-      .cookie-btn {
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        font-size: 0.8rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.15s ease;
-        font-family: inherit;
-      }
-
-      .cookie-btn-outline {
-        background: var(--bg-main);
-        border: 1px solid var(--border-color);
-        color: var(--text-main);
-      }
-
-      .cookie-btn-outline:hover {
-        background: var(--sidebar-hover);
-      }
-
-      .cookie-btn-solid {
-        background: #4f46e5;
-        border: 1px solid #4f46e5;
-        color: #ffffff;
-      }
-
-      .cookie-btn-solid:hover {
-        background: #4338ca;
-      }
-
-      @media (max-width: 768px) {
-        .cookie-content {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 1rem;
-        }
-        .cookie-actions {
-          width: 100%;
-          justify-content: flex-end;
-        }
-      }
-    </style>
-
   </body>
 </html>

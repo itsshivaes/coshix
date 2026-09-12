@@ -1,18 +1,24 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import { marked } from "marked";
+import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   return posts.map((post) => ({
     params: { single: post.slug || post.id },
-    props: { post },
   }));
 }
 
-const { post } = Astro.props;
-const htmlContent = marked.parse(post.body || "");
+const { single } = Astro.params;
+const post = await getEntry("posts", single);
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// ASTRO 5 FIX: Use the standalone render function
+const { Content } = await render(post);
 
 // Extract Category for Breadcrumb
 const postCategory = post.data?.categories?.[0] || "General";
@@ -51,7 +57,7 @@ const displayDate = hasUpdatedDate ? post.data.updatedDate : post.data?.date;
 const datePrefix = hasUpdatedDate ? "Updated: " : "";
 const timeString = displayDate ? `${datePrefix}${timeAgo(displayDate)}` : "";
 
-// Fetch Author Data
+// Fetch Author Data safely within the component
 const allAuthors = await getCollection("authors");
 let authorData = { title: "Coshix", image: "/images/logo.png", slug: "coshix" }; 
 if (post.data?.authors && post.data.authors.length > 0) {
@@ -102,12 +108,40 @@ const breadcrumbSchema = {
   ]
 };
 
-// Fetch 3 related posts for the "You may also like" section
+// --- DATA FETCHING FOR RELATED POSTS & SIDEBAR ---
 const allPosts = await getCollection("posts");
+
 const relatedPosts = allPosts
-  .filter(p => (p.slug || p.id) !== (post.slug || post.id))
-  .sort(() => 0.5 - Math.random()) 
+  .filter(p => 
+    (p.slug || p.id) !== (post.slug || post.id) && 
+    p.data?.categories?.[0] === postCategory
+  )
   .slice(0, 3);
+
+const validPosts = allPosts.filter(p => {
+  const identifier = p.slug || p.id || "";
+  return !identifier.includes("index") && p.data?.title !== "Posts";
+});
+
+const sortedPosts = validPosts.sort((a, b) => {
+  const dateA = new Date(a.data?.date || 0).getTime();
+  const dateB = new Date(b.data?.date || 0).getTime();
+  return dateB - dateA;
+});
+
+const popularPosts = sortedPosts.slice(0, 5);
+
+const categoryMap = new Map();
+validPosts.forEach(p => {
+  const cat = p.data?.categories?.[0] || "General";
+  categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
+});
+const allLabels = Array.from(categoryMap.entries()).map(([name, count]) => ({ name, count }));
+
+const formatSidebarDate = (dateStr: string | Date) => {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
 ---
 
 <Base 
@@ -118,175 +152,214 @@ const relatedPosts = allPosts
   datePublished={post.data?.date}
   dateModified={post.data?.updatedDate || post.data?.date}
 >
-  <div class="post-page-wrapper">
-    <article class="post-card">
-      
-      <div class="post-header">
-        <!-- Hidden Schema for Google Rich Results -->
-        <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
-
-        <!-- Visual Breadcrumb -->
-        <nav aria-label="breadcrumb" class="post-breadcrumb">
-          <a href="/">Home</a>
-          <span class="separator">/</span>
-          <a href={`/categories/${categorySlug}`} class="current">{postCategory}</a>
-        </nav>
+  <div class="blog-post-layout">
+    
+    <!-- LEFT: Main Article Area -->
+    <div class="post-page-wrapper">
+      <article class="post-card">
         
-        <h1 class="post-title">
-          {post.data?.title}
-        </h1>
-        
-        <div class="post-meta">
-          <a href={`/authors/${authorData.slug}`} class="meta-author-info">
-            <img src={authorData.image} alt={authorData.title} class="author-avatar" loading="eager" />
-            <div class="author-details">
-              <span class="author-name">{authorData.title}</span>
-              <span class="meta-time">
-                {timeString} <span class="meta-dot">&middot;</span> {readingTime} min read
-              </span>
-            </div>
-          </a>
+        <div class="post-header">
+          <!-- Hidden Schema for Google Rich Results -->
+          <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 
-          <!-- Google Add Button -->
-          <a href="https://www.google.com/preferences/source?q=coshix.in" target="_blank" rel="noopener noreferrer" class="google-add-btn" aria-label="Add website to Google News">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48">
-              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            </svg>
-            <span>Add</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Compact TOC Placeholder -->
-      <div id="dynamic-toc" class="toc-container">
-        <div class="toc-header" id="toc-toggle">
-          <span>Table of Contents</span>
-          <svg class="toc-arrow collapsed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-        <div class="toc-content collapsed" id="toc-content">
-          <div class="toc-content-inner">
-            <ul id="toc-list" class="toc-list"></ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Article Content -->
-      <div class="content-body" set:html={htmlContent} />
-
-      <!-- Hidden Related Posts Template -->
-      {relatedPosts.length > 0 && (
-        <aside id="related-posts-widget" class="related-list-widget">
-          <div class="related-heading">You may also like</div>
-          <ul class="related-list">
-            {relatedPosts.map(rp => (
-              <li>
-                <a href={`/blog/${rp.slug || rp.id}`} class="related-list-title">
-                  {rp.data?.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </aside>
-      )}
-
-      <!-- Post Tags / Categories Section (Non-Clickable) -->
-      {uniqueTags.length > 0 && (
-        <div class="post-tags-section">
-          <hr class="tags-divider" />
-          <div class="tags-wrapper">
-            {uniqueTags.map((tag, index) => (
-              <span class={`tag-pill ${index >= 5 ? 'extra-tag' : ''}`}>
-                {tag}
-              </span>
-            ))}
-            {uniqueTags.length > 5 && (
-              <button id="toggle-tags-btn" class="tag-toggle-btn">Show more</button>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div class="post-share-section">
-        <span class="share-label">Share:</span>
-        <div class="share-buttons">
+          <!-- Visual Breadcrumb -->
+          <nav aria-label="breadcrumb" class="post-breadcrumb">
+            <a href="/">Home</a>
+            <span class="separator">/</span>
+            <a href={`/categories/${categorySlug}`} class="current">{postCategory}</a>
+          </nav>
           
-          <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="share-btn facebook">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            Facebook
-          </a>
+          <h1 class="post-title">
+            {post.data?.title}
+          </h1>
+          
+          <div class="post-meta">
+            <a href={`/authors/${authorData.slug}`} class="meta-author-info">
+              <Image src={authorData.image} alt={authorData.title} class="author-avatar" width={36} height={36} loading="eager" />
+              <div class="author-details">
+                <span class="author-name">{authorData.title}</span>
+                <span class="meta-time">
+                  {timeString} <span class="meta-dot">&middot;</span> {readingTime} min read
+                </span>
+              </div>
+            </a>
 
-          <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.data?.title + ' ' + Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="share-btn whatsapp">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            Whatsapp
-          </a>
+            <!-- Google Add Button -->
+            <a href="https://www.google.com/preferences/source?q=coshix.in" target="_blank" rel="noopener noreferrer" class="google-add-btn" aria-label="Add website to Google News">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              </svg>
+              <span>Add</span>
+            </a>
+          </div>
+        </div>
 
-          <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data?.title)}&url=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="share-btn twitter">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            X / Twitter
-          </a>
+        <!-- Compact TOC Placeholder -->
+        <div id="dynamic-toc" class="toc-container">
+          <div class="toc-header" id="toc-toggle">
+            <span>Table of Contents</span>
+            <svg class="toc-arrow collapsed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="toc-content collapsed" id="toc-content">
+            <div class="toc-content-inner">
+              <ul id="toc-list" class="toc-list"></ul>
+            </div>
+          </div>
+        </div>
 
-          <button id="copyLinkBtn" class="share-btn copy-link">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <span id="copyText">Copy Link</span>
-          </button>
+        <!-- Main Article Content using Astro's Native Renderer -->
+        <div class="content-body">
+          <Content />
+        </div>
 
+        <!-- Hidden Related Posts Template -->
+        {relatedPosts.length > 0 && (
+          <aside id="related-posts-widget" class="related-list-widget">
+            <div class="related-heading">You may also like</div>
+            <ul class="related-list">
+              {relatedPosts.map(rp => (
+                <li>
+                  <a href={`/blog/${rp.slug || rp.id}`} class="related-list-title">
+                    {rp.data?.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )}
+
+        <!-- Post Tags / Categories Section (Non-Clickable) -->
+        {uniqueTags.length > 0 && (
+          <div class="post-tags-section">
+            <hr class="tags-divider" />
+            <div class="tags-wrapper">
+              {uniqueTags.map((tag, index) => (
+                <span class={`tag-pill ${index >= 5 ? 'extra-tag' : ''}`}>
+                  {tag}
+                </span>
+              ))}
+              {uniqueTags.length > 5 && (
+                <button id="toggle-tags-btn" class="tag-toggle-btn">Show more</button>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div class="post-share-section">
+          <span class="share-label">Share:</span>
+          <div class="share-buttons">
+            
+            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="share-btn facebook">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Facebook
+            </a>
+
+            <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(post.data?.title + ' ' + Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="share-btn whatsapp">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              Whatsapp
+            </a>
+
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data?.title)}&url=${encodeURIComponent(Astro.url.href)}`} target="_blank" rel="noopener noreferrer" class="share-btn twitter">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              X / Twitter
+            </a>
+
+            <button id="copyLinkBtn" class="share-btn copy-link">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span id="copyText">Copy Link</span>
+            </button>
+
+          </div>
+        </div>
+
+        <section class="comments-section">
+          <h3 class="comments-title">Comments</h3>
+          <button id="load-comments-btn" class="load-comments-btn">Load Comments</button>
+          <div id="disqus_thread"></div>
+          
+          <script is:inline>
+            document.addEventListener('DOMContentLoaded', () => {
+              const loadBtn = document.getElementById('load-comments-btn');
+              if (loadBtn) {
+                loadBtn.addEventListener('click', function() {
+                  // UI feedback
+                  this.textContent = 'Loading comments...';
+                  this.style.opacity = '0.6';
+                  this.style.cursor = 'not-allowed';
+                  
+                  // Init Disqus directly on click
+                  window.disqus_config = function () {
+                    this.page.url = window.location.href;
+                    this.page.identifier = window.location.pathname;
+                  };
+                  var d = document, s = d.createElement('script');
+                  s.src = 'https://coshix.disqus.com/embed.js';
+                  s.setAttribute('data-timestamp', +new Date());
+                  
+                  // Hide button once loaded
+                  s.onload = () => { this.style.display = 'none'; };
+                  
+                  (d.head || d.body).appendChild(s);
+                });
+              }
+            });
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        </section>
+
+      </article>
+    </div>
+
+    <!-- RIGHT: Sidebar Feed (Popular Posts & Labels) -->
+    <aside class="sidebar-feed desktop-only">
+      
+      <!-- Popular Posts Widget -->
+      <div class="sidebar-widget">
+        <div class="section-heading">
+          <span class="heading-title">Trending</span>
+          <span class="heading-dots">···</span>
+        </div>
+        <div class="popular-list">
+          {popularPosts.map((p, idx) => (
+            <div class="popular-row">
+              <span class="pop-num">#{idx + 1}</span>
+              <div class="pop-details">
+                <div class="pop-submeta">
+                  {p.data?.date ? formatSidebarDate(p.data.date) : ""} — 
+                  <a href={`/categories/${(p.data?.categories?.[0] || "General").toLowerCase()}`} class="pop-cat">
+                    {p.data?.categories?.[0] || "General"}
+                  </a>
+                </div>
+                <a href={`/blog/${p.slug || p.id}`} class="pop-title-anchor">
+                  <h4 class="pop-post-title">{p.data?.title}</h4>
+                </a>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <section class="comments-section">
-        <h3 class="comments-title">Comments</h3>
-        <button id="load-comments-btn" class="load-comments-btn">Load Comments</button>
-        <div id="disqus_thread"></div>
-        
-        <script is:inline>
-          /* Fineshop's Interaction-Based Lazy Script */
-          window.lazy = window.lazy || new Promise(e => {
-            const t = "IS_LAZIED", n = "true", o = ["scroll", "click"], i = ["keydown", "mouseover", "touchmove", "touchstart"], r = o.concat(i);
-            function a() { try { return localStorage.getItem(t) === n } catch (e) { return !0 } }
-            function l(e = !0) { try { e ? localStorage.setItem(t, n) : localStorage.removeItem(t) } catch (e) { } }
-            function d(t) { l(!0), e({ type: t.type.toLowerCase() }), r.forEach(e => window.removeEventListener(e, d)) }
-            if (a()) e({ type: "local" });
-            else if (0 !== document.documentElement.scrollTop || document.body && 0 !== document.body.scrollTop) d({ type: "scroll" });
-            else {
-              const e = () => { window.removeEventListener("load", e), i.forEach(e => window.addEventListener(e, d)) };
-              window.addEventListener("load", e), o.forEach(e => window.addEventListener(e, d))
-            }
-          });
+      <!-- Labels Widget -->
+      <div class="sidebar-widget">
+        <div class="section-heading">
+          <span class="heading-title">Labels</span>
+          <span class="heading-dots">···</span>
+        </div>
+        <div class="labels-grid">
+          {allLabels.map(label => (
+            <a href={`/categories/${label.name.toLowerCase()}`} class="label-pill">
+              <span class="label-name">{label.name}</span>
+              <span class="label-count">({label.count})</span>
+            </a>
+          ))}
+        </div>
+      </div>
 
-          /* Load Disqus on Click after Lazy resolve */
-          window.lazy.then(() => {
-            const loadBtn = document.getElementById('load-comments-btn');
-            if (loadBtn) {
-              loadBtn.addEventListener('click', function() {
-                // UI feedback
-                this.textContent = 'Loading comments...';
-                this.style.opacity = '0.6';
-                this.style.cursor = 'not-allowed';
-                
-                // Init Disqus
-                window.disqus_config = function () {
-                  this.page.url = window.location.href;
-                  this.page.identifier = window.location.pathname;
-                };
-                var d = document, s = d.createElement('script');
-                s.src = 'https://coshix.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', +new Date());
-                
-                // Hide button once loaded
-                s.onload = () => { this.style.display = 'none'; };
-                
-                (d.head || d.body).appendChild(s);
-              });
-            }
-          });
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-      </section>
+    </aside>
 
-    </article>
   </div>
 </Base>
 
@@ -452,24 +525,149 @@ const relatedPosts = allPosts
     scroll-behavior: smooth;
   }
 
-  /* --- GRID & FLEXBOX FIXES --- */
-  .dashboard-container,
-  .content-wrapper,
-  .main-content {
-    min-width: 0 !important; 
+  /* --- GRID LAYOUT --- */
+  .blog-post-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+    align-items: start;
+    width: 100%;
   }
 
   .post-page-wrapper {
     width: 100%;
-    max-width: 100%;
-    display: block;
-    box-sizing: border-box;
+    min-width: 0;
   }
 
+  /* SIDEBAR WIDGETS (Right Side) */
+  .sidebar-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 5.5rem;
+  }
+  .sidebar-widget {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 0.4rem;
+  }
+  .heading-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  .heading-dots {
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+  .popular-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .popular-row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .popular-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .pop-num {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    min-width: 18px;
+  }
+  .pop-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  .pop-submeta {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pop-cat {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  html.dark .pop-cat {
+    color: #818cf8;
+  }
+  .pop-title-anchor {
+    text-decoration: none;
+  }
+  .pop-post-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .pop-post-title:hover {
+    color: #4f46e5;
+  }
+  html.dark .pop-post-title:hover {
+    color: #818cf8;
+  }
+
+  .labels-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  .label-pill {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    font-size: 0.72rem;
+    transition: background 0.15s ease;
+  }
+  .label-pill:hover {
+    background: var(--sidebar-hover);
+    border-color: #4f46e5;
+  }
+  html.dark .label-pill:hover {
+    border-color: #818cf8;
+  }
+  .label-name {
+    color: var(--text-main);
+    font-weight: 500;
+  }
+  .label-count {
+    color: var(--text-muted);
+    font-size: 0.68rem;
+  }
+
+  /* POST CARD */
   .post-card {
     width: 100%;
-    max-width: 850px;
-    margin: 0 auto;
     background: var(--bg-card);
     border-radius: 0.75rem;
     padding: 2.5rem;
@@ -678,11 +876,15 @@ const relatedPosts = allPosts
   
   .content-body pre { position: static !important; background: transparent !important; padding: 1.25rem !important; margin: 0 !important; border: none !important; border-radius: 0 !important; overflow-x: auto !important; max-width: 100% !important; }
   
-  /* Smooth anti-aliased Code text */
+  /* FIXED EXPLICIT TEXT COLOR FOR CODE BLOCKS */
   .content-body pre code { 
-    background: transparent !important; padding: 0 !important; color: inherit !important; border: none !important; word-break: normal; white-space: pre !important; 
+    background: transparent !important; padding: 0 !important; border: none !important; word-break: normal; white-space: pre !important; 
     -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
-    font-weight: 400; font-size: 0.9rem; letter-spacing: 0.2px;
+    font-weight: 500; font-size: 0.9rem; letter-spacing: 0.2px;
+    color: #1e293b !important;
+  }
+  html.dark .content-body pre code {
+    color: #f8fafc !important;
   }
 
   /* Inline Code Mark Styles */
@@ -836,6 +1038,11 @@ const relatedPosts = allPosts
   }
 
   /* --- RESPONSIVENESS & MOBILE EDGE-TO-EDGE --- */
+  @media (max-width: 1024px) {
+    .blog-post-layout { grid-template-columns: 1fr; }
+    .sidebar-feed { display: none; }
+  }
+
   @media (max-width: 768px) {
     .post-page-wrapper { padding: 0; }
     .post-card { padding: 1.25rem 1rem; border: none; border-radius: 0; box-shadow: none; background: transparent; }

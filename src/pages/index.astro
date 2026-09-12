@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 
 const allPosts = await getCollection("posts");
 const validPosts = allPosts.filter(p => {
@@ -34,9 +35,6 @@ const formatDate = (dateStr: string) => {
   if (!dateStr) return "";
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 };
-
-// Base64 transparent placeholder to prevent broken image icon before loading
-const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
 ---
 
 <Base title="Coshix - Powering Web Creators">
@@ -49,14 +47,14 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
       {pinnedPost && (
         <section class="feed-section">
           <div class="section-heading">
-            <span class="heading-title">Pinned Post</span>
+            <span class="heading-title">Featured</span>
             <span class="heading-dots">···</span>
           </div>
 
           <article class="post-card horizontal-card">
             {pinnedPost.data?.image && (
-              <div class="card-thumb-h skeleton-bg">
-                <img src={placeholderImg} data-src={pinnedPost.data.image} alt={pinnedPost.data.title} class="lazy-image" />
+              <div class="card-thumb-h">
+                <Image src={pinnedPost.data.image} alt={pinnedPost.data.title} width={800} height={450} loading="eager" />
                 {pinnedPost.data?.commentsCount && (
                   <div class="comment-badge">💬 {pinnedPost.data.commentsCount}</div>
                 )}
@@ -89,7 +87,7 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
       <!-- Latest Posts Section -->
       <section class="feed-section">
         <div class="section-heading">
-          <span class="heading-title">Latest posts</span>
+          <span class="heading-title">Latest</span>
           <span class="heading-dots">···</span>
         </div>
 
@@ -97,8 +95,8 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
           {latestPosts.map(post => (
             <article class="post-card vertical-card">
               {post.data?.image && (
-                <div class="card-thumb skeleton-bg">
-                  <img src={placeholderImg} data-src={post.data.image} alt={post.data.title} class="lazy-image" />
+                <div class="card-thumb">
+                  <Image src={post.data.image} alt={post.data.title} width={600} height={350} loading="eager" />
                   {post.data?.commentsCount && (
                     <div class="comment-badge">💬 {post.data.commentsCount}</div>
                   )}
@@ -148,8 +146,8 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
             {bloggerPosts.map(post => (
               <article class="post-card vertical-card">
                 {post.data?.image && (
-                  <div class="card-thumb skeleton-bg">
-                    <img src={placeholderImg} data-src={post.data.image} alt={post.data.title} class="lazy-image" />
+                  <div class="card-thumb">
+                    <Image src={post.data.image} alt={post.data.title} width={600} height={350} loading="lazy" />
                     {post.data?.commentsCount && (
                       <div class="comment-badge">💬 {post.data.commentsCount}</div>
                     )}
@@ -193,8 +191,8 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
             {commonPosts.map(post => (
               <article class="post-card vertical-card">
                 {post.data?.image && (
-                  <div class="card-thumb skeleton-bg">
-                    <img src={placeholderImg} data-src={post.data.image} alt={post.data.title} class="lazy-image" />
+                  <div class="card-thumb">
+                    <Image src={post.data.image} alt={post.data.title} width={600} height={350} loading="lazy" />
                     {post.data?.commentsCount && (
                       <div class="comment-badge">💬 {post.data.commentsCount}</div>
                     )}
@@ -234,7 +232,7 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
       <!-- Popular Posts Widget -->
       <div class="sidebar-widget">
         <div class="section-heading">
-          <span class="heading-title">Popular Posts</span>
+          <span class="heading-title">Trending</span>
           <span class="heading-dots">···</span>
         </div>
         <div class="popular-list">
@@ -278,31 +276,6 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
   </div>
 
   <style>
-    /* --- SKELETON ANIMATIONS & LAZY LOADING --- */
-    .skeleton-bg {
-      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%) !important;
-      background-size: 400% 100% !important;
-      animation: skeletonLoading 1.5s infinite ease-in-out;
-    }
-    
-    html.dark .skeleton-bg {
-  background-image: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%) !important;
-}
-
-    @keyframes skeletonLoading {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .lazy-image {
-      opacity: 0;
-      transition: opacity 0.4s ease-in-out;
-    }
-    
-    .lazy-image.loaded {
-      opacity: 1;
-    }
-
     /* --- LAYOUT --- */
     .blog-home-layout {
       display: grid;
@@ -725,40 +698,4 @@ const placeholderImg = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAA
       }
     }
   </style>
-
-  <!-- Fineshop Lazy Load Script & Skeleton Loader Logic -->
-  <script is:inline>
-    /* 1. Fineshop's Interaction-Based Lazy Script */
-    window.lazy = window.lazy || new Promise(e => {
-      const t = "IS_LAZIED", n = "true", o = ["scroll", "click"], i = ["keydown", "mouseover", "touchmove", "touchstart"], r = o.concat(i);
-      function a() { try { return localStorage.getItem(t) === n } catch (e) { return !0 } }
-      function l(e = !0) { try { e ? localStorage.setItem(t, n) : localStorage.removeItem(t) } catch (e) { } }
-      function d(t) { l(!0), e({ type: t.type.toLowerCase() }), r.forEach(e => window.removeEventListener(e, d)) }
-      if (a()) e({ type: "local" });
-      else if (0 !== document.documentElement.scrollTop || document.body && 0 !== document.body.scrollTop) d({ type: "scroll" });
-      else {
-        const e = () => { window.removeEventListener("load", e), i.forEach(e => window.addEventListener(e, d)) };
-        window.addEventListener("load", e), o.forEach(e => window.addEventListener(e, d))
-      }
-    });
-
-    /* 2. Execute Image Swap when Promise resolves */
-    window.lazy.then(() => {
-      const lazyImages = document.querySelectorAll('img.lazy-image');
-      lazyImages.forEach(img => {
-        if (img.dataset.src) {
-          // When the real image finishes downloading, fade it in and remove the skeleton animation
-          img.onload = () => {
-            img.classList.add('loaded');
-            if (img.parentElement && img.parentElement.classList.contains('skeleton-bg')) {
-              img.parentElement.classList.remove('skeleton-bg');
-            }
-          };
-          // Swap data-src to src
-          img.src = img.dataset.src;
-          img.removeAttribute('data-src');
-        }
-      });
-    });
-  </script>
 </Base>

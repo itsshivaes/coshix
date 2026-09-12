@@ -20,7 +20,7 @@
     "@astrojs/react": "6.0.0",
     "@astrojs/sitemap": "^3.7.3",
     "@justinribeiro/lite-youtube": "^1.9.0",
-    "astro": "^7.3.1",
+    "astro": "^7.3.2",
     "astro-auto-import": "^0.5.1",
     "astro-gtm-lite": "^1.0.2",
     "date-fns": "^4.4.0",

@@ -35,11 +35,11 @@ import Base from "../layouts/Base.astro";
 <style>
   .not-found-wrapper {
     width: 100%;
-    min-height: calc(100vh - 140px);
+    min-height: 65vh; /* Better vertical centering without causing scrollbars */
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 2rem 0;
     box-sizing: border-box;
   }
 
@@ -47,7 +47,7 @@ import Base from "../layouts/Base.astro";
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 1rem;
-    padding: 3rem 2.5rem;
+    padding: 3.5rem 2.5rem;
     max-width: 520px;
     width: 100%;
     text-align: center;
@@ -66,7 +66,7 @@ import Base from "../layouts/Base.astro";
   }
 
   .error-code-badge {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 800;
     background: linear-gradient(135deg, #4f46e5 0%, #818cf8 100%);
     -webkit-background-clip: text;
@@ -123,7 +123,7 @@ import Base from "../layouts/Base.astro";
     font-size: 0.95rem;
     color: var(--text-muted);
     line-height: 1.6;
-    margin: 0 auto 2rem auto;
+    margin: 0 auto 2.5rem auto;
     max-width: 400px;
   }
 
@@ -137,10 +137,11 @@ import Base from "../layouts/Base.astro";
   .btn-primary {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     background: #4f46e5;
     color: #ffffff;
-    padding: 0.65rem 1.25rem;
+    padding: 0.7rem 1.25rem;
     border-radius: 0.5rem;
     font-size: 0.9rem;
     font-weight: 600;
@@ -156,11 +157,12 @@ import Base from "../layouts/Base.astro";
   .btn-secondary {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     background: var(--bg-main);
     color: var(--text-main);
     border: 1px solid var(--border-color);
-    padding: 0.65rem 1.25rem;
+    padding: 0.7rem 1.25rem;
     border-radius: 0.5rem;
     font-size: 0.9rem;
     font-weight: 600;
@@ -174,9 +176,31 @@ import Base from "../layouts/Base.astro";
     transform: translateY(-1px);
   }
 
+  html.dark .not-found-card {
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.2);
+  }
+
+  /* --- MOBILE OPTIMIZATIONS --- */
   @media (max-width: 640px) {
+    .not-found-wrapper {
+      padding: 0;
+      min-height: 55vh;
+    }
     .not-found-card {
-      padding: 2rem 1.25rem;
+      padding: 1.5rem 1rem;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+    }
+    .error-code-badge {
+      font-size: 5rem;
+    }
+    .error-title {
+      font-size: 1.6rem;
+    }
+    .error-description {
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
     }
     .action-buttons {
       flex-direction: column;
@@ -184,7 +208,7 @@ import Base from "../layouts/Base.astro";
     }
     .btn-primary, .btn-secondary {
       width: 100%;
-      justify-content: center;
+      padding: 0.85rem 1.25rem; 
     }
   }
 </style>
