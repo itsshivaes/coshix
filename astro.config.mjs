@@ -1,5 +1,6 @@
 import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
+import node from "@astrojs/node";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
@@ -13,6 +14,10 @@ export default defineConfig({
   site: "https://coshix.in",
   // base: "/", // Remove or comment this out for custom root domains!
   trailingSlash: "never",
+  output: "hybrid",
+  adapter: node({
+    mode: "standalone"
+  }),
   image: { service: sharpImageService() },
   vite: { plugins: [tailwindcss()] },
   build: {
