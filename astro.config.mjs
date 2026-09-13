@@ -14,7 +14,7 @@ export default defineConfig({
   site: "https://coshix.in",
   // base: "/", // Remove or comment this out for custom root domains!
   trailingSlash: "never",
-  output: "hybrid",
+  output: "static", 
   adapter: node({
     mode: "standalone"
   }),
