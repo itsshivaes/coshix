@@ -5,6 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
 import gtm from "astro-gtm-lite";
+import keystatic from "@keystatic/astro";
 import { defineConfig, sharpImageService } from "astro/config";
 
 // https://astro.build/config
@@ -14,8 +15,12 @@ export default defineConfig({
   trailingSlash: "never",
   image: { service: sharpImageService() },
   vite: { plugins: [tailwindcss()] },
+  build: {
+    inlineStylesheets: "always",
+  },
   integrations: [
     react(),
+    keystatic(),
     sitemap(),
     AutoImport({
       imports: [

@@ -20,6 +20,8 @@
     "@astrojs/react": "6.0.0",
     "@astrojs/sitemap": "^3.7.3",
     "@justinribeiro/lite-youtube": "^1.9.0",
+    "@keystatic/astro": "^6.0.0",
+    "@keystatic/core": "^0.6.9",
     "astro": "^7.3.2",
     "astro-auto-import": "^0.5.1",
     "astro-gtm-lite": "^1.0.2",
