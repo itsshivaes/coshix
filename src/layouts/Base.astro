@@ -253,7 +253,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       .mobile-drawer-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: flex-start; align-items: center; }
       .drawer-close-btn { background: transparent; border: none; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-family: inherit; }
       .drawer-close-btn:hover { background: var(--sidebar-hover); color: var(--text-main); }
-      .mobile-drawer-body { padding: 1.25rem 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
+      .mobile-drawer-body { padding: 1.25rem 1rem; display: flex; flex-direction: column;}
       @keyframes slideInDrawer { from { transform: translateX(-100%); } to { transform: translateX(0); } }
       @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
 
