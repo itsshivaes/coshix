@@ -5,12 +5,14 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
 import gtm from "astro-gtm-lite";
-// Keystatic & Node adapter removed to restore GitHub Pages
+import keystatic from "@keystatic/astro"; // Keystatic is back!
 import { defineConfig, sharpImageService } from "astro/config";
 
+// https://astro.build/config
 export default defineConfig({
   site: "https://coshix.in",
   trailingSlash: "never",
+  output: "static", // Forces Astro to build a static site for GitHub Pages
   image: { service: sharpImageService() },
   vite: { plugins: [tailwindcss()] },
   build: {
@@ -18,6 +20,7 @@ export default defineConfig({
   },
   integrations: [
     react(),
+    keystatic(), // Integration is active again
     sitemap(),
     AutoImport({
       imports: [
