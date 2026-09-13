@@ -1,22 +1,16 @@
 import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
-import node from "@astrojs/node";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
 import gtm from "astro-gtm-lite";
-import keystatic from "@keystatic/astro";
 import { defineConfig, sharpImageService } from "astro/config";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://coshix.in",
   trailingSlash: "never",
-  output: "static",
-  adapter: node({
-    mode: "standalone"
-  }),
   image: { service: sharpImageService() },
   vite: { plugins: [tailwindcss()] },
   build: {
@@ -24,7 +18,6 @@ export default defineConfig({
   },
   integrations: [
     react(),
-    keystatic(),
     sitemap(),
     AutoImport({
       imports: [

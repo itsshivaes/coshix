@@ -1,0 +1,24 @@
+backend:
+  name: github
+  repo: itsshivaes/coshix
+  branch: main
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "posts"
+    label: "Blog Posts"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Authors", name: "authors", widget: "list", default: ["shiva-e-s"] }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - { label: "Categories", name: "categories", widget: "list", default: ["Common"] }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
