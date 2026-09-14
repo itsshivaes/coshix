@@ -145,6 +145,7 @@ const dynConfig = {
 <div class="alert info">Don't forget to edit the values given in the JS with yours by following the instructions mentioned in the JS.</div>
 
 ## FAQ (Frequently Asked Questions)
+
 <div class="faq-container">
 
   <details class="faq-item">
