@@ -52,6 +52,9 @@ In this guide, you will learn how to add a dynamic post filter in Blogger withou
 - Click the “**Theme**” option from the sidebar
 - Click the **drop-down icon** near the “**Customise**” button
 - Click the “**Edit HTML**” option from the drop-down menu
+
+### Adding CSS For Dynamic Post Filter
+
 - Find `]]></b:skin>` Then paste the following CSS just above it
 
 ```plain
@@ -91,6 +94,8 @@ In this guide, you will learn how to add a dynamic post filter in Blogger withou
 .[ul:green]dark-mode[/ul] .dyn-lm-btn:hover{background:#2d2e38}
 ```
 
+### Adding Dynamic Post Filter HTML Code
+
 - Paste the following HTML code where you need to show the Dynamic post filter  post section in your theme (e.g., below `</header>`)
 
 ```plain
@@ -102,6 +107,8 @@ In this guide, you will learn how to add a dynamic post filter in Blogger withou
   </div>
 </div>
 ```
+
+### Adding Dynamic Post Filter JS
 
 - Find the `</body>` tag, then paste the following JS just above it
 
