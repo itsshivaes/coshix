@@ -15,7 +15,7 @@ tags:
   - AJAX
   - Blogger
   - UI Design
-draft: true
+draft: false
 ---
 
 ![Thumbnail](/images/dynamic-post-filter.webp)
@@ -41,6 +41,14 @@ In this guide, you will learn how to add a dynamic post filter in Blogger withou
 - Can control the number of posts visible
 - Mobile-friendly design
 - Responsive design
+
+## How Does This Dynamic Post Filter Work?
+
+This dynamic post filter directly fetches posts from the Blogger feed and displays them in a modern card layout. This automatically fetches posts from the feed and creates a scrollable category menu based on available labels. If you need only some of the specific labels, then you can show only them by editing the configuration in JS.
+
+Whenever a user selects a label from the labels list, it instantly shows the content of that label without requiring a page reload. This creates a smoother browsing experience and make easy to switch between labels quickly. The active label is highlighted to make it more user-friendly.
+
+This dynamic post filter also includes additional features like lazy-loading images, skeleton loading animation, relative publish date,author info and load more pagination. Since it only uses Blogger's feed system and vanilla JavaScript, everything remains lightweight,  performance-friendly, customizable and easy to implement across several Blogger templates.
 
 ## Dynamic Post Filter Demo
 
