@@ -46,13 +46,13 @@ In this guide, you will learn how to add a dynamic post filter in Blogger withou
 
 <div class="alert info">Want to see how it works? <a href="[https://coshix-outputs.blogspot.com/2026/09/dynamic-post-filtering-for-blogger.html](https://coshix-outputs.blogspot.com/2026/09/dynamic-post-filtering-for-blogger.html)" target="_blank">View Demo</a></div>
 
-## How to Add This Dynamic Post Filter to Your Blogger blog?
+## How to Add This Dynamic Post Filter to Your Blogger Blog?
 
-1. First of all, go to your [Blogger dashboard](https://www.blogger.com)
-2. Click the “**Theme**” option from the sidebar
-3. Click the **drop-down icon** near the “**Customise**” button
-4. Click the “**Edit HTML**” option from the drop-down menu
-5. Find `]]></b:skin>` Then paste the following CSS just above it
+- First of all, go to your [Blogger dashboard](https://www.blogger.com)
+- Click the “**Theme**” option from the sidebar
+- Click the **drop-down icon** near the “**Customise**” button
+- Click the “**Edit HTML**” option from the drop-down menu
+- Find `]]></b:skin>` Then paste the following CSS just above it
 
 ```plain
 /* Dynamic Post Filtering CSS (coshix.in) */
@@ -89,4 +89,48 @@ In this guide, you will learn how to add a dynamic post filter in Blogger withou
 .[ul:green]dark-mode[/ul] .dyn-time{color:#6b7280}
 .[ul:green]dark-mode[/ul] .dyn-lm-btn{background:#1b1c23;border-color:#2d2e38;color:#e5e7eb}
 .[ul:green]dark-mode[/ul] .dyn-lm-btn:hover{background:#2d2e38}
+```
+
+- Paste the following HTML code where you need to show the Dynamic post filter  post section in your theme (e.g., below `</header>`)
+
+```plain
+<div class="dyn-filter-container">
+  <div class="dyn-categories" id="dyn-categories"></div>
+  <div class="dyn-grid" id="dyn-grid"></div>
+  <div class="dyn-lm-wrap">
+    <button class="dyn-lm-btn" id="dyn-load-more" onclick="window.loadMore()">Load More</button>
+  </div>
+</div>
+```
+
+- Find the `</body>` tag, then paste the following JS just above it
+
+```plain
+<script>
+/* ==========================================
+    NAME: Dynamic Post Filtering
+    BY: coshix.in
+    FOR: Blogger
+    =========================================
+    CONFIGURATION (EDIT THESE VALUES)
+   ==========================================*/
+const dynConfig = {
+  // Add your Blogger URL here.
+  // Leave empty "" to auto-detect all posts from current blog.
+  blogUrl: "[hl:blue]https://the-lantro-ui.blogspot.com[/hl]", 
+  
+  // Number of posts to show per page/click
+  maxPosts: [hl:blue]6[/hl], 
+  
+  // Specific categories to show (e.g. ["Blogger", "SEO", "News"]). 
+  // Leave empty [] to auto-detect all categories.
+  customCategories: [hl:blue][][/hl],
+  
+  // Default thumbnail if a post has no image
+  defaultImg: "[hl:blue]https://via.placeholder.com/800x450?text=No+Image[/hl]"
+};
+/* ========================================== */
+
+/* Risky Edit Section */document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("dyn-grid"),t=document.getElementById("dyn-categories"),n=document.getElementById("dyn-load-more");let a=1,r="";async function c(c,o=!1,s=null){o?(n.textContent="Loading...",n.disabled=!0):(a=1,r=c,e.innerHTML='<div class="dyn-loader">Loading posts...</div>',n.style.display="none",s&&(document.querySelectorAll(".filter-btn").forEach((e=>e.classList.remove("active"))),s.classList.add("active")));const i=dynConfig.blogUrl?dynConfig.blogUrl.replace(/\/$/,""):"";let d=`${i}/feeds/posts/summary?alt=json&max-results=${dynConfig.maxPosts}&start-index=${a}`;r&&(d=`${i}/feeds/posts/summary/-/${encodeURIComponent(r)}?alt=json&max-results=${dynConfig.maxPosts}&start-index=${a}`);try{const s=await new Promise(((e,t)=>{const n="cb_"+Date.now()+"_"+Math.random().toString(36).substr(2,5);window[n]=a=>{delete window[n],document.head.removeChild(r),e(a)};const r=document.createElement("script");r.src=d.replace("alt=json","alt=json-in-script")+"&callback="+n,r.onerror=()=>t(new Error("Network Error")),document.head.appendChild(r)})),l=s.feed.entry||[],u=parseInt(s.feed.openSearch$totalResults.$t,10);if(o||(e.innerHTML=""),!l.length&&!o)return void(e.innerHTML='<div class="dyn-loader">No posts found.</div>');let m="";l.forEach((e=>{const t=e.title.$t;let n="#";e.link.forEach((e=>{"alternate"===e.rel&&(n=e.href)}));const a=e.summary?e.summary.$t.trim():"";let r=dynConfig.defaultImg;e.media$thumbnail&&(r=e.media$thumbnail.url.replace(/\/[swh]\d+(-[a-z0-9-]+)?\//i,"/w800-h450-c/").replace(/\=[swh]\d+(-[a-z0-9-]+)?/i,"=w800-h450-c"));const c=e.author[0].name.$t,o=e.author[0].gd$image.src.replace(/\/[swh]\d+(-[a-z0-9-]+)?\//i,"/s40-c/"),s=e.category&&e.category.length?" in "+e.category[0].term:"",i=(e=>{const t=Math.floor((new Date-new Date(e))/1e3);let n=t/2592e3;return n>1?Math.floor(n)+" months ago":(n=t/86400)>1?Math.floor(n)+" days ago":(n=t/3600)>1?Math.floor(n)+" hours ago":(n=t/60)>1?Math.floor(n)+" mins ago":"Just now"})(e.published.$t);m+=`<article class="dyn-card"><a href="${n}" class="dyn-img-wrap"><img class="dyn-image" src="${r}" alt="${t}" loading="lazy" onload="this.classList.add('loaded')"/></a><div class="dyn-author-row"><img class="dyn-author-img" src="${o}" alt="${c}"/><span>${c}${s}</span></div><h3 class="dyn-title"><a href="${n}">${t}</a></h3><p class="dyn-desc">${a}</p><div class="dyn-time">${i}</div></article>`})),o?e.insertAdjacentHTML("beforeend",m):e.innerHTML=m,!o&&!r&&function(c){let a=[];dynConfig.customCategories&&dynConfig.customCategories.length?a=dynConfig.customCategories.map((e=>({term:e}))):c&&(a=c),a.length&&function(e){let n='<button class="filter-btn active" onclick="window.filterByCat(\'\', false, this)">All</button>';e.forEach((e=>{n+=`<button class="filter-btn" onclick="window.filterByCat('${e.term}', false, this)">${e.term}</button>`})),t.innerHTML=n}(a)}(s.feed.category),a+dynConfig.maxPosts-1<u?(n.style.display="inline-block",n.textContent="Load More",n.disabled=!1):n.style.display="none"}catch(t){o||(e.innerHTML='<div class="dyn-loader">Error loading posts. Make sure the URL is public.</div>'),console.error(t)}}window.filterByCat=c,window.loadMore=()=>{a+=dynConfig.maxPosts,c(r,!0)},c("")});
+</script>
 ```
