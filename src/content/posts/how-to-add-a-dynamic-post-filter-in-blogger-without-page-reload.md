@@ -148,76 +148,76 @@ const dynConfig = {
 
 <div class="faq-container">
 
-  <details class="faq-item">
+<details class="faq-item">
 
-    <summary class="faq-question">Does this post filter work without page reload?</summary>
+<summary class="faq-question">Does this post filter work without page reload?</summary>
 
-    <div class="faq-answer">
+<div class="faq-answer">
 
-      Yes, posts are loaded dynamically using JavaScript and Blogger feeds, allowing visitors to browse categories without refreshing the page.
+Yes, posts are loaded dynamically using JavaScript and Blogger feeds, allowing visitors to browse categories without refreshing the page.
 
-    </div>
+</div>
 
-  </details>
+</details>
 
-  <details class="faq-item">
+<details class="faq-item">
 
-    <summary class="faq-question">Can I show only specific categories?</summary>
+<summary class="faq-question">Can I show only specific categories?</summary>
 
-    <div class="faq-answer">
+<div class="faq-answer">
 
-      Yes, you can use the customCategories option in the configuration to display only selected Blogger labels instead of loading all categories automatically.
+Yes, you can use the customCategories option in the configuration to display only selected Blogger labels instead of loading all categories automatically.
 
-    </div>
+</div>
 
-  </details>
+</details>
 
-  <details class="faq-item">
+<details class="faq-item">
 
-    <summary class="faq-question">Will this work on any Blogger template?</summary>
+<summary class="faq-question">Will this work on any Blogger template?</summary>
 
-    <div class="faq-answer">
+<div class="faq-answer">
 
-      In most cases, yes. The code is designed to work independently and can be added to almost any Blogger theme with minimal customization.
+In most cases, yes. The code is designed to work independently and can be added to almost any Blogger theme with minimal customization.
 
-    </div>
+</div>
 
-  </details>
+</details>
 
-  <details class="faq-item">
+<details class="faq-item">
 
-    <summary class="faq-question">Can I change the number of posts displayed?</summary>
+<summary class="faq-question">Can I change the number of posts displayed?</summary>
 
-    <div class="faq-answer">
+<div class="faq-answer">
 
-      Yes, simply modify the maxPosts value in the configuration section to control how many posts are loaded per click.
+Yes, simply modify the maxPosts value in the configuration section to control how many posts are loaded per click.
 
-    </div>
+</div>
 
-  </details>
+</details>
 
-  <details class="faq-item">
+<details class="faq-item">
 
-    <summary class="faq-question">What happens if a post does not have a thumbnail image?</summary>
+<summary class="faq-question">What happens if a post does not have a thumbnail image?</summary>
 
-    <div class="faq-answer">
+<div class="faq-answer">
 
-      The script automatically displays the default image specified in the defaultImg setting, ensuring a consistent layout.
+The script automatically displays the default image specified in the defaultImg setting, ensuring a consistent layout.
 
-    </div>
+</div>
 
-  </details>
+</details>
 
-  <details class="faq-item">
+<details class="faq-item">
 
-    <summary class="faq-question">Does this support dark mode?</summary>
+<summary class="faq-question">Does this support dark mode?</summary>
 
-    <div class="faq-answer">
+<div class="faq-answer">
 
-      Yes, dark mode styles are included. You can adjust or remove them depending on your Blogger theme's dark mode implementation.
+Yes, dark mode styles are included. You can adjust or remove them depending on your Blogger theme's dark mode implementation.
 
-    </div>
+</div>
 
-  </details>
+</details>
 
 </div>
