@@ -11,9 +11,16 @@ collections:
     label: "Blog Posts"
     folder: "src/content/posts"
     create: true
-    slug: "{{slug}}"
+    slug: "{{slug}}" # This auto-generates the physical markdown file name based on the title
     fields:
       - { label: "Title", name: "title", widget: "string" }
+      - { 
+          label: "Custom URL Slug", 
+          name: "slug", 
+          widget: "string", 
+          required: false, 
+          hint: "Optional: Keep it short (e.g., 'mac-os-design'). If left blank, the full title will be used." 
+        }
       - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
       - { label: "Description", name: "description", widget: "text" }
       - { label: "Authors", name: "authors", widget: "list", default: ["shiva-e-s"] }
