@@ -10,11 +10,12 @@ import { defineConfig, sharpImageService } from "astro/config";
 // https://astro.build/config
 export default defineConfig({
   site: "https://coshix.in",
-  trailingSlash: "never",
+  trailingSlash: "always", // Forces the trailing slash to match GitHub Pages
   image: { service: sharpImageService() },
   vite: { plugins: [tailwindcss()] },
   build: {
     inlineStylesheets: "always",
+    format: "directory", // Ensures Astro outputs folder-based routing
   },
   integrations: [
     react(),
