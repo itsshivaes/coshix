@@ -79,14 +79,14 @@ In this guide, you will learn how to add a dynamic post filter in Blogger withou
 .dyn-lm-btn:hover{background:#f9fafb}
 .dyn-lm-btn:disabled{opacity:.6;cursor:not-allowed}
 /* Remove if not Using dark mode (Replace "dark-mode" with your theme's dark mode class) */
-.dark-mode .filter-btn{background:#2d2e38;border-color:#2d2e38;color:#a0a0a8}
-.dark-mode .filter-btn.active{background:#5c67f2;border-color:#5c67f2;color:#fff}
-.dark-mode .dyn-card{background:#1b1c23;border-color:#2d2e38;box-shadow:none}
-.dark-mode .dyn-img-wrap{background:linear-gradient(90deg,#2d2e38 25%,#3f404d 50%,#2d2e38 75%);background-size:200% 100%}
-.dark-mode .dyn-author-row{color:#9ca3af}
-.dark-mode .dyn-title a{color:#f3f4f6}
-.dark-mode .dyn-desc{color:#9ca3af}
-.dark-mode .dyn-time{color:#6b7280}
-.dark-mode .dyn-lm-btn{background:#1b1c23;border-color:#2d2e38;color:#e5e7eb}
-.dark-mode .dyn-lm-btn:hover{background:#2d2e38}
+.[ul:green]dark-mode[/ul] .filter-btn{background:#2d2e38;border-color:#2d2e38;color:#a0a0a8}
+.[ul:green]dark-mode[/ul] .filter-btn.active{background:#5c67f2;border-color:#5c67f2;color:#fff}
+.[ul:green]dark-mode[/ul] .dyn-card{background:#1b1c23;border-color:#2d2e38;box-shadow:none}
+.[ul:green]dark-mode[/ul] .dyn-img-wrap{background:linear-gradient(90deg,#2d2e38 25%,#3f404d 50%,#2d2e38 75%);background-size:200% 100%}
+.[ul:green]dark-mode[/ul] .dyn-author-row{color:#9ca3af}
+.[ul:green]dark-mode[/ul] .dyn-title a{color:#f3f4f6}
+.[ul:green]dark-mode[/ul] .dyn-desc{color:#9ca3af}
+.[ul:green]dark-mode[/ul] .dyn-time{color:#6b7280}
+.[ul:green]dark-mode[/ul] .dyn-lm-btn{background:#1b1c23;border-color:#2d2e38;color:#e5e7eb}
+.[ul:green]dark-mode[/ul] .dyn-lm-btn:hover{background:#2d2e38}
 ```
