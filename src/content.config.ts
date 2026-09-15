@@ -9,7 +9,7 @@ const aboutCollection = defineCollection({
     title: z.string(),
     meta_title: z.string().optional(),
     image: z.string().optional(),
-    draft: z.boolean().optional(),
+    draft: z.boolean().default(false),
     what_i_do: z.object({
       title: z.string(),
       items: z.array(
@@ -30,7 +30,7 @@ const contactCollection = defineCollection({
     meta_title: z.string().optional(),
     description: z.string().optional(),
     image: z.string().optional(),
-    draft: z.boolean().optional(),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -59,7 +59,7 @@ const postsCollection = defineCollection({
     tags: z.array(z.string()).optional(),
     authors: z.array(z.string()).optional(),
     commentsCount: z.number().optional(),
-    draft: z.boolean().optional(),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -72,7 +72,7 @@ const pagesCollection = defineCollection({
     description: z.string().optional(),
     image: z.string().optional(),
     layout: z.string().optional(),
-    draft: z.boolean().optional(),
+    draft: z.boolean().default(false),
   }),
 });
 

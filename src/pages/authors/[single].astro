@@ -18,11 +18,15 @@ const { title, description, image } = author.data;
 // Parse bio if it exists
 const htmlContent = marked.parse(author.body || "");
 
-// Fetch all posts to filter by this exact author
+// Fetch all posts to filter by this exact author AND remove drafts
 const allPosts = await getCollection("posts");
 const authorPosts = allPosts
-  .filter((post) => post.data.authors && post.data.authors.includes(title))
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  .filter((post) => {
+    const isAuthorMatch = post.data.authors && post.data.authors.includes(title);
+    const isDraft = import.meta.env.PROD && post.data?.draft === true;
+    return isAuthorMatch && !isDraft;
+  })
+  .sort((a, b) => new Date(b.data.date || 0).getTime() - new Date(a.data.date || 0).getTime());
 
 const cleanAltText = (title: string) => {
   if (!title) return "Blog post";
@@ -84,11 +88,13 @@ const cleanAltText = (title: string) => {
                 )}
                 <div class="card-content">
                   <div class="card-meta-top">
-                    <a href={`/categories/${categorySlug}`} class="cat-link">
+                    <!-- Added trailing slash to category URL -->
+                    <a href={`/categories/${categorySlug}/`} class="cat-link">
                       in {postCategory}
                     </a>
                   </div>
-                  <a href={`/blog/${post.slug || post.id}`} class="title-anchor">
+                  <!-- Added trailing slash to post URL -->
+                  <a href={`/blog/${post.slug || post.id}/`} class="title-anchor">
                     <h3 class="card-title">{post.data.title}</h3>
                   </a>
                   {post.data?.description && (
@@ -97,7 +103,8 @@ const cleanAltText = (title: string) => {
                   <div class="card-footer">
                     <span class="update-tag">Updated</span>
                     <span class="date-label">{dateStr}</span>
-                    <a href={`/blog/${post.slug || post.id}`} class="read-more-link">Read more</a>
+                    <!-- Added trailing slash to read more link -->
+                    <a href={`/blog/${post.slug || post.id}/`} class="read-more-link">Read more</a>
                   </div>
                 </div>
               </article>

@@ -5,9 +5,13 @@ import { Image } from "astro:assets";
 
 export async function getStaticPaths({ paginate }) {
   const posts = await getCollection("posts");
+  
+  // Filter out index pages and drafts (drafts hidden only in production)
   const validPosts = posts.filter(p => {
     const identifier = p.slug || p.id || "";
-    return !identifier.includes("index") && p.data?.title !== "Posts";
+    const isIndexPage = identifier.includes("index") || p.data?.title === "Posts";
+    const isDraft = import.meta.env.PROD && p.data?.draft === true;
+    return !isIndexPage && !isDraft;
   });
 
   const sortedPosts = validPosts.sort((a, b) => {
@@ -20,7 +24,10 @@ export async function getStaticPaths({ paginate }) {
 }
 
 const { page } = Astro.props;
-const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
+
+// Add trailing slash to prevent 404s
+const getPostUrl = (post: any) => `/blog/${post.slug || post.id}/`;
+
 const formatDate = (dateStr: string) => {
   if (!dateStr) return "";
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -55,7 +62,7 @@ const formatDate = (dateStr: string) => {
           )}
           <div class="card-content">
             <div class="card-meta-top">
-              <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+              <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}/`} class="cat-link">
                 in {post.data?.categories?.[0] || "General"}
               </a>
             </div>

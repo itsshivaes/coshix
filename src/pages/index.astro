@@ -4,9 +4,13 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 
 const allPosts = await getCollection("posts");
+
+// Filter out index pages and drafts (drafts hidden only in production)
 const validPosts = allPosts.filter(p => {
   const identifier = p.slug || p.id || "";
-  return !identifier.includes("index") && p.data?.title !== "Posts";
+  const isIndexPage = identifier.includes("index") || p.data?.title === "Posts";
+  const isDraft = import.meta.env.PROD && p.data?.draft === true;
+  return !isIndexPage && !isDraft;
 });
 
 const sortedPosts = validPosts.sort((a, b) => {
@@ -17,7 +21,9 @@ const sortedPosts = validPosts.sort((a, b) => {
 
 const pinnedPost = sortedPosts[0];
 const latestPosts = sortedPosts.slice(1, 7); // 6 posts
-const popularPosts = sortedPosts.slice(0, 5);
+
+// Most Recent sidebar widget (first 5 posts)
+const recentSidebarPosts = sortedPosts.slice(0, 5);
 
 // Filter Categorized Posts (6 posts each to match Latest Posts design)
 const bloggerPosts = sortedPosts.filter(post => post.data?.categories?.[0]?.toLowerCase() === "blogger").slice(0, 6);
@@ -38,10 +44,18 @@ const allSidebarTags = Array.from(tagMap.entries())
   .map(([name, count]) => ({ name, count }))
   .sort((a, b) => b.count - a.count);
 
-const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
+// Generate URL with trailing slash to prevent 404s
+const getPostUrl = (post: any) => `/blog/${post.slug || post.id}/`;
+
 const formatDate = (dateStr: string) => {
   if (!dateStr) return "";
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
+// ACCESSIBILITY FIX: Automatically strip redundant words from the alt text
+const cleanAltText = (title: string) => {
+  if (!title) return "Blog post";
+  return title.replace(/\b(image|picture|photo|thumbnail|logo|graphic)s?\b\s*(of)?\s*/gi, '').trim() || "Blog post";
 };
 ---
 
@@ -62,7 +76,7 @@ const formatDate = (dateStr: string) => {
           <article class="post-card horizontal-card">
             {pinnedPost.data?.image && (
               <div class="card-thumb-h">
-                <Image src={pinnedPost.data.image} alt={pinnedPost.data.title} width={800} height={450} loading="eager" />
+                <Image src={pinnedPost.data.image} alt={cleanAltText(pinnedPost.data.title || '')} width={800} height={450} loading="eager" />
                 {pinnedPost.data?.commentsCount && (
                   <div class="comment-badge">💬 {pinnedPost.data.commentsCount}</div>
                 )}
@@ -70,7 +84,7 @@ const formatDate = (dateStr: string) => {
             )}
             <div class="card-content-h">
               <div class="card-meta-top">
-                <a href={`/categories/${(pinnedPost.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                <a href={`/categories/${(pinnedPost.data?.categories?.[0] || "General").toLowerCase()}/`} class="cat-link">
                   in {pinnedPost.data?.categories?.[0] || "General"}
                 </a>
               </div>
@@ -100,11 +114,12 @@ const formatDate = (dateStr: string) => {
         </div>
 
         <div class="latest-cards-grid">
-          {latestPosts.map(post => (
+          {/* FIX: Use index to eager load ONLY the first 3 posts in the top row */}
+          {latestPosts.map((post, index) => (
             <article class="post-card vertical-card">
               {post.data?.image && (
                 <div class="card-thumb">
-                  <Image src={post.data.image} alt={post.data.title} width={600} height={350} loading="eager" />
+                  <Image src={post.data.image} alt={cleanAltText(post.data.title || '')} width={600} height={350} loading={index < 3 ? "eager" : "lazy"} />
                   {post.data?.commentsCount && (
                     <div class="comment-badge">💬 {post.data.commentsCount}</div>
                   )}
@@ -112,7 +127,7 @@ const formatDate = (dateStr: string) => {
               )}
               <div class="card-content">
                 <div class="card-meta-top">
-                  <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                  <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}/`} class="cat-link">
                     in {post.data?.categories?.[0] || "General"}
                   </a>
                 </div>
@@ -138,7 +153,7 @@ const formatDate = (dateStr: string) => {
         <nav class="pagination-container" aria-label="Pagination">
           <span class="page-btn disabled">Previous</span>
           <span class="page-indicator">Page 1 of 3</span>
-          <a href="/archive/2" class="page-btn">Next</a>
+          <a href="/archive/2/" class="page-btn">Next</a>
         </nav>
       </section>
 
@@ -155,7 +170,7 @@ const formatDate = (dateStr: string) => {
               <article class="post-card vertical-card">
                 {post.data?.image && (
                   <div class="card-thumb">
-                    <Image src={post.data.image} alt={post.data.title} width={600} height={350} loading="lazy" />
+                    <Image src={post.data.image} alt={cleanAltText(post.data.title || '')} width={600} height={350} loading="lazy" />
                     {post.data?.commentsCount && (
                       <div class="comment-badge">💬 {post.data.commentsCount}</div>
                     )}
@@ -163,7 +178,7 @@ const formatDate = (dateStr: string) => {
                 )}
                 <div class="card-content">
                   <div class="card-meta-top">
-                    <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                    <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}/`} class="cat-link">
                       in {post.data?.categories?.[0] || "General"}
                     </a>
                   </div>
@@ -200,7 +215,7 @@ const formatDate = (dateStr: string) => {
               <article class="post-card vertical-card">
                 {post.data?.image && (
                   <div class="card-thumb">
-                    <Image src={post.data.image} alt={post.data.title} width={600} height={350} loading="lazy" />
+                    <Image src={post.data.image} alt={cleanAltText(post.data.title || '')} width={600} height={350} loading="lazy" />
                     {post.data?.commentsCount && (
                       <div class="comment-badge">💬 {post.data.commentsCount}</div>
                     )}
@@ -208,7 +223,7 @@ const formatDate = (dateStr: string) => {
                 )}
                 <div class="card-content">
                   <div class="card-meta-top">
-                    <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="cat-link">
+                    <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}/`} class="cat-link">
                       in {post.data?.categories?.[0] || "General"}
                     </a>
                   </div>
@@ -237,20 +252,20 @@ const formatDate = (dateStr: string) => {
     <!-- Sidebar (Right) -->
     <aside class="sidebar-feed">
       
-      <!-- Popular Posts Widget -->
+      <!-- Most Recent Posts Widget -->
       <div class="sidebar-widget">
         <div class="section-heading">
           <span class="heading-title">Most Recent</span>
           <span class="heading-dots">···</span>
         </div>
         <div class="popular-list">
-          {popularPosts.map((post, idx) => (
+          {recentSidebarPosts.map((post, idx) => (
             <div class="popular-row">
               <span class="pop-num">#{idx + 1}</span>
               <div class="pop-details">
                 <div class="pop-submeta">
                   {post.data?.date ? formatDate(post.data.date) : ""} — 
-                  <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}`} class="pop-cat">
+                  <a href={`/categories/${(post.data?.categories?.[0] || "General").toLowerCase()}/`} class="pop-cat">
                     {post.data?.categories?.[0] || "General"}
                   </a>
                 </div>
@@ -272,7 +287,7 @@ const formatDate = (dateStr: string) => {
         <div class="labels-grid">
           {allSidebarTags.map((label, index) => (
             <a 
-              href={`/tags/${slugify(label.name)}`} 
+              href={`/tags/${slugify(label.name)}/`} 
               class={`label-pill ${index >= 4 ? 'extra-sidebar-tag hidden' : ''}`}
             >
               <span class="label-name">{label.name}</span>
@@ -703,33 +718,6 @@ const formatDate = (dateStr: string) => {
     .label-count {
       color: var(--text-muted);
       font-size: 0.68rem;
-    }
-
-    .sidebar-toggle-btn {
-      display: inline-flex;
-      align-items: center;
-      background: transparent;
-      border: none;
-      font-size: 0.825rem;
-      font-weight: 500;
-      color: #0ea5e9;
-      cursor: pointer;
-      padding: 0.5rem 0 0 0;
-      margin-top: 0.5rem;
-      transition: color 0.15s ease;
-    }
-
-    .sidebar-toggle-btn:hover {
-      text-decoration: underline;
-    }
-
-    .sidebar-toggle-btn .extra-count {
-      color: #94a3b8;
-      margin-left: 0.35rem;
-    }
-
-    html.dark .sidebar-toggle-btn {
-      color: #38bdf8;
     }
 
     /* Dark Mode Overrides specifically for these links to maintain visibility */

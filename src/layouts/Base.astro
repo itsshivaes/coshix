@@ -3,9 +3,19 @@ import { getCollection } from "astro:content";
 import Schema from "src/layouts/components/schema.astro";
 
 const allPosts = await getCollection("posts");
-const searchData = allPosts.map(post => ({
+
+// Filter out index pages and drafts for Global Search and Sidebar
+const validPosts = allPosts.filter(p => {
+  const identifier = p.slug || p.id || "";
+  const isIndexPage = identifier.includes("index") || p.data?.title === "Posts";
+  const isDraft = import.meta.env.PROD && p.data?.draft === true;
+  return !isIndexPage && !isDraft;
+});
+
+// Update Search Data to only include valid posts and add trailing slash
+const searchData = validPosts.map(post => ({
   title: post.data.title,
-  url: `/blog/${post.slug || post.id}`,
+  url: `/blog/${post.slug || post.id}/`,
   category: post.data.categories?.[0] || "General",
   date: post.data.date ? new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""
 }));
@@ -14,14 +24,12 @@ const searchData = allPosts.map(post => ({
 const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
 
 const tagMap = new Map();
-allPosts.forEach(post => {
-  const identifier = post.slug || post.id || "";
-  if (!identifier.includes("index") && post.data?.title !== "Posts") {
-    const tags = post.data?.tags || [];
-    tags.forEach((tag: string) => {
-      tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
-    });
-  }
+// Generate tags only from valid (published) posts
+validPosts.forEach(post => {
+  const tags = post.data?.tags || [];
+  tags.forEach((tag: string) => {
+    tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+  });
 });
 
 // Sort tags by frequency so the most used tags appear first
@@ -370,8 +378,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         font-size: 0.72rem;
         transition: background 0.15s ease, border-color 0.15s ease;
       }
-      .sidebar-label-pill.hidden {
-        display: none;
+      .sidebar-label-pill.hidden, .extra-sidebar-tag.hidden {
+        display: none !important;
       }
       .sidebar-label-pill:hover {
         background: var(--sidebar-hover);
@@ -393,26 +401,30 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         flex-shrink: 0;
         margin-left: 0.2rem;
       }
-      .sidebar-toggle-labels-btn {
+      
+      /* Explicit styling for sidebar labels toggle button */
+      #sidebar-toggle-tags-btn, .sidebar-toggle-labels-btn {
         display: inline-flex;
         align-items: center;
         background: transparent;
         border: none;
-        font-size: 0.8rem;
+        font-size: 0.825rem;
         font-weight: 500;
         color: #0ea5e9;
         cursor: pointer;
         padding: 0.5rem 0 0 0;
+        margin-top: 0.5rem;
         transition: color 0.15s ease;
+        font-family: inherit;
       }
-      .sidebar-toggle-labels-btn:hover {
+      #sidebar-toggle-tags-btn:hover, .sidebar-toggle-labels-btn:hover {
         text-decoration: underline;
       }
-      .sidebar-toggle-labels-btn .extra-count {
+      #sidebar-toggle-tags-btn .extra-count, .sidebar-toggle-labels-btn .extra-count {
         color: #94a3b8;
-        margin-left: 0.3rem;
+        margin-left: 0.35rem;
       }
-      html.dark .sidebar-toggle-labels-btn {
+      html.dark #sidebar-toggle-tags-btn, html.dark .sidebar-toggle-labels-btn {
         color: #38bdf8;
       }
 
@@ -582,7 +594,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         </button>
 
         <a href="/" class="brand-logo notranslate" translate="no">
-          <img src="/images/logo.webp" alt="Coshix Logo" class="brand-logo-img" />
+          <!-- FIX: Added loading="lazy" to resolve unoptimized image audit warning -->
+          <img src="/images/logo.webp" alt="Coshix Logo" class="brand-logo-img" width="32" height="32" loading="lazy" />
           <span class="brand-name">Coshix</span>
         </a>
 
@@ -666,6 +679,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       </div>
     </div>
 
+    <!-- MOBILE MENU DRAWER -->
     <div id="mobileDrawerOverlay" class="mobile-drawer-overlay">
       <div class="mobile-drawer-content">
         <div class="mobile-drawer-header">
@@ -677,15 +691,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         <div class="mobile-drawer-body">
           <div class="sidebar-section">
             <a href="/" class="sidebar-link" data-path="/">Home</a>
-            <a href="/categories/blogger" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
-            <a href="/categories/common" class="sidebar-link" data-path="/categories/common">Common</a>
-            <a href="/archive/1" class="sidebar-link" data-path="/archive">Blog Archive</a>
-            <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
+            <a href="/categories/blogger/" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
+            <a href="/categories/common/" class="sidebar-link" data-path="/categories/common">Common</a>
+            <a href="/archive/1/" class="sidebar-link" data-path="/archive">Blog Archive</a>
+            <a href="/sitemap/" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
 
           <div class="sidebar-section">
-            <a href="/about" class="sidebar-link" data-path="/about">About</a>
-            <a href="/contact" class="sidebar-link" data-path="/contact">Contact</a>
+            <a href="/about/" class="sidebar-link" data-path="/about">About</a>
+            <a href="/contact/" class="sidebar-link" data-path="/contact">Contact</a>
           </div>
 
           <div class="sidebar-social-section">
@@ -716,18 +730,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         <div class="sidebar-inner">
           <div class="sidebar-section">
             <a href="/" class="sidebar-link" data-path="/">Home</a>
-            <a href="/categories/blogger" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
-            <a href="/categories/common" class="sidebar-link" data-path="/categories/common">Common</a>
-            <a href="/archive/1" class="sidebar-link" data-path="/archive">Blog Archive</a>
-            <a href="/sitemap" class="sidebar-link" data-path="/sitemap">Sitemap</a>
+            <a href="/categories/blogger/" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
+            <a href="/categories/common/" class="sidebar-link" data-path="/categories/common">Common</a>
+            <a href="/archive/1/" class="sidebar-link" data-path="/archive">Blog Archive</a>
+            <a href="/sitemap/" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
 
           <div class="sidebar-section">
-            <a href="/about" class="sidebar-link" data-path="/about">About</a>
-            <a href="/contact" class="sidebar-link" data-path="/contact">Contact</a>
+            <a href="/about/" class="sidebar-link" data-path="/about">About</a>
+            <a href="/contact/" class="sidebar-link" data-path="/contact">Contact</a>
           </div>
-
-          <!-- DESKTOP LEFT SIDEBAR LABELS WIDGET REMOVED PER YOUR INSTRUCTION -->
 
           <div class="sidebar-social-section">
             <div class="social-icons-grid">
@@ -758,8 +770,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
           <div class="footer-content">
             <p class="notranslate" translate="no">&copy; {new Date().getFullYear()} Coshix. All rights reserved.</p>
             <div class="footer-links">
-              <a href="/privacy-policy">Privacy Policy</a>
-              <a href="/disclaimer">Disclaimer</a>
+              <a href="/privacy-policy/">Privacy Policy</a>
+              <a href="/disclaimer/">Disclaimer</a>
             </div>
           </div>
         </footer>
@@ -955,8 +967,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
 
       /* --- Sidebar Labels Widget Toggle Logic --- */
-      const sidebarToggleLabelsBtn = document.getElementById('sidebar-toggle-labels-btn');
-      const extraSidebarLabels = document.querySelectorAll('.extra-sidebar-label');
+      const sidebarToggleLabelsBtn = document.getElementById('sidebar-toggle-tags-btn');
+      const extraSidebarLabels = document.querySelectorAll('.extra-sidebar-tag');
       if (sidebarToggleLabelsBtn && extraSidebarLabels.length > 0) {
         sidebarToggleLabelsBtn.addEventListener('click', () => {
           const isHidden = extraSidebarLabels[0].classList.contains('hidden');
@@ -1129,7 +1141,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
 
     <div id="cookieConsentBanner" class="cookie-banner">
       <p class="cookie-text">
-        We use cookies to improve your experience. See our <a href="/privacy-policy">Privacy Policy</a>.
+        We use cookies to improve your experience. See our <a href="/privacy-policy/">Privacy Policy</a>.
       </p>
       <div class="cookie-actions">
         <button id="cookieReject" class="cookie-btn cookie-btn-outline">Reject</button>

@@ -3,9 +3,13 @@ import Base from "../layouts/Base.astro";
 import { getCollection } from "astro:content";
 
 const allPosts = await getCollection("posts");
+
+// Filter out index pages and drafts (drafts hidden only in production)
 const validPosts = allPosts.filter(p => {
   const identifier = p.slug || p.id || "";
-  return !identifier.includes("index") && p.data?.title !== "Posts";
+  const isIndexPage = identifier.includes("index") || p.data?.title === "Posts";
+  const isDraft = import.meta.env.PROD && p.data?.draft === true;
+  return !isIndexPage && !isDraft;
 });
 
 const sortedPosts = validPosts.sort((a, b) => {
@@ -17,7 +21,11 @@ const sortedPosts = validPosts.sort((a, b) => {
 // Extract unique categories
 const categories = [...new Set(validPosts.map(p => p.data?.categories?.[0] || "General"))];
 
-const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
+// Helper to handle spaces/cases in category names
+const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
+
+// Generate URL with trailing slash to prevent 404s
+const getPostUrl = (post: any) => `/blog/${post.slug || post.id}/`;
 ---
 
 <Base title="Sitemap - Coshix" description="Browse all pages, categories, and articles available on Coshix.">
@@ -34,18 +42,18 @@ const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
       <h2>Main Pages</h2>
       <ul class="sitemap-list">
         <li><a href="/">Home</a></li>
-        <li><a href="/archive/1">Blog Archive</a></li>
-        <li><a href="/about">About Us</a></li>
-        <li><a href="/contact">Contact Us</a></li>
-        <li><a href="/privacy">Privacy Policy</a></li>
-        <li><a href="/disclaimer">Disclaimer</a></li>
+        <li><a href="/archive/1/">Blog Archive</a></li>
+        <li><a href="/about/">About Us</a></li>
+        <li><a href="/contact/">Contact Us</a></li>
+        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+        <li><a href="/disclaimer/">Disclaimer</a></li>
       </ul>
 
       <!-- Categories Section -->
       <h2>Categories / Labels</h2>
       <ul class="sitemap-list">
         {categories.map(cat => (
-          <li><a href={`/categories/${cat.toLowerCase()}`}>{cat}</a></li>
+          <li><a href={`/categories/${slugify(cat)}/`}>{cat}</a></li>
         ))}
       </ul>
 

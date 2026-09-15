@@ -5,7 +5,14 @@ import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  return posts.map((post) => ({
+  
+  // Filter out drafts from generating URLs in production
+  const validPosts = posts.filter(post => {
+    const isDraft = import.meta.env.PROD && post.data?.draft === true;
+    return !isDraft;
+  });
+
+  return validPosts.map((post) => ({
     params: { single: post.slug || post.id },
   }));
 }
@@ -100,7 +107,7 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       "position": 2,
       "name": postCategory,
-      "item": `${siteUrl}/categories/${categorySlug}`
+      "item": `${siteUrl}/categories/${categorySlug}/`
     },
     {
       "@type": "ListItem",
@@ -114,17 +121,20 @@ const breadcrumbSchema = {
 // --- DATA FETCHING FOR RELATED POSTS & SIDEBAR ---
 const allPosts = await getCollection("posts");
 
-const relatedPosts = allPosts
+// Filter out index pages and drafts for the sidebar/related posts
+const validPosts = allPosts.filter(p => {
+  const identifier = p.slug || p.id || "";
+  const isIndexPage = identifier.includes("index") || p.data?.title === "Posts";
+  const isDraft = import.meta.env.PROD && p.data?.draft === true;
+  return !isIndexPage && !isDraft;
+});
+
+const relatedPosts = validPosts
   .filter(p => 
     (p.slug || p.id) !== (post.slug || post.id) && 
     p.data?.categories?.[0] === postCategory
   )
   .slice(0, 3);
-
-const validPosts = allPosts.filter(p => {
-  const identifier = p.slug || p.id || "";
-  return !identifier.includes("index") && p.data?.title !== "Posts";
-});
 
 const sortedPosts = validPosts.sort((a, b) => {
   const dateA = new Date(a.data?.date || 0).getTime();
@@ -138,7 +148,7 @@ const popularPosts = sortedPosts.slice(0, 5);
 const tagMap = new Map();
 validPosts.forEach(p => {
   const tags = p.data?.tags || [];
-  tags.forEach(tag => {
+  tags.forEach((tag: string) => {
     tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
   });
 });
@@ -176,7 +186,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
           <nav aria-label="breadcrumb" class="post-breadcrumb">
             <a href="/">Home</a>
             <span class="separator">/</span>
-            <a href={`/categories/${categorySlug}`} class="current">{postCategory}</a>
+            <a href={`/categories/${categorySlug}/`} class="current">{postCategory}</a>
           </nav>
           
           <h1 class="post-title">
@@ -184,7 +194,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
           </h1>
           
           <div class="post-meta">
-            <a href={`/authors/${authorData.slug}`} class="meta-author-info">
+            <a href={`/authors/${authorData.slug}/`} class="meta-author-info">
               <Image src={authorData.image} alt={authorData.title} class="author-avatar" width={36} height={36} loading="eager" />
               <div class="author-details">
                 <span class="author-name">{authorData.title}</span>
@@ -232,7 +242,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
             <ul class="related-list">
               {relatedPosts.map(rp => (
                 <li>
-                  <a href={`/blog/${rp.slug || rp.id}`} class="related-list-title">
+                  <a href={`/blog/${rp.slug || rp.id}/`} class="related-list-title">
                     {rp.data?.title}
                   </a>
                 </li>
@@ -250,8 +260,8 @@ const formatSidebarDate = (dateStr: string | Date) => {
                 // Dynamically route categories vs tags using slugify
                 const isCategory = post.data?.categories?.includes(tag);
                 const tagUrl = isCategory 
-                  ? `/categories/${slugify(tag)}` 
-                  : `/tags/${slugify(tag)}`;
+                  ? `/categories/${slugify(tag)}/` 
+                  : `/tags/${slugify(tag)}/`;
                   
                 return (
                   <a href={tagUrl} class={`tag-pill ${index >= 5 ? 'extra-tag' : ''}`}>
@@ -347,11 +357,11 @@ const formatSidebarDate = (dateStr: string | Date) => {
               <div class="pop-details">
                 <div class="pop-submeta">
                   {p.data?.date ? formatSidebarDate(p.data.date) : ""} — 
-                  <a href={`/categories/${slugify(p.data?.categories?.[0] || "General")}`} class="pop-cat">
+                  <a href={`/categories/${slugify(p.data?.categories?.[0] || "General")}/`} class="pop-cat">
                     {p.data?.categories?.[0] || "General"}
                   </a>
                 </div>
-                <a href={`/blog/${p.slug || p.id}`} class="pop-title-anchor">
+                <a href={`/blog/${p.slug || p.id}/`} class="pop-title-anchor">
                   <h4 class="pop-post-title">{p.data?.title}</h4>
                 </a>
               </div>
@@ -360,7 +370,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
         </div>
       </div>
 
-      <!-- Labels Widget  -->
+      <!-- Labels Widget -->
       <div class="sidebar-widget">
         <div class="section-heading">
           <span class="heading-title">Labels</span>
@@ -369,7 +379,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
         <div class="labels-grid">
           {allSidebarTags.map((label, index) => (
             <a 
-              href={`/tags/${slugify(label.name)}`} 
+              href={`/tags/${slugify(label.name)}/`} 
               class={`label-pill ${index >= 4 ? 'extra-sidebar-tag hidden' : ''}`}
             >
               <span class="label-name">{label.name}</span>
