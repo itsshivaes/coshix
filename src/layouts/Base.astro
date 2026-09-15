@@ -594,8 +594,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         </button>
 
         <a href="/" class="brand-logo notranslate" translate="no">
-          <!-- FIX: Added loading="lazy" to resolve unoptimized image audit warning -->
-          <img src="/images/logo.webp" alt="Coshix Logo" class="brand-logo-img" width="32" height="32" loading="lazy" />
+          <img src="/images/logo.webp" alt="Coshix Logo" class="brand-logo-img" width="32" height="32" loading="eager" fetchpriority="high" />
           <span class="brand-name">Coshix</span>
         </a>
 
