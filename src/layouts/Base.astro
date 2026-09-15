@@ -776,7 +776,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
           document.cookie = `googtrans=${cookieString}; path=/;`;
           document.cookie = `googtrans=${cookieString}; path=/; domain=${domain};`;
         }
-        window.location.reload();
+        
+        // Attempt live translation by interacting with the hidden Google Translate dropdown
+        const gtSelect = document.querySelector('.goog-te-combo');
+        if (gtSelect) {
+          gtSelect.value = langCode;
+          gtSelect.dispatchEvent(new Event('change'));
+        } else {
+          // Fallback to reload if the widget hasn't loaded yet
+          window.location.reload();
+        }
       };
 
       const currentLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
