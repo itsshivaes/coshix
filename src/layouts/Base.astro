@@ -92,7 +92,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;600;700&display=swap">
     </noscript>
 
-        <style is:global is:inline>
+    <style is:global is:inline>
       /* Clean, Modern macOS Colors */
       :root {
         --bg-main: #ffffff;
@@ -768,35 +768,54 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         }
 
         const domain = location.hostname;
-        if (langCode === defaultLanguage) {
-          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        
+        const nukeGoogleTranslateCookies = () => {
+          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
           document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
-        } else {
-          const cookieString = `/en/${langCode}`;
-          document.cookie = `googtrans=${cookieString}; path=/;`;
-          document.cookie = `googtrans=${cookieString}; path=/; domain=${domain};`;
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+        };
+
+        if (langCode === defaultLanguage) {
+          nukeGoogleTranslateCookies();
+          setTimeout(() => {
+            window.location.reload();
+          }, 50);
+          return;
         }
         
-        // Attempt live translation by interacting with the hidden Google Translate dropdown
+        nukeGoogleTranslateCookies();
+        const cookieString = `/en/${langCode}`;
+        document.cookie = `googtrans=${cookieString}; path=/;`;
+        document.cookie = `googtrans=${cookieString}; path=/; domain=${domain};`;
+        document.cookie = `googtrans=${cookieString}; path=/; domain=.${domain};`;
+        
         const gtSelect = document.querySelector('.goog-te-combo');
         if (gtSelect) {
           gtSelect.value = langCode;
-          gtSelect.dispatchEvent(new Event('change'));
+          gtSelect.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
         } else {
-          // Fallback to reload if the widget hasn't loaded yet
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 50);
         }
       };
 
-      const currentLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
+      // Ensure the initial active class is highlighted correctly on load
+      const initialLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
+      
       langOptions.forEach(opt => {
-        if (opt.getAttribute('data-lang') === currentLang) {
+        if (opt.getAttribute('data-lang') === initialLang) {
           opt.classList.add('active');
         }
+        
         opt.addEventListener('click', (e) => {
           e.preventDefault();
           const selectedLang = opt.getAttribute('data-lang');
-          if (selectedLang !== currentLang) {
+          
+          // FIX: Dynamically check the stored language on click rather than relying on a stale variable
+          const dynamicallyCurrentLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
+          
+          if (selectedLang !== dynamicallyCurrentLang) {
             setLanguage(selectedLang);
           }
           closeAllMenus();
