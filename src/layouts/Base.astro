@@ -10,6 +10,25 @@ const searchData = allPosts.map(post => ({
   date: post.data.date ? new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""
 }));
 
+// --- HELPER & DATA FETCHING FOR SIDEBAR TAGS ---
+const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
+
+const tagMap = new Map();
+allPosts.forEach(post => {
+  const identifier = post.slug || post.id || "";
+  if (!identifier.includes("index") && post.data?.title !== "Posts") {
+    const tags = post.data?.tags || [];
+    tags.forEach((tag: string) => {
+      tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+    });
+  }
+});
+
+// Sort tags by frequency so the most used tags appear first
+const allSidebarTags = Array.from(tagMap.entries())
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count);
+
 // Languages matching Lantro UI
 const languages = [
   { code: 'en', name: 'English' },
@@ -123,7 +142,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         --text-muted: #86868b;
         --border-color: #27272a;
         
-        /* Frosted Glass Header Dark - OPACITY LOWERED TO PRESERVE BLUR IN PRODUCTION */
+        /* Frosted Glass Header Dark */
         --header-bg: rgba(10, 10, 10, 0.5);
         --cookie-bg: rgba(20, 20, 20, 0.85);
         
@@ -141,7 +160,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       /* --- RTL & Dropdown Positioning Fixes --- */
       html.Rtl, html[dir="rtl"] { direction: rtl; text-align: right; }
       
-      /* Fix Dropdown Menus in RTL Mode (Pin them to the left side of their container instead of right) */
       html.Rtl .dropdown-container .dropdown-menu, 
       html[dir="rtl"] .dropdown-container .dropdown-menu { 
         right: auto !important; 
@@ -154,7 +172,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       html.Rtl .back-to-top-btn, html[dir="rtl"] .back-to-top-btn { right: auto; left: 2rem; }
       html.Rtl .copy-code-btn, html[dir="rtl"] .copy-code-btn { right: auto; left: 0.5rem; }
       
-      /* Mirror the grid layout columns for RTL */
       html.Rtl .dashboard-container, html[dir="rtl"] .dashboard-container {
         direction: rtl;
       }
@@ -203,13 +220,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       
       .nav-right { display: flex; align-items: center; gap: 0.75rem; }
 
-      /* Search Bar  */
+      /* Search Bar */
       .search-trigger {
         display: flex; align-items: center; gap: 0.5rem; background: var(--sidebar-hover); border: 1px solid transparent;
         padding: 0.45rem 1rem; border-radius: 0.5rem; color: #1d2229; font-size: 0.85rem; cursor: pointer;
         width: 320px; text-align: left; font-family: inherit; transition: all 0.2s ease; margin-left: 1.5rem;
       }
-      html.dark .search-trigger { color:var(--text-muted);}
+      html.dark .search-trigger { color: var(--text-muted); }
       html[dir="rtl"] .search-trigger, html.Rtl .search-trigger { margin-left: 0; margin-right: 1.5rem; text-align: right; }
       
       .search-trigger:hover {
@@ -303,13 +320,103 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
 
       .sidebar-section { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1.5rem;}
-      .sidebar-title { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.05em; padding: 0.5rem 0.75rem; }
       .sidebar-link { display: flex; align-items: center; padding: 0.6rem 0.75rem; border-radius: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.15s ease; }
       .sidebar-link:hover { background: var(--sidebar-hover); color: var(--text-main); }
       .sidebar-link.active { background-color: var(--sidebar-active); color: var(--sidebar-active-text); font-weight: 600; }
 
+      /* --- Sidebar Labels Widget Styles --- */
+      .sidebar-labels-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .sidebar-section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        border-bottom: 1px dashed var(--border-color);
+        padding-bottom: 0.4rem;
+      }
+      .sidebar-heading-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+      .sidebar-heading-dots {
+        color: var(--text-muted);
+        letter-spacing: 2px;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+      .sidebar-labels-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.4rem;
+      }
+      .sidebar-label-pill {
+        background: var(--bg-main);
+        border: 1px solid var(--border-color);
+        padding: 0.35rem 0.5rem;
+        border-radius: 0.4rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-decoration: none;
+        font-size: 0.72rem;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .sidebar-label-pill.hidden {
+        display: none;
+      }
+      .sidebar-label-pill:hover {
+        background: var(--sidebar-hover);
+        border-color: #4f46e5;
+      }
+      html.dark .sidebar-label-pill:hover {
+        border-color: #818cf8;
+      }
+      .sidebar-label-name {
+        color: var(--text-main);
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .sidebar-label-count {
+        color: var(--text-muted);
+        font-size: 0.65rem;
+        flex-shrink: 0;
+        margin-left: 0.2rem;
+      }
+      .sidebar-toggle-labels-btn {
+        display: inline-flex;
+        align-items: center;
+        background: transparent;
+        border: none;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #0ea5e9;
+        cursor: pointer;
+        padding: 0.5rem 0 0 0;
+        transition: color 0.15s ease;
+      }
+      .sidebar-toggle-labels-btn:hover {
+        text-decoration: underline;
+      }
+      .sidebar-toggle-labels-btn .extra-count {
+        color: #94a3b8;
+        margin-left: 0.3rem;
+      }
+      html.dark .sidebar-toggle-labels-btn {
+        color: #38bdf8;
+      }
+
       .sidebar-social-section { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
-      .social-section-title { font-size: 0.8rem; font-weight: 600; color: var(--text-main); text-align: center; margin-bottom: 0.75rem; }
       .social-icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; justify-items: center; }
       .social-icon-link { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: var(--text-muted); border: 1px solid var(--border-color); background: var(--bg-card); transition: all 0.15s ease; }
       .social-icon-link:hover { color: #4f46e5; border-color: #4f46e5; background: var(--sidebar-hover); }
@@ -342,7 +449,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
 
       pre { position: relative; }
       
-      /* Allow Shiki to render correctly */
       .content-body pre { 
         background: transparent !important; 
         padding: 1.25rem !important; 
@@ -397,10 +503,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         .back-to-top-btn { bottom: 5.5rem; right: 1.25rem; width: 38px; height: 38px; }
       }
 
-      /* Remove blue touch highlight on mobile devices */
       * { -webkit-tap-highlight-color: transparent; }
 
-      /* Compact Mac OS Golden Gate Cookie Consent */
       .cookie-banner {
         position: fixed; bottom: 2rem; left: 50%; transform: translate(-50%, 150%); z-index: 9999;
         width: max-content; max-width: 90%; padding: 0.85rem 1.25rem; background: var(--cookie-bg);
@@ -422,7 +526,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       @media (max-width: 640px) { .cookie-banner { flex-direction: column; border-radius: 1.5rem; text-align: center; gap: 1rem; } }
     </style>
     
-    <!-- Inline Script to apply Theme & RTL instantly before render to prevent flickering -->
     <script is:inline>
       const savedTheme = localStorage.getItem('theme') || 'system';
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -440,12 +543,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
     </script>
 
-    <!-- Lazy Loaded Third-Party Scripts (Google Analytics & Google Translate) -->
     <script is:inline>
       /*<![CDATA[*//*@fineshopdesign/lazy.js*/ window.lazy=window.lazy||new Promise(e=>{const t="IS_LAZIED",n="true",o=["scroll","click"],i=["keydown","mouseover","touchmove","touchstart"],r=o.concat(i);function a(){try{return localStorage.getItem(t)===n}catch(e){return!0}}function l(e=!0){try{e?localStorage.setItem(t,n):localStorage.removeItem(t)}catch(e){}}function d(t){l(!0),e({type:t.type.toLowerCase()}),r.forEach(e=>window.removeEventListener(e,d))}if(a())e({type:"local"});else if(0!==document.documentElement.scrollTop||document.body&&0!==document.body.scrollTop)d({type:"scroll"});else{const e=()=>{window.removeEventListener("load",e),i.forEach(e=>window.addEventListener(e,d))};window.addEventListener("load",e),o.forEach(e=>window.addEventListener(e,d))}}); /*]]>*/
       
       window.lazy.then(() => {
-        // 1. Load Google Analytics
         const gaScript = document.createElement('script');
         gaScript.async = true;
         gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-FJ05EPHXTK';
@@ -456,7 +557,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         gtag('js', new Date());
         gtag('config', 'G-FJ05EPHXTK');
 
-        // 2. Load Google Translate safely
         window.googleTranslateElementInit = function() {
           new google.translate.TranslateElement({
             pageLanguage: 'en',
@@ -473,7 +573,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
   </head>
   <body class="app-body">
     
-    <!-- Hidden Google Translate Element to prevent breaking layout -->
     <div id="google_translate_element" style="display:none;"></div>
 
     <header class="top-navbar">
@@ -487,7 +586,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
           <span class="brand-name">Coshix</span>
         </a>
 
-        <!-- Search Bar placed cleanly next to logo with custom spacing -->
         <button id="searchOpenBtnDesktop" class="search-trigger desktop-only" aria-label="Search">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           <span class="search-text-label">Looking for something?</span>
@@ -500,7 +598,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </button>
 
-        <!-- Custom Translate Dropdown -->
         <div class="dropdown-container">
           <button id="langMenuBtn" class="icon-btn" aria-label="Select Language">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -522,7 +619,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
           </div>
         </div>
 
-        <!-- Theme Dropdown -->
         <div class="dropdown-container">
           <button id="themeMenuBtn" class="icon-btn" aria-label="Toggle theme">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -631,6 +727,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             <a href="/contact" class="sidebar-link" data-path="/contact">Contact</a>
           </div>
 
+          <!-- DESKTOP LEFT SIDEBAR LABELS WIDGET REMOVED PER YOUR INSTRUCTION -->
+
           <div class="sidebar-social-section">
             <div class="social-icons-grid">
               <a href="https://www.threads.com/@coshix.in" target="_blank" rel="noopener noreferrer" aria-label="Threads" class="social-icon-link">
@@ -683,10 +781,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
     </script>
 
-    <!-- UI Interaction Script -->
     <script define:vars={{ searchData }}>
-      
-      /* --- Dropdown Menus Logic --- */
       const themeBtn = document.getElementById('themeMenuBtn');
       const themeMenu = document.getElementById('themeMenu');
       const langBtn = document.getElementById('langMenuBtn');
@@ -713,7 +808,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
 
       document.addEventListener('click', closeAllMenus);
 
-      /* --- Theme Switching --- */
       const options = document.querySelectorAll('.theme-option');
       const setTheme = (theme) => {
         localStorage.setItem('theme', theme);
@@ -743,7 +837,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         opt.addEventListener('click', () => setTheme(opt.getAttribute('data-theme')));
       });
 
-      /* --- Translation Switching Logic with RTL Support --- */
       const langOptions = document.querySelectorAll('.lang-option');
       const rtlLangs = ["ar", "fa", "ur", "he", "ps", "yi", "sd", "ug"];
       const defaultLanguage = 'en';
@@ -800,7 +893,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         }
       };
 
-      // Ensure the initial active class is highlighted correctly on load
       const initialLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
       
       langOptions.forEach(opt => {
@@ -811,8 +903,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         opt.addEventListener('click', (e) => {
           e.preventDefault();
           const selectedLang = opt.getAttribute('data-lang');
-          
-          // FIX: Dynamically check the stored language on click rather than relying on a stale variable
           const dynamicallyCurrentLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
           
           if (selectedLang !== dynamicallyCurrentLang) {
@@ -822,7 +912,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         });
       });
 
-      /* --- Mobile Menu Drawer Interactivity --- */
       const mobileMenuToggle = document.getElementById('mobileMenuToggle');
       const mobileMenuClose = document.getElementById('mobileMenuClose');
       const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
@@ -843,7 +932,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         if (e.target === mobileDrawerOverlay) closeMobileDrawer();
       });
 
-      /* --- Dynamic Active Sidebar Link Highlighter --- */
       const highlightActiveLinks = () => {
         let currentPath = window.location.pathname.replace(/\/$/, "") || "/";
         const links = document.querySelectorAll(".sidebar-link");
@@ -866,7 +954,30 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         highlightActiveLinks();
       }
 
-      /* --- Search Modal Functionality & Live Filtering --- */
+      /* --- Sidebar Labels Widget Toggle Logic --- */
+      const sidebarToggleLabelsBtn = document.getElementById('sidebar-toggle-labels-btn');
+      const extraSidebarLabels = document.querySelectorAll('.extra-sidebar-label');
+      if (sidebarToggleLabelsBtn && extraSidebarLabels.length > 0) {
+        sidebarToggleLabelsBtn.addEventListener('click', () => {
+          const isHidden = extraSidebarLabels[0].classList.contains('hidden');
+          const extraCount = sidebarToggleLabelsBtn.getAttribute('data-extra');
+
+          if (isHidden) {
+            extraSidebarLabels.forEach(tag => {
+              tag.classList.remove('hidden');
+              tag.style.display = 'flex';
+            });
+            sidebarToggleLabelsBtn.innerHTML = 'Show less';
+          } else {
+            extraSidebarLabels.forEach(tag => {
+              tag.classList.add('hidden');
+              tag.style.display = 'none';
+            });
+            sidebarToggleLabelsBtn.innerHTML = `Show more <span class="extra-count">(+${extraCount})</span>`;
+          }
+        });
+      }
+
       const searchModal = document.getElementById('searchModal');
       const searchOpenBtnDesktop = document.getElementById('searchOpenBtnDesktop');
       const searchOpenBtnMobile = document.getElementById('searchOpenBtnMobile');
@@ -932,7 +1043,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         `).join('');
       });
 
-      /* --- Lazy Load Images on Scroll --- */
       document.addEventListener("DOMContentLoaded", () => {
         const lazyImages = document.querySelectorAll("img[data-src]");
 
@@ -962,7 +1072,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         }
       });
 
-      /* --- Automatically Add Copy Buttons to Code Blocks --- */
       document.addEventListener("DOMContentLoaded", () => {
         const codeBlocks = document.querySelectorAll("pre");
 
@@ -998,7 +1107,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         });
       });
 
-      /* --- Sticky Back to Top Button Logic --- */
       document.addEventListener("DOMContentLoaded", () => {
         const backToTopBtn = document.getElementById("backToTopBtn");
 
@@ -1019,7 +1127,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       });
     </script>
 
-    <!-- Compact Cookie Banner HTML -->
     <div id="cookieConsentBanner" class="cookie-banner">
       <p class="cookie-text">
         We use cookies to improve your experience. See our <a href="/privacy-policy">Privacy Policy</a>.

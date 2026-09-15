@@ -23,12 +23,20 @@ const popularPosts = sortedPosts.slice(0, 5);
 const bloggerPosts = sortedPosts.filter(post => post.data?.categories?.[0]?.toLowerCase() === "blogger").slice(0, 6);
 const commonPosts = sortedPosts.filter(post => post.data?.categories?.[0]?.toLowerCase() === "common").slice(0, 6);
 
-const categoryMap = new Map();
+// --- HELPER & DATA FETCHING FOR TAGS (LABELS WIDGET) ---
+const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
+
+const tagMap = new Map();
 validPosts.forEach(post => {
-  const cat = post.data?.categories?.[0] || "General";
-  categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
+  const tags = post.data?.tags || [];
+  tags.forEach((tag: string) => {
+    tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+  });
 });
-const allLabels = Array.from(categoryMap.entries()).map(([name, count]) => ({ name, count }));
+
+const allSidebarTags = Array.from(tagMap.entries())
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count);
 
 const getPostUrl = (post: any) => `/blog/${post.slug || post.id}`;
 const formatDate = (dateStr: string) => {
@@ -232,7 +240,7 @@ const formatDate = (dateStr: string) => {
       <!-- Popular Posts Widget -->
       <div class="sidebar-widget">
         <div class="section-heading">
-          <span class="heading-title">Trending</span>
+          <span class="heading-title">Most Recent</span>
           <span class="heading-dots">···</span>
         </div>
         <div class="popular-list">
@@ -255,25 +263,60 @@ const formatDate = (dateStr: string) => {
         </div>
       </div>
 
-      <!-- Labels Widget -->
+      <!-- Labels Widget (Tag-Based with Show More Toggle) -->
       <div class="sidebar-widget">
         <div class="section-heading">
           <span class="heading-title">Labels</span>
           <span class="heading-dots">···</span>
         </div>
         <div class="labels-grid">
-          {allLabels.map(label => (
-            <a href={`/categories/${label.name.toLowerCase()}`} class="label-pill">
+          {allSidebarTags.map((label, index) => (
+            <a 
+              href={`/tags/${slugify(label.name)}`} 
+              class={`label-pill ${index >= 4 ? 'extra-sidebar-tag hidden' : ''}`}
+            >
               <span class="label-name">{label.name}</span>
               <span class="label-count">({label.count})</span>
             </a>
           ))}
         </div>
+        {allSidebarTags.length > 4 && (
+          <button id="sidebar-toggle-tags-btn" class="sidebar-toggle-btn" data-extra={allSidebarTags.length - 4}>
+            Show more <span class="extra-count">(+{allSidebarTags.length - 4})</span>
+          </button>
+        )}
       </div>
-
     </aside>
 
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sidebarToggleBtn = document.getElementById('sidebar-toggle-tags-btn');
+      const extraSidebarTags = document.querySelectorAll('.extra-sidebar-tag');
+      
+      if (sidebarToggleBtn && extraSidebarTags.length > 0) {
+        sidebarToggleBtn.addEventListener('click', () => {
+          const isHidden = extraSidebarTags[0].classList.contains('hidden');
+          const extraCount = sidebarToggleBtn.getAttribute('data-extra');
+          
+          if (isHidden) {
+            extraSidebarTags.forEach(tag => {
+              tag.classList.remove('hidden');
+              tag.style.display = 'flex';
+            });
+            sidebarToggleBtn.innerHTML = 'Show less';
+          } else {
+            extraSidebarTags.forEach(tag => {
+              tag.classList.add('hidden');
+              tag.style.display = 'none';
+            });
+            sidebarToggleBtn.innerHTML = `Show more <span class="extra-count">(+${extraCount})</span>`;
+          }
+        });
+      }
+    });
+  </script>
 
   <style>
     /* --- LAYOUT --- */
@@ -643,6 +686,10 @@ const formatDate = (dateStr: string) => {
       transition: background 0.15s ease;
     }
 
+    .label-pill.hidden {
+      display: none;
+    }
+
     .label-pill:hover {
       background: var(--sidebar-hover);
       border-color: #818cf8;
@@ -656,6 +703,33 @@ const formatDate = (dateStr: string) => {
     .label-count {
       color: var(--text-muted);
       font-size: 0.68rem;
+    }
+
+    .sidebar-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      border: none;
+      font-size: 0.825rem;
+      font-weight: 500;
+      color: #0ea5e9;
+      cursor: pointer;
+      padding: 0.5rem 0 0 0;
+      margin-top: 0.5rem;
+      transition: color 0.15s ease;
+    }
+
+    .sidebar-toggle-btn:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar-toggle-btn .extra-count {
+      color: #94a3b8;
+      margin-left: 0.35rem;
+    }
+
+    html.dark .sidebar-toggle-btn {
+      color: #38bdf8;
     }
 
     /* Dark Mode Overrides specifically for these links to maintain visibility */
