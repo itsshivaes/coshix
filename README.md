@@ -2,11 +2,11 @@
   <h1>🚀 coshix.in - Official Repository</h1>
   <p><b>The Source Code Powering the Blazing Fast, SEO-Perfected Coshix Website</b></p>
   
-  [![Astro](https://img.shields.io/badge/Astro-Framework-FF5D01.svg?style=for-the-badge&logo=astro&logoColor=white)](#)
+  [![Astro](https://img.shields.io/badge/Astro-Framework-FF5D01.svg?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build/)
   [![Performance](https://img.shields.io/badge/PageSpeed-90%2B-brightgreen.svg?style=for-the-badge)](#)
   [![SEO](https://img.shields.io/badge/SEO-100%25-success.svg?style=for-the-badge)](#)
   [![Accessibility](https://img.shields.io/badge/Accessibility-100%25-blue.svg?style=for-the-badge)](#)
-  [![Deployment](https://img.shields.io/badge/Live_on-GitHub_Pages-181717.svg?style=for-the-badge&logo=github)](#)
+  [![Deployment](https://img.shields.io/badge/Live_on-GitHub_Pages-181717.svg?style=for-the-badge&logo=github)](https://coshix.in)
 </div>
 
 <br />
