@@ -15,7 +15,7 @@ tags:
   - AJAX
   - Blogger
   - UI Design
-draft: false
+draft: true
 ---
 
 ![Thumbnail](/images/dynamic-post-filter.webp)
