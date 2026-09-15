@@ -410,7 +410,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         border: none;
         font-size: 0.825rem;
         font-weight: 500;
-        color: #0ea5e9;
+        color: #4338ca;
         cursor: pointer;
         padding: 0.5rem 0 0 0;
         margin-top: 0.5rem;
@@ -421,11 +421,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         text-decoration: underline;
       }
       #sidebar-toggle-tags-btn .extra-count, .sidebar-toggle-labels-btn .extra-count {
-        color: #94a3b8;
+        color: #1d2229;
         margin-left: 0.35rem;
       }
       html.dark #sidebar-toggle-tags-btn, html.dark .sidebar-toggle-labels-btn {
-        color: #38bdf8;
+        color: #818cf8;
+      }
+
+      html.dark #sidebar-toggle-tags-btn .extra-count, html.dark .sidebar-toggle-labels-btn .extra-count {
+        color: var(--text-muted);
       }
 
       .sidebar-social-section { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }

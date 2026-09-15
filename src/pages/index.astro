@@ -716,7 +716,7 @@ const cleanAltText = (title: string) => {
     }
 
     .label-count {
-      color: var(--text-muted);
+      color: #1d2229;
       font-size: 0.68rem;
     }
 
@@ -724,6 +724,10 @@ const cleanAltText = (title: string) => {
     :global(html.dark) .cat-link,
     :global(html.dark) .read-more-link {
       color: #818cf8 !important;
+    }
+
+    html.dark .label-count{
+      color: var(--text-muted);
     }
     
     :global(html.dark) .cat-link:hover,
