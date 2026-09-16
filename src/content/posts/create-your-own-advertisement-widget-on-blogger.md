@@ -11,7 +11,7 @@ categories:
   - Blogger
   - Widgets
 tags: []
-draft: false
+draft: true
 ---
 
 Learn to Build a responsive advertising widget for Blogger using HTML & CSS. Follow this step-by-step guide create custom ad banners without plugins.
