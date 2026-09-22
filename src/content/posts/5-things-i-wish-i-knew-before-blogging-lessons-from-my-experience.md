@@ -11,7 +11,7 @@ categories:
   - Tips and Tricks
 tags:
   - Blogger
-draft: true
+draft: false
 ---
 
 ### Introduction
