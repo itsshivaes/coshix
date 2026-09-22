@@ -14,6 +14,8 @@ tags:
 draft: false
 ---
 
+[![Thumbnail copyright Coshix.in](/images/Screenshot%202026-09-22%20at%2011.56.38%20AM.webp)](#)
+
 ### Introduction
 
 I had been using Blogger for the past 6 years and I had done a lot of ups and downs too in my career, My first website was about mobile games in which I used to do review about the available mobile games, in which I didn't recieve any traffic or monetization as it had a lot of competition in that topic. Then I had worked a lot in cricket blog, in which I wrote about the latest cricket news, updates and predictions and made a telegram channel for that. 
