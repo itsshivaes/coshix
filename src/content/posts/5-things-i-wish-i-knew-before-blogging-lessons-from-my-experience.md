@@ -24,4 +24,6 @@ In this article we will discuss about five common mistakes every beginner do in 
 
 ### 1. Choosing a Overly Saturated Niche Without a Unique Angle
 
-When I started my first blog about mobile game reviews, I thought writing about popular games would automatically bring in traffic. I was wrong. Big gaming sites and established creators were already covering the exact same topics with far more authority. Because the competition was so high, I couldn't get search traffic or monetize the site.
+When I started my first blog about mobile game reviews, I thought writing about common popular games would easily bring in traffic. I was wrong. Big gaming sites and established creators were already covering the exact same topics with far more authority and mostly audience prefer watching youtube review videos instead of reading long blog articles. Because the competition was so high, I couldn't get search traffic or monetize the site.
+
+The solution for this mistake is that If you have a youtube channel that has a good volume of audience you can mention your site link in the description or in the video, so your audience can check your site for latest updates and It will help your youtube channel also If your site ranks on the google.
