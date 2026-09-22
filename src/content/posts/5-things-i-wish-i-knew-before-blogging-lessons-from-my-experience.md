@@ -29,3 +29,9 @@ In this article we will discuss about five common mistakes every beginner do in 
 When I started my first blog about mobile game reviews, I thought writing about common popular games would easily bring in traffic. I was wrong. Big gaming sites and established creators were already covering the exact same topics with far more authority and mostly audience prefer watching youtube review videos instead of reading long blog articles. Because the competition was so high, I couldn't get search traffic or monetize the site.
 
 The solution for this mistake is that If you have a youtube channel that has a good volume of audience you can mention your site link in the description or in the video, so your audience can check your site for latest updates and It will help your youtube channel also If your site ranks on the google.
+
+### 2. Relying on the Wrong Audience Channels (Your Cricket Blog Experience)
+
+With my cricket blog, I shifted to live updates, news, and predictions, using a Telegram channel to drive readers. While this brought short-term traffic, news content expires quickly and you should be very consistent . Once the match was over, traffic dropped to zero unless I posted again. And due to some reasons I was not writing new articles which resulted in very less traffic in the site.
+
+**How to avoid this:** Instead of going after broad, high-competition topics, focus on a micro-niche where you can stand out. Find specific problems your audience faces that major websites are ignoring.
