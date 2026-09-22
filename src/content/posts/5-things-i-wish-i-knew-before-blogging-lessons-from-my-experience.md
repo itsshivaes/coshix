@@ -14,7 +14,7 @@ tags:
 draft: false
 ---
 
-[![Thumbnail copyright Coshix.in](/images/Screenshot%202026-09-22%20at%2011.56.38%20AM.webp)](#)
+[![Thumbnail copyright Coshix.in](/images/Screenshot%202026-09-22%20at%2011.56.38%20AM.webp "Thumbnail copyright Coshix.in")](#)
 
 ### Introduction
 
