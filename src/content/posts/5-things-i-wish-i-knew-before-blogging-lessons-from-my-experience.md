@@ -5,7 +5,7 @@ date: 2026-09-21
 description: Don't waste your time by making these five mistakes in blogger, my personal experience. Discover and improves these lessons to get growth in your blogging career.
 authors:
   - saim-rahmani
-image: ''
+image: /images/Screenshot 2026-09-22 at 11.56.38 AM.webp
 categories:
   - Blogging
   - Tips and Tricks
