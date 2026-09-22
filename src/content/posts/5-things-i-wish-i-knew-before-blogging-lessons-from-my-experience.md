@@ -7,7 +7,7 @@ authors:
   - saim-rahmani
 image: /images/Screenshot 2026-09-22 at 11.56.38 AM.webp
 categories:
-  - Blogging
+  - Blogger
   - Tips and Tricks
 tags:
   - Blogger
