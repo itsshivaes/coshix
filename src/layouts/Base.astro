@@ -699,6 +699,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             <a href="/" class="sidebar-link" data-path="/">Home</a>
             <a href="/categories/blogger/" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
             <a href="/categories/common/" class="sidebar-link" data-path="/categories/common">Common</a>
+            <a href="/categories/blogging tips/" class="sidebar-link" data-path="/categories/blogging tips">Blogging Tips</a>
             <a href="/archive/1/" class="sidebar-link" data-path="/archive">Blog Archive</a>
             <a href="/sitemap/" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
@@ -738,6 +739,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             <a href="/" class="sidebar-link" data-path="/">Home</a>
             <a href="/categories/blogger/" class="sidebar-link" data-path="/categories/blogger">Blogger</a>
             <a href="/categories/common/" class="sidebar-link" data-path="/categories/common">Common</a>
+            <a href="/categories/blogging tips/" class="sidebar-link" data-path="/categories/blogging tips">Blogging Tips</a>
             <a href="/archive/1/" class="sidebar-link" data-path="/archive">Blog Archive</a>
             <a href="/sitemap/" class="sidebar-link" data-path="/sitemap">Sitemap</a>
           </div>
@@ -951,7 +953,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       });
 
       const highlightActiveLinks = () => {
-        let currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+        let currentPath = decodeURIComponent(window.location.pathname).replace(/\/$/, "") || "/";
         const links = document.querySelectorAll(".sidebar-link");
 
         links.forEach(link => {

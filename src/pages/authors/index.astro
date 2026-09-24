@@ -29,8 +29,19 @@ const htmlContent = author.body ? marked.parse(author.body) : "";
 
 // Fetch all posts to filter by this exact author safely
 const allPosts = await getCollection("posts").catch(() => []);
+const authorSlug = author.slug || author.id;
+
 const authorPosts = allPosts
-  .filter((post) => post.data?.authors && Array.isArray(post.data.authors) && post.data.authors.includes(title))
+  .filter((post) => {
+    const postAuthors = post.data?.authors || [];
+    const isAuthorMatch = Array.isArray(postAuthors) && postAuthors.some(a => 
+      a === title || 
+      a === authorSlug || 
+      a.toLowerCase().replace(/\s+/g, '-') === authorSlug
+    );
+    const isDraft = import.meta.env.PROD && post.data?.draft === true;
+    return isAuthorMatch && !isDraft;
+  })
   .sort((a, b) => new Date(b.data?.date || 0).getTime() - new Date(a.data?.date || 0).getTime());
 
 const cleanAltText = (text: string) => {

@@ -28,7 +28,7 @@ if (!post) {
 const { Content } = await render(post);
 
 // --- HELPER: Slugify URLs (Fixes spaces in Tags and Categories) ---
-const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
+const slugify = (text: string) => text.toLowerCase();
 
 // Extract Category for Breadcrumb
 const postCategory = post.data?.categories?.[0] || "General";

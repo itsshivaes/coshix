@@ -20,9 +20,19 @@ const htmlContent = marked.parse(author.body || "");
 
 // Fetch all posts to filter by this exact author AND remove drafts
 const allPosts = await getCollection("posts");
+const authorSlug = author.slug || author.id;
+
 const authorPosts = allPosts
   .filter((post) => {
-    const isAuthorMatch = post.data.authors && post.data.authors.includes(title);
+    const postAuthors = post.data?.authors || [];
+    
+    // Check if the post's author array includes the exact Title, exact Slug, or a slugified version of the title
+    const isAuthorMatch = postAuthors.some(a => 
+      a === title || 
+      a === authorSlug || 
+      a.toLowerCase().replace(/\s+/g, '-') === authorSlug
+    );
+    
     const isDraft = import.meta.env.PROD && post.data?.draft === true;
     return isAuthorMatch && !isDraft;
   })
