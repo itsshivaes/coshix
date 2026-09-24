@@ -48,7 +48,7 @@ Here is why copying content will hamper your blog’s growth:
 
 ### 4.Using the Content Spinners and AI Rewriting Tools.
 
-[![5 Things I Wish I Knew Before Blogging: Lessons From My Experience](https://blogger.googleusercontent.com/img/a/AVvXsEi0zI0uX7kk4TOS7ells6pRbpPDh4YnG48dMr3VxX1U5jObXtZGxhZMNudOiQCBylIQF5q8Hgi1UB-qby05jcQqHdEkV1fW1RA0Cy9maZktBznG6iqPnf4vvwaFXNSk-JJ0eTTC6UhWlL0EuE8X8g_rpneagHAaza6feUD54dB4hKlM-kkUbhf2n4cDxRE=s1369 "5 Things I Wish I Knew Before Blogging: Lessons From My Experience")](#)
+[![5 Things I Wish I Knew Before Blogging: Lessons From My Experience](/images/Saim-rahmani-article-1.png "5 Things I Wish I Knew Before Blogging: Lessons From My Experience")](#)
 
 Many bloggers think that they can bypass the effort of writing articles using copied content and use spinbots to rewrite the articles. However, relying on spun content is one of the fastest ways to ruin your blog's reputation and ruin your chances of monetization.
 
