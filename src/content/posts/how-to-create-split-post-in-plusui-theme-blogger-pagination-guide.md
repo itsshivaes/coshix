@@ -5,7 +5,7 @@ date: 2026-10-21
 description: Learn how to create split posts in the PlusUI Blogger theme using simple JavaScript. Follow this step-by-step guide to add pagination to your blog posts, improve readability, and make navigation easier for your readers.
 authors:
   - Ender Avcu
-image: /images/dynamic-post-filter.webp
+image: /images/dynamic-post-filter-1.webp
 categories:
   - Blogging Tips
 tags:
