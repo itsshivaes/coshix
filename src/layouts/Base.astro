@@ -140,21 +140,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         --scrollbar-thumb-hover: #9ca3af;
       }
 
+      /* Material UI Dark Theme Standard Updates */
       html.dark {
-        --bg-main: #000000;
-        --bg-card: #0a0a0a;
-        --text-main: #f5f5f7;
-        --text-muted: #86868b;
-        --border-color: #27272a;
-        --header-bg: rgba(10, 10, 10, 0.5);
-        --cookie-bg: rgba(20, 20, 20, 0.85);
+        --bg-main: #121212;
+        --bg-card: #1e1e1e;
+        --text-main: #e3e3e3;
+        --text-muted: #9e9e9e;
+        --border-color: #333333;
+        --header-bg: rgba(18, 18, 18, 0.85);
+        --cookie-bg: rgba(30, 30, 30, 0.95);
         --sidebar-bg: var(--header-bg);
-        --sidebar-hover: #27272a;
+        --sidebar-hover: #2c2c2c;
         --sidebar-active: rgba(129, 140, 248, 0.15);
         --sidebar-active-text: #818cf8;
-        --scrollbar-bg: #000000;
-        --scrollbar-thumb: #38383a;
-        --scrollbar-thumb-hover: #48484a;
+        --scrollbar-bg: #121212;
+        --scrollbar-thumb: #424242;
+        --scrollbar-thumb-hover: #616161;
       }
 
       html.Rtl, html[dir="rtl"] { direction: rtl; text-align: right; }
@@ -286,7 +287,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       html.dark .pagination-container a:hover, html.dark .pagination-container button:hover, html.dark nav[aria-label="Pagination"] a:hover, html.dark nav[aria-label="Pagination"] button:hover { background-color: var(--sidebar-hover) !important; color: var(--text-main) !important; }
       html.dark .featured-title, html.dark .grid-title, html.dark .popular-title, html.dark .post-title, html.dark .list-title, html.dark .search-result-title, html.dark .card-body-side h2 { color: var(--text-main) !important; }
       html.dark .card-desc, html.dark .card-footer-row, html.dark .card-footer-row-sm, html.dark .card-footer-sm, html.dark .date-text, html.dark .page-indicator { color: var(--text-muted) !important; border-color: var(--border-color) !important; }
-      html.dark .card-image-side, html.dark .card-image-wrapper-top, html.dark .card-thumb-sm, html.dark .search-result-item, html.dark .page-btn.disabled { background-color: #27272a !important; border-color: var(--border-color) !important; color: var(--text-muted) !important; }
+      html.dark .card-image-side, html.dark .card-image-wrapper-top, html.dark .card-thumb-sm, html.dark .search-result-item, html.dark .page-btn.disabled { background-color: var(--sidebar-hover) !important; border-color: var(--border-color) !important; color: var(--text-muted) !important; }
       html.dark .page-btn { background-color: var(--bg-card); border-color: var(--border-color); color: var(--text-main); }
       html.dark .popular-item { border-bottom-color: var(--border-color) !important; }
 

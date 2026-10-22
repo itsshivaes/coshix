@@ -5,7 +5,7 @@ date: 2026-10-21
 description: Learn how to create split posts in the PlusUI Blogger theme using simple JavaScript. Follow this step-by-step guide to add pagination to your blog posts, improve readability, and make navigation easier for your readers.
 authors:
   - Ender Avcu
-image: /images/dynamic-post-filter.png
+image: /images/dynamic-post-filter.webp
 categories:
   - Blogging Tips
 tags:
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 ```
 
-**Important:** This code expects the post content to be inside an element with the ID `postSplit`, and the PlusUI theme to use the `postBody` class. Check your theme's actual HTML structure before installing it. Test it on a backup or test blog first.
+<div class="alert warning">Important: This code expects the post content to be inside an element with the ID `postSplit`, and the PlusUI theme to use the `postBody` class. Check your theme's actual HTML structure before installing it. Test it on a backup or test blog first.</div>
 
 ### Step 3: Add the CSS Styling (Optional)
 
@@ -247,7 +247,7 @@ In this example, the article is divided into three pages.
 
 Every `<!--nextpage-->` marker creates a new page. You can add as many sections as needed.
 
-**Important:** Use the Blogger post editor's HTML view when inserting the code. If you add it in Compose view, the editor may modify or remove some HTML comments.
+<div class="alert warning">Important: Use the Blogger post editor's HTML view when inserting the code. If you add it in Compose view, the editor may modify or remove some HTML comments.</div>
 
 ## Frequently Asked Questions (FAQ)
 

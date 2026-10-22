@@ -43,29 +43,16 @@ const uniqueTags = [...new Set(rawTags)];
 const wordCount = post.body ? post.body.split(/\s+/).length : 0;
 const readingTime = Math.ceil(wordCount / 200) || 1;
 
-// Time Ago Function for Date
-function timeAgo(dateParam: string | Date) {
+// Exact Date Format Function (Replaced timeAgo)
+function formatExactDate(dateParam: string | Date) {
   if (!dateParam) return "";
-  const date = new Date(dateParam);
-  const now = new Date();
-  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  let interval = seconds / 31536000;
-  if (interval >= 1) return Math.floor(interval) + " years ago";
-  interval = seconds / 2592000;
-  if (interval >= 1) return Math.floor(interval) + " months ago";
-  interval = seconds / 86400;
-  if (interval >= 1) return Math.floor(interval) + " days ago";
-  interval = seconds / 3600;
-  if (interval >= 1) return Math.floor(interval) + " hours ago";
-  interval = seconds / 60;
-  if (interval >= 1) return Math.floor(interval) + " minutes ago";
-  return "Just now";
+  return new Date(dateParam).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 const hasUpdatedDate = !!post.data?.updatedDate;
 const displayDate = hasUpdatedDate ? post.data.updatedDate : post.data?.date;
-const datePrefix = hasUpdatedDate ? "Updated: " : "";
-const timeString = displayDate ? `${datePrefix}${timeAgo(displayDate)}` : "";
+const datePrefix = hasUpdatedDate ? "Updated " : "";
+const timeString = displayDate ? `${datePrefix}${formatExactDate(displayDate)}` : "";
 
 // Fetch Author Data safely within the component
 const allAuthors = await getCollection("authors");
@@ -474,15 +461,15 @@ const formatSidebarDate = (dateStr: string | Date) => {
       if (!codeElement) return;
 
       let html = codeElement.innerHTML;
-      html = html.replace(/\[hl:blue\](.*?)\[\/hl\]/g, '<span class="code-hl blue">$1</span>');
-      html = html.replace(/\[hl:red\](.*?)\[\/hl\]/g, '<span class="code-hl red">$1</span>');
-      html = html.replace(/\[hl:green\](.*?)\[\/hl\]/g, '<span class="code-hl green">$1</span>');
-      html = html.replace(/\[ul:blue\](.*?)\[\/ul\]/g, '<span class="code-ul blue">$1</span>');
-      html = html.replace(/\[ul:red\](.*?)\[\/ul\]/g, '<span class="code-ul red">$1</span>');
-      html = html.replace(/\[ul:green\](.*?)\[\/ul\]/g, '<span class="code-ul green">$1</span>');
-      html = html.replace(/\[ul:yellow\](.*?)\[\/ul\]/g, '<span class="code-ul yellow">$1</span>');
-      html = html.replace(/\[badge:blue\](.*?)\[\/badge\]/g, '<span class="code-badge blue">$1</span>');
-      html = html.replace(/\[badge:red\](.*?)\[\/badge\]/g, '<span class="code-badge red">$1</span>');
+      html = html.replace(/[hl:blue](.*?)\[\/hl\]/g, '<span class="code-hl blue">$1</span>');
+      html = html.replace(/[hl:red](.*?)\[\/hl\]/g, '<span class="code-hl red">$1</span>');
+      html = html.replace(/[hl:green](.*?)\[\/hl\]/g, '<span class="code-hl green">$1</span>');
+      html = html.replace(/[ul:blue](.*?)\[\/ul\]/g, '<span class="code-ul blue">$1</span>');
+      html = html.replace(/[ul:red](.*?)\[\/ul\]/g, '<span class="code-ul red">$1</span>');
+      html = html.replace(/[ul:green](.*?)\[\/ul\]/g, '<span class="code-ul green">$1</span>');
+      html = html.replace(/[ul:yellow](.*?)\[\/ul\]/g, '<span class="code-ul yellow">$1</span>');
+      html = html.replace(/[badge:blue](.*?)\[\/badge\]/g, '<span class="code-badge blue">$1</span>');
+      html = html.replace(/[badge:red](.*?)\[\/badge\]/g, '<span class="code-badge red">$1</span>');
       codeElement.innerHTML = html;
 
       if (pre.parentElement.classList.contains('macos-code-wrapper')) return;
