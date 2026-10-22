@@ -45,7 +45,7 @@ const cleanAltText = (title: string) => {
 ---
 
 <Base 
-  title={`${title} - Author Profile`} 
+  title={`${title} | Author Profile - Coshix`}
   description={description || `Read all articles written by ${title}.`}
   image={image}
   schemaType="page"
@@ -55,7 +55,17 @@ const cleanAltText = (title: string) => {
     <!-- Compact Author Header -->
     <div class="compact-author-header">
       {image && (
-        <Image src={image} alt={title} width={75} height={75} class="compact-author-avatar" loading="eager" />
+        <div class="compact-author-avatar-wrapper">
+          <Image 
+            src={image} 
+            alt={title} 
+            width={75} 
+            height={75} 
+            class="compact-author-avatar" 
+            loading="eager" 
+            onload="this.style.background='transparent'; this.style.color='inherit';"
+          />
+        </div>
       )}
       <div class="compact-author-info">
         <h1 class="compact-author-title">{title}</h1>
@@ -90,6 +100,7 @@ const cleanAltText = (title: string) => {
                       width={600}
                       height={350}
                       loading={index < 8 ? "eager" : "lazy"} 
+                      onload="this.style.background='transparent'; this.style.color='inherit';"
                     />
                     {post.data?.commentsCount && (
                       <div class="comment-badge">💬 {post.data.commentsCount}</div>
@@ -150,13 +161,25 @@ const cleanAltText = (title: string) => {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   }
 
-  .compact-author-avatar {
+  .compact-author-avatar-wrapper {
     width: 75px;
     height: 75px;
     border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--border-color);
+    overflow: hidden;
     flex-shrink: 0;
+    border: 2px solid var(--border-color);
+    /* Skeleton Loading Background */
+    background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
+  }
+
+  .compact-author-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    color: transparent; /* Hides alt text while loading */
   }
 
   .compact-author-info {
@@ -236,8 +259,11 @@ const cleanAltText = (title: string) => {
     position: relative;
     width: 100%;
     height: 140px;
-    background: var(--bg-main);
     overflow: hidden;
+    /* Skeleton Loading Background */
+    background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
   }
 
   .card-thumb img {
@@ -245,6 +271,7 @@ const cleanAltText = (title: string) => {
     height: 100%;
     object-fit: cover;
     display: block;
+    color: transparent; /* Hides alt text while loading */
   }
 
   .comment-badge {
