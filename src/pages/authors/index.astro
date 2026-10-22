@@ -2,136 +2,110 @@
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { Image } from "astro:assets";
-import { marked } from "marked";
 
-export async function getStaticPaths() {
-  const authors = await getCollection("authors").catch(() => []);
-  if (!authors || authors.length === 0) return [];
-  
-  return authors.map((author) => ({
-    params: { single: author.slug || author.id },
-    props: { author },
-  }));
-}
-
-const { author } = Astro.props;
-
-if (!author) {
-  return Astro.redirect('/404');
-}
-
-const title = author.data?.title || "Author";
-const description = author.data?.description || "";
-const image = author.data?.image || "";
-
-// Parse bio safely if it exists
-const htmlContent = author.body ? marked.parse(author.body) : "";
-
-// Fetch all posts to filter by this exact author safely
+// Fetch all authors and posts
 const allPosts = await getCollection("posts").catch(() => []);
-const authorSlug = author.slug || author.id;
+let authors = await getCollection("authors").catch(() => []);
 
-const authorPosts = allPosts
-  .filter((post) => {
+// 1. Filter out the _index.md file to remove the blank "Authors" card
+authors = authors.filter(author => {
+  const id = author.id?.toLowerCase() || "";
+  const slug = author.slug?.toLowerCase() || "";
+  return !id.includes("index") && !slug.includes("index");
+});
+
+// 2. Helper to find an author's earliest post date
+const getOldestPostDate = (author: any) => {
+  const slug = author.slug || author.id;
+  const title = author.data?.title;
+  
+  const authorPosts = allPosts.filter((post) => {
     const postAuthors = post.data?.authors || [];
-    const isAuthorMatch = Array.isArray(postAuthors) && postAuthors.some(a => 
-      a === title || 
-      a === authorSlug || 
-      a.toLowerCase().replace(/\s+/g, '-') === authorSlug
+    return Array.isArray(postAuthors) && postAuthors.some(a => 
+      a === title || a === slug || a.toLowerCase().replace(/\s+/g, '-') === slug
     );
-    const isDraft = import.meta.env.PROD && post.data?.draft === true;
-    return isAuthorMatch && !isDraft;
-  })
-  .sort((a, b) => new Date(b.data?.date || 0).getTime() - new Date(a.data?.date || 0).getTime());
+  });
 
-const cleanAltText = (text: string) => {
-  if (!text) return "Blog post";
-  return text.replace(/\b(image|picture|photo|thumbnail|logo|graphic)s?\b\s*(of)?\s*/gi, '').trim() || "Blog post";
+  // If an author has no posts yet, push them to the end of the list
+  if (authorPosts.length === 0) return Date.now(); 
+  
+  const timestamps = authorPosts.map(p => new Date(p.data?.date || 0).getTime());
+  return Math.min(...timestamps);
 };
+
+// 3. Sort authors from oldest to newest (ascending order)
+authors.sort((a, b) => {
+  // Check for an explicit date field in author frontmatter first
+  const explicitDateA = a.data?.date ? new Date(a.data.date).getTime() : 0;
+  const explicitDateB = b.data?.date ? new Date(b.data.date).getTime() : 0;
+
+  if (explicitDateA && explicitDateB) {
+    return explicitDateA - explicitDateB;
+  }
+
+  // Fallback: Sort by the date of their very first blog post
+  const dateA = explicitDateA || getOldestPostDate(a);
+  const dateB = explicitDateB || getOldestPostDate(b);
+
+  return dateA - dateB; 
+});
 ---
 
 <Base 
-  title={`${title} - Author Profile`} 
-  description={description || `Read all articles written by ${title}.`}
-  image={image}
+  title="Authors | Coshix" 
+  description="Meet the authors and creators behind Coshix."
   schemaType="page"
 >
   <div class="archive-container">
     
-    <!-- Compact Author Header -->
-    <div class="compact-author-header">
-      {image && (
-        <Image src={image} alt={title} width={75} height={75} class="compact-author-avatar" loading="eager" />
-      )}
-      <div class="compact-author-info">
-        <h1 class="compact-author-title">{title}</h1>
-        {description && <p class="compact-author-bio">{description}</p>}
-        {htmlContent && <div class="compact-author-full-bio" set:html={htmlContent} />}
-      </div>
+    <div class="section-heading">
+      <span class="heading-title">All Authors</span>
+      <span class="heading-dots">···</span>
     </div>
 
-    <!-- Recent Posts Section -->
-    {authorPosts.length > 0 && (
-      <div class="dashboard-posts-section">
-        <div class="section-heading">
-          <span class="heading-title">Latest posts by {title}</span>
-          <span class="heading-dots">···</span>
-        </div>
-        
-        <div class="archive-cards-grid">
-          {authorPosts.map((post, index) => {
-            const postCategory = post.data?.categories?.[0] || "General";
-            const categorySlug = postCategory.toLowerCase().replace(/ /g, '-');
-            const hasUpdated = !!post.data?.updatedDate;
-            const displayDate = hasUpdated ? post.data.updatedDate : post.data?.date;
-            const dateStr = displayDate ? new Date(displayDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "";
+    <div class="authors-grid">
+      {authors.map((author) => {
+        const slug = author.slug || author.id;
+        const title = author.data?.title || "Author";
+        const description = author.data?.description || "";
+        const image = author.data?.image || "";
+
+        return (
+          <article class="author-card">
+            {image && (
+              <div class="author-avatar-wrapper">
+                <Image 
+                  src={image} 
+                  alt={title} 
+                  width={120} 
+                  height={120} 
+                  class="author-avatar" 
+                  loading="lazy" 
+                />
+              </div>
+            )}
+            <h2 class="author-name">{title}</h2>
+            {description && <p class="author-description">{description}</p>}
             
-            return (
-              <article class="post-card vertical-card">
-                {post.data?.image && (
-                  <div class="card-thumb">
-                    <Image 
-                      src={post.data.image} 
-                      alt={cleanAltText(post.data?.title)} 
-                      width={600}
-                      height={350}
-                      loading={index < 8 ? "eager" : "lazy"} 
-                    />
-                    {post.data?.commentsCount && (
-                      <div class="comment-badge">💬 {post.data.commentsCount}</div>
-                    )}
-                  </div>
-                )}
-                <div class="card-content">
-                  <div class="card-meta-top">
-                    <a href={`/categories/${categorySlug}`} class="cat-link">
-                      in {postCategory}
-                    </a>
-                  </div>
-                  <a href={`/blog/${post.slug || post.id}`} class="title-anchor">
-                    <h3 class="card-title">{post.data?.title}</h3>
-                  </a>
-                  {post.data?.description && (
-                    <p class="card-snippet">{post.data.description}</p>
-                  )}
-                  <div class="card-footer">
-                    <span class="update-tag">Updated</span>
-                    <span class="date-label">{dateStr}</span>
-                    <a href={`/blog/${post.slug || post.id}`} class="read-more-link">Read more</a>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-    )}
+            <a href={`/authors/${slug}/`} class="view-profile-btn">
+              View Profile
+            </a>
+          </article>
+        );
+      })}
+    </div>
 
   </div>
 </Base>
 
 <style is:global>
-  /* --- LAYOUT WRAPPER MATCHING ARCHIVE --- */
+  /* --- SKELETON LOADING ANIMATION --- */
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* --- LAYOUT WRAPPER --- */
   .archive-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -139,56 +113,8 @@ const cleanAltText = (text: string) => {
     flex-direction: column;
     gap: 1.5rem;
     box-sizing: border-box;
+    padding-bottom: 3rem;
   }
-
-  /* --- COMPACT AUTHOR HEADER --- */
-  .compact-author-header {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-    padding: 1.5rem 2rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  }
-
-  .compact-author-avatar {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--border-color);
-    flex-shrink: 0;
-  }
-
-  .compact-author-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .compact-author-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-main);
-    margin: 0 0 0.25rem 0;
-    line-height: 1.2;
-  }
-
-  .compact-author-bio {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    margin: 0;
-    font-weight: 500;
-  }
-
-  .compact-author-full-bio {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 0.25rem;
-  }
-  .compact-author-full-bio p { margin: 0; }
 
   /* --- SECTION HEADING --- */
   .section-heading {
@@ -201,7 +127,7 @@ const cleanAltText = (text: string) => {
   }
 
   .heading-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-main);
   }
@@ -209,163 +135,107 @@ const cleanAltText = (text: string) => {
   .heading-dots {
     color: var(--text-muted);
     letter-spacing: 2px;
-    cursor: pointer;
   }
 
-  /* --- 4-COLUMN ARCHIVE-MATCHED GRID --- */
-  .archive-cards-grid {
+  /* --- AUTHORS GRID --- */
+  .authors-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
 
-  .post-card.vertical-card {
+  /* --- AUTHOR CARD --- */
+  .author-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
-    overflow: hidden;
+    padding: 2.5rem 1.5rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    text-align: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    transition: border-color 0.15s ease;
+    transition: border-color 0.2s ease, transform 0.2s ease;
   }
 
-  .post-card.vertical-card:hover {
+  .author-card:hover {
     border-color: #4f46e5;
+    transform: translateY(-3px);
   }
 
-  .card-thumb {
-    position: relative;
-    width: 100%;
-    height: 140px;
-    background: var(--bg-main);
+  html.dark .author-card:hover {
+    border-color: #818cf8;
+  }
+
+  /* --- AVATAR & SKELETON --- */
+  .author-avatar-wrapper {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     overflow: hidden;
+    margin-bottom: 1.25rem;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+    
+    /* Skeleton Loading Background */
+    background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
   }
 
-  .card-thumb img {
+  .author-avatar {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    color: transparent; /* Hides alt text while loading */
   }
 
-  .comment-badge {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    padding: 0.12rem 0.4rem;
-    border-radius: 2rem;
-    font-size: 0.6rem;
-    font-weight: 600;
-    color: var(--text-main);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-
-  .card-content {
-    padding: 0.85rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    justify-content: space-between;
-    min-width: 0;
-  }
-
-  .card-meta-top {
-    margin-bottom: 0.2rem;
-  }
-
-  .cat-link {
-    font-size: 0.68rem;
-    font-weight: 600;
-    color: #818cf8;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .cat-link:hover {
-    text-decoration: underline;
-  }
-
-  .title-anchor {
-    text-decoration: none;
-  }
-
-  .card-title {
-    font-size: 0.85rem;
+  /* --- TYPOGRAPHY --- */
+  .author-name {
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-main);
-    margin: 0 0 0.35rem 0;
-    line-height: 1.3;
+    margin: 0 0 0.5rem 0;
   }
 
-  .card-title:hover {
-    color: #818cf8;
-  }
-
-  .card-snippet {
-    font-size: 0.75rem;
+  .author-description {
+    font-size: 0.85rem;
     color: var(--text-muted);
-    margin: 0 0 0.75rem 0;
-    line-height: 1.35;
+    line-height: 1.6;
+    margin: 0 0 1.5rem 0;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .card-footer {
-    display: flex;
+  /* --- BUTTON --- */
+  .view-profile-btn {
+    margin-top: auto;
+    display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    font-size: 0.68rem;
-    border-top: 1px solid var(--border-color);
-    padding-top: 0.5rem;
-  }
-
-  .update-tag {
-    background: #0284c7;
-    color: #fff;
-    font-size: 0.55rem;
-    font-weight: 700;
-    padding: 0.05rem 0.25rem;
-    border-radius: 0.2rem;
-    text-transform: uppercase;
-  }
-
-  .date-label {
-    color: var(--text-muted);
-    margin-right: auto;
-  }
-
-  .read-more-link {
-    color: #818cf8;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    border-radius: 2rem;
+    background: #4f46e5;
+    color: #ffffff !important;
+    font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    transition: all 0.2s ease;
   }
 
-  .read-more-link:hover {
-    text-decoration: underline;
+  .view-profile-btn:hover {
+    background: #3730a3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.3);
   }
 
-  /* --- RESPONSIVE ADJUSTMENTS --- */
-  @media (max-width: 1024px) {
-    .archive-cards-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
+  /* --- RESPONSIVE --- */
   @media (max-width: 640px) {
-    .compact-author-header {
-      flex-direction: column;
-      text-align: center;
-      padding: 1.25rem 1rem;
-      gap: 0.75rem;
-    }
-    .archive-cards-grid {
+    .authors-grid {
       grid-template-columns: 1fr;
     }
   }

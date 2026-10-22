@@ -28,7 +28,7 @@ if (!post) {
 const { Content } = await render(post);
 
 // --- HELPER: Slugify URLs (Fixes spaces in Tags and Categories) ---
-const slugify = (text: string) => text.toLowerCase();
+const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
 
 // Extract Category for Breadcrumb
 const postCategory = post.data?.categories?.[0] || "General";
@@ -43,7 +43,7 @@ const uniqueTags = [...new Set(rawTags)];
 const wordCount = post.body ? post.body.split(/\s+/).length : 0;
 const readingTime = Math.ceil(wordCount / 200) || 1;
 
-// Exact Date Format Function (Replaced timeAgo)
+// Exact Date Format Function
 function formatExactDate(dateParam: string | Date) {
   if (!dateParam) return "";
   return new Date(dateParam).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -367,7 +367,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
           {allSidebarTags.map((label, index) => (
             <a 
               href={`/tags/${slugify(label.name)}/`} 
-              class={`label-pill ${index >= 4 ? 'extra-sidebar-tag hidden' : ''}`}
+              class={`label-pill ${index >= 4 ? 'post-extra-sidebar-tag hidden' : ''}`}
             >
               <span class="label-name">{label.name}</span>
               <span class="label-count">({label.count})</span>
@@ -375,7 +375,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
           ))}
         </div>
         {allSidebarTags.length > 4 && (
-          <button id="sidebar-toggle-tags-btn" class="sidebar-toggle-btn" data-extra={allSidebarTags.length - 4}>
+          <button id="post-sidebar-toggle-tags-btn" class="sidebar-toggle-btn" data-extra={allSidebarTags.length - 4}>
             Show more <span class="extra-count">(+{allSidebarTags.length - 4})</span>
           </button>
         )}
@@ -515,8 +515,8 @@ const formatSidebarDate = (dateStr: string | Date) => {
     }
     
     // 6. Sidebar Tags Show More/Less Toggle Logic
-    const sidebarToggleBtn = document.getElementById('sidebar-toggle-tags-btn');
-    const extraSidebarTags = document.querySelectorAll('.extra-sidebar-tag');
+    const sidebarToggleBtn = document.getElementById('post-sidebar-toggle-tags-btn');
+    const extraSidebarTags = document.querySelectorAll('.post-extra-sidebar-tag');
     if (sidebarToggleBtn && extraSidebarTags.length > 0) {
       sidebarToggleBtn.addEventListener('click', () => {
         // We look at the first element to determine current state (using classList is safer here)
@@ -571,6 +571,12 @@ const formatSidebarDate = (dateStr: string | Date) => {
   /* Enable global smooth scrolling */
   html {
     scroll-behavior: smooth;
+  }
+
+  /* --- SKELETON LOADING ANIMATION --- */
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
   }
 
   /* --- GRID LAYOUT --- */
@@ -716,7 +722,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
     font-size: 0.68rem;
   }
 
-  /* Sidebar Toggle Button Style */
+  /* Sidebar Toggle Button Style Restored */
   .sidebar-toggle-btn {
     display: inline-flex;
     align-items: center;
@@ -724,11 +730,12 @@ const formatSidebarDate = (dateStr: string | Date) => {
     border: none;
     font-size: 0.85rem;
     font-weight: 500;
-    color: #0ea5e9;
+    color: #4338ca;
     cursor: pointer;
     padding: 0.5rem 0 0 0;
     margin-top: 0.75rem;
     transition: color 0.15s ease;
+    font-family: inherit;
   }
   .sidebar-toggle-btn:hover {
     text-decoration: underline;
@@ -737,8 +744,8 @@ const formatSidebarDate = (dateStr: string | Date) => {
     color: #94a3b8;
     margin-left: 0.35rem;
   }
-  html.dark .sidebar-toggle-btn {
-    color: #38bdf8;
+  :global(html.dark) .sidebar-toggle-btn {
+    color: #818cf8;
   }
 
   /* POST CARD */
@@ -819,6 +826,11 @@ const formatSidebarDate = (dateStr: string | Date) => {
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid var(--border-color);
+    /* Skeleton Loading Background */
+    background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
+    color: transparent;
   }
 
   .author-details {
@@ -914,7 +926,21 @@ const formatSidebarDate = (dateStr: string | Date) => {
   /* --- MAIN CONTENT STYLES --- */
   .content-body { width: 100%; max-width: 100%; line-height: 1.8; color: var(--text-main); font-size: 1rem; overflow-wrap: anywhere; word-wrap: break-word; word-break: break-word; box-sizing: border-box; }
   .content-body * { max-width: 100% !important; box-sizing: border-box !important; }
-  .content-body img, .content-body p img, .content-body figure img { display: block !important; width: 100% !important; max-width: 100% !important; height: auto !important; object-fit: contain !important; margin: 1.5rem 0 !important; border-radius: 0.5rem !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); }
+  .content-body img, .content-body p img, .content-body figure img { 
+    display: block !important; 
+    width: 100% !important; 
+    max-width: 100% !important; 
+    height: auto !important; 
+    object-fit: contain !important; 
+    margin: 1.5rem 0 !important; 
+    border-radius: 0.5rem !important; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    /* Skeleton Loading Background */
+    background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
+    color: transparent;
+  }
   .content-body iframe { max-width: 100%; border-radius: 0.5rem; }
   .content-body h2 { font-size: 1.5rem; font-weight: 600; color: var(--text-main); margin-top: 2.5rem; margin-bottom: 1rem; scroll-margin-top: 80px; }
   .content-body h3 { font-size: 1.25rem; font-weight: 600; color: var(--text-main); margin-top: 1.5rem; margin-bottom: 0.75rem; scroll-margin-top: 80px; }

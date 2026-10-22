@@ -288,7 +288,7 @@ const cleanAltText = (title: string) => {
           {allSidebarTags.map((label, index) => (
             <a 
               href={`/tags/${slugify(label.name)}/`} 
-              class={`label-pill ${index >= 4 ? 'extra-sidebar-tag hidden' : ''}`}
+              class={`label-pill ${index >= 4 ? 'home-extra-sidebar-tag hidden' : ''}`}
             >
               <span class="label-name">{label.name}</span>
               <span class="label-count">({label.count})</span>
@@ -296,7 +296,7 @@ const cleanAltText = (title: string) => {
           ))}
         </div>
         {allSidebarTags.length > 4 && (
-          <button id="sidebar-toggle-tags-btn" class="sidebar-toggle-btn" data-extra={allSidebarTags.length - 4}>
+          <button id="home-sidebar-toggle-tags-btn" class="sidebar-toggle-btn" data-extra={allSidebarTags.length - 4}>
             Show more <span class="extra-count">(+{allSidebarTags.length - 4})</span>
           </button>
         )}
@@ -307,26 +307,26 @@ const cleanAltText = (title: string) => {
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const sidebarToggleBtn = document.getElementById('sidebar-toggle-tags-btn');
-      const extraSidebarTags = document.querySelectorAll('.extra-sidebar-tag');
+      const homeSidebarToggleBtn = document.getElementById('home-sidebar-toggle-tags-btn');
+      const homeExtraSidebarTags = document.querySelectorAll('.home-extra-sidebar-tag');
       
-      if (sidebarToggleBtn && extraSidebarTags.length > 0) {
-        sidebarToggleBtn.addEventListener('click', () => {
-          const isHidden = extraSidebarTags[0].classList.contains('hidden');
-          const extraCount = sidebarToggleBtn.getAttribute('data-extra');
+      if (homeSidebarToggleBtn && homeExtraSidebarTags.length > 0) {
+        homeSidebarToggleBtn.addEventListener('click', () => {
+          const isHidden = homeExtraSidebarTags[0].classList.contains('hidden');
+          const extraCount = homeSidebarToggleBtn.getAttribute('data-extra');
           
           if (isHidden) {
-            extraSidebarTags.forEach(tag => {
+            homeExtraSidebarTags.forEach(tag => {
               tag.classList.remove('hidden');
               tag.style.display = 'flex';
             });
-            sidebarToggleBtn.innerHTML = 'Show less';
+            homeSidebarToggleBtn.innerHTML = 'Show less';
           } else {
-            extraSidebarTags.forEach(tag => {
+            homeExtraSidebarTags.forEach(tag => {
               tag.classList.add('hidden');
               tag.style.display = 'none';
             });
-            sidebarToggleBtn.innerHTML = `Show more <span class="extra-count">(+${extraCount})</span>`;
+            homeSidebarToggleBtn.innerHTML = `Show more <span class="extra-count">(+${extraCount})</span>`;
           }
         });
       }
@@ -334,6 +334,12 @@ const cleanAltText = (title: string) => {
   </script>
 
   <style>
+    /* --- SKELETON LOADING ANIMATION --- */
+    @keyframes skeleton-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     /* --- LAYOUT --- */
     .blog-home-layout {
       display: grid;
@@ -401,8 +407,11 @@ const cleanAltText = (title: string) => {
       width: 280px;
       height: 100%;
       min-height: 180px;
-      background: var(--bg-main);
       overflow: hidden;
+      /* Skeleton Background */
+      background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s infinite linear;
     }
 
     .card-thumb-h img {
@@ -410,6 +419,7 @@ const cleanAltText = (title: string) => {
       height: 100%;
       object-fit: cover;
       display: block;
+      color: transparent; /* Hides alt text while loading */
     }
 
     .card-content-h {
@@ -447,8 +457,11 @@ const cleanAltText = (title: string) => {
       position: relative;
       width: 100%;
       height: 140px;
-      background: var(--bg-main);
       overflow: hidden;
+      /* Skeleton Background */
+      background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-shimmer 1.5s infinite linear;
     }
 
     .card-thumb img {
@@ -456,6 +469,7 @@ const cleanAltText = (title: string) => {
       height: 100%;
       object-fit: cover;
       display: block;
+      color: transparent; /* Hides alt text while loading */
     }
 
     .comment-badge {
@@ -718,6 +732,32 @@ const cleanAltText = (title: string) => {
     .label-count {
       color: #1d2229;
       font-size: 0.68rem;
+    }
+
+    /* Sidebar Toggle Button Style Restored */
+    .sidebar-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #4338ca;
+      cursor: pointer;
+      padding: 0.5rem 0 0 0;
+      margin-top: 0.75rem;
+      transition: color 0.15s ease;
+      font-family: inherit;
+    }
+    .sidebar-toggle-btn:hover {
+      text-decoration: underline;
+    }
+    .sidebar-toggle-btn .extra-count {
+      color: #94a3b8;
+      margin-left: 0.35rem;
+    }
+    :global(html.dark) .sidebar-toggle-btn {
+      color: #818cf8;
     }
 
     /* Dark Mode Overrides specifically for these links to maintain visibility */

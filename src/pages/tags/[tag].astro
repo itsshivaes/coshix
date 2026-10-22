@@ -46,7 +46,7 @@ const cleanAltText = (title: string) => {
 };
 ---
 
-<Base title={`${title} - Tag Archive`}>
+<Base title={`${title} Tag Archive | Coshix`}>
   <div class="archive-container mt-12 mb-12">
     
     <div class="section-heading">
@@ -94,179 +94,195 @@ const cleanAltText = (title: string) => {
       ))}
     </div>
   </div>
-
-  <style>
-    .archive-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding: 0 1rem;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px dashed var(--border-color);
-      padding-bottom: 0.4rem;
-    }
-
-    .heading-title {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .archive-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
-
-    .post-card.vertical-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 0.75rem;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      transition: border-color 0.15s ease;
-    }
-
-    .post-card.vertical-card:hover {
-      border-color: #4f46e5;
-    }
-
-    .card-thumb {
-      position: relative;
-      width: 100%;
-      height: 140px;
-      background: var(--bg-main);
-      overflow: hidden;
-    }
-
-    .card-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .comment-badge {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 0.12rem 0.4rem;
-      border-radius: 2rem;
-      font-size: 0.6rem;
-      font-weight: 600;
-      color: var(--text-main);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .card-content {
-      padding: 0.85rem;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      justify-content: space-between;
-      min-width: 0;
-    }
-
-    .card-meta-top {
-      margin-bottom: 0.2rem;
-    }
-
-    .cat-link {
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: #818cf8;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-
-    .cat-link:hover {
-      text-decoration: underline;
-    }
-
-    .title-anchor {
-      text-decoration: none;
-    }
-
-    .card-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin: 0 0 0.35rem 0;
-      line-height: 1.3;
-    }
-
-    .card-title:hover {
-      color: #818cf8;
-    }
-
-    .card-snippet {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin: 0 0 0.75rem 0;
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.68rem;
-      border-top: 1px solid var(--border-color);
-      padding-top: 0.5rem;
-    }
-
-    .update-tag {
-      background: #0284c7;
-      color: #fff;
-      font-size: 0.55rem;
-      font-weight: 700;
-      padding: 0.05rem 0.25rem;
-      border-radius: 0.2rem;
-      text-transform: uppercase;
-    }
-
-    .date-label {
-      color: var(--text-muted);
-      margin-right: auto;
-    }
-
-    .read-more-link {
-      color: #818cf8;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .read-more-link:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 1024px) {
-      .archive-cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 640px) {
-      .archive-cards-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
 </Base>
+
+<style is:global>
+  /* --- SKELETON LOADING ANIMATION --- */
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .archive-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 0.4rem;
+  }
+
+  .heading-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .heading-dots {
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+
+  .archive-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .post-card.vertical-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: border-color 0.15s ease;
+  }
+
+  .post-card.vertical-card:hover {
+    border-color: #4f46e5;
+  }
+
+  .card-thumb {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+    /* Skeleton Loading Background */
+    background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
+  }
+
+  .card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    color: transparent; /* Hides alt text while loading */
+  }
+
+  .comment-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.12rem 0.4rem;
+    border-radius: 2rem;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-main);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .card-content {
+    padding: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  .card-meta-top {
+    margin-bottom: 0.2rem;
+  }
+
+  .cat-link {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #818cf8;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .cat-link:hover {
+    text-decoration: underline;
+  }
+
+  .title-anchor {
+    text-decoration: none;
+  }
+
+  .card-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 0.35rem 0;
+    line-height: 1.3;
+  }
+
+  .card-title:hover {
+    color: #818cf8;
+  }
+
+  .card-snippet {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.68rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.5rem;
+  }
+
+  .update-tag {
+    background: #0284c7;
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    padding: 0.05rem 0.25rem;
+    border-radius: 0.2rem;
+    text-transform: uppercase;
+  }
+
+  .date-label {
+    color: var(--text-muted);
+    margin-right: auto;
+  }
+
+  .read-more-link {
+    color: #818cf8;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .read-more-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 1024px) {
+    .archive-cards-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .archive-cards-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

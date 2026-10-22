@@ -7,34 +7,39 @@ import { FaHashtag } from "react-icons/fa";
 const tags = await getTaxonomy("posts", "tags");
 ---
 
-<Base title={"Tags"}>
-  <div class="archive-container mt-12 mb-12">
+<Base title={"Tags | Coshix"}>
+  <div class="tags-container">
+    
     <div class="section-heading">
-      <span class="heading-title">All Tags</span>
+      <span class="heading-title">Explore All Tags</span>
       <span class="heading-dots">···</span>
     </div>
 
-    <!-- Tags Grid -->
-    <div class="archive-cards-grid tags-grid">
-      {tags.map((tag) => (
-        <a href={`/tags/${tag}`} class="post-card vertical-card tag-card group">
-          <div class="card-content flex flex-col items-center justify-center text-center p-6">
-            <FaHashtag className="text-4xl mb-3 text-indigo-400 group-hover:text-indigo-500 transition-colors" />
-            <h3 class="card-title text-xl">{humanize(tag || "")}</h3>
-          </div>
-        </a>
-      ))}
+    <!-- Tags Grid Layout -->
+    <div class="tags-grid">
+      {
+        tags.map((tag) => (
+          <a href={`/tags/${tag}/`} class="tag-card">
+            <div class="tag-icon-wrapper">
+              <FaHashtag className="tag-icon" />
+            </div>
+            <div class="tag-info">
+              <h3 class="tag-name">{humanize(tag || "")}</h3>
+            </div>
+          </a>
+        ))
+      }
     </div>
+
   </div>
 
   <style>
-    .archive-container {
+    .tags-container {
       max-width: 1000px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-      padding: 0 1rem;
     }
 
     .section-heading {
@@ -51,55 +56,94 @@ const tags = await getTaxonomy("posts", "tags");
       color: var(--text-main);
     }
 
-    .archive-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+    .heading-dots {
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      cursor: pointer;
     }
 
     .tags-grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
     }
 
-    .post-card.vertical-card {
+    .tag-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 0.75rem;
-      overflow: hidden;
+      padding: 1.25rem;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      transition: border-color 0.15s ease, transform 0.15s ease;
+      align-items: center;
+      gap: 1rem;
       text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
     }
 
-    .post-card.vertical-card:hover {
+    .tag-card:hover {
       border-color: #4f46e5;
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
     }
 
-    .card-title {
+    .tag-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 0.5rem;
+      background: var(--sidebar-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+    }
+
+    .tag-card:hover .tag-icon-wrapper {
+      background: #4f46e5;
+    }
+
+    .tag-icon {
+      width: 18px;
+      height: 18px;
+      color: #4f46e5;
+      transition: color 0.2s ease;
+    }
+
+    .tag-card:hover .tag-icon {
+      color: #ffffff;
+    }
+
+    .tag-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .tag-name {
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-main);
       margin: 0;
-      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       transition: color 0.15s ease;
     }
 
-    .post-card:hover .card-title {
-      color: #818cf8;
+    .tag-card:hover .tag-name {
+      color: #4f46e5;
     }
 
     @media (max-width: 1024px) {
-      .archive-cards-grid {
-        grid-template-columns: repeat(3, 1fr);
+      .tags-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
     @media (max-width: 640px) {
-      .archive-cards-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .tags-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>

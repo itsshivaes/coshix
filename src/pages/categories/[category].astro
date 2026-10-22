@@ -43,7 +43,7 @@ const cleanAltText = (title: string) => {
 };
 ---
 
-<Base title={`Category: ${category} - Coshix`}>
+<Base title={`Category: ${category} | Coshix`}>
   <div class="archive-container">
     
     <div class="section-heading">
@@ -95,6 +95,12 @@ const cleanAltText = (title: string) => {
 </Base>
 
 <style is:global>
+  /* --- SKELETON LOADING ANIMATION --- */
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   .archive-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -149,8 +155,11 @@ const cleanAltText = (title: string) => {
     position: relative;
     width: 100%;
     height: 140px;
-    background: var(--bg-main);
     overflow: hidden;
+    /* Skeleton Loading Background */
+    background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
   }
 
   .card-thumb img {
@@ -158,6 +167,7 @@ const cleanAltText = (title: string) => {
     height: 100%;
     object-fit: cover;
     display: block;
+    color: transparent; /* Hides alt text while loading */
   }
 
   .comment-badge {

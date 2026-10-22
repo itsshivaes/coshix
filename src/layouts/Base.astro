@@ -18,20 +18,6 @@ const searchData = validPosts.map(post => ({
   date: post.data.date ? new Date(post.data.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""
 }));
 
-const slugify = (text: string) => text.toLowerCase().replace(/\s+/g, '-');
-
-const tagMap = new Map();
-validPosts.forEach(post => {
-  const tags = post.data?.tags || [];
-  tags.forEach((tag: string) => {
-    tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
-  });
-});
-
-const allSidebarTags = Array.from(tagMap.entries())
-  .map(([name, count]) => ({ name, count }))
-  .sort((a, b) => b.count - a.count);
-
 const languages = [
   { code: 'en', name: 'English' }, { code: 'es', name: 'Spanish' },
   { code: 'fr', name: 'French' }, { code: 'de', name: 'German' },
@@ -123,6 +109,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
     </noscript>
 
     <style is:global is:inline>
+      /* --- GLOBAL SKELETON LOADING ANIMATION --- */
+      @keyframes skeleton-shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
       :root {
         --bg-main: #ffffff;
         --bg-card: #ffffff;
@@ -181,7 +173,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       .top-navbar { height: 65px; background-color: var(--header-bg) !important; backdrop-filter: saturate(180%) blur(20px) !important; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; position: sticky; top: 0; z-index: 50; }
       .nav-left { display: flex; align-items: center; gap: 1.5rem; }
       .brand-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-      .brand-logo-img { width: 32px; height: 32px; object-fit: contain; border-radius: 0.375rem; }
+      
+      .brand-logo-img { 
+        width: 32px; 
+        height: 32px; 
+        object-fit: contain; 
+        border-radius: 0.375rem; 
+        background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
+        background-size: 200% 100%;
+        animation: skeleton-shimmer 1.5s infinite linear;
+        color: transparent; 
+      }
+      
       .brand-name { font-size: 1.15rem; font-weight: 500; color: var(--text-main); }
       .nav-right { display: flex; align-items: center; gap: 0.75rem; }
 
@@ -230,6 +233,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       .dropdown-option.active .check-icon { visibility: visible; }
 
       .dashboard-container { display: grid; grid-template-columns: 240px 1fr; align-items: start; width: 100%; min-width: 0 !important; }
+      
       .sidebar { background-color: var(--sidebar-bg); backdrop-filter: saturate(180%) blur(20px); border-right: 1px solid var(--border-color); min-height: calc(100vh - 65px); position: sticky; top: 65px; display: flex; flex-direction: column; overflow-y: auto; z-index: 40; }
       html[dir="rtl"] .sidebar, html.Rtl .sidebar { border-right: none; border-left: 1px solid var(--border-color); }
       .sidebar-inner { padding: 1.5rem 0.75rem; display: flex; flex-direction: column; flex: 1; }
@@ -237,24 +241,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       .sidebar-link { display: flex; align-items: center; padding: 0.6rem 0.75rem; border-radius: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.15s ease; }
       .sidebar-link:hover { background: var(--sidebar-hover); color: var(--text-main); }
       .sidebar-link.active { background-color: var(--sidebar-active); color: var(--sidebar-active-text); font-weight: 600; }
-
-      .sidebar-labels-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-top: 0.5rem; margin-bottom: 1.5rem; }
-      .sidebar-section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.4rem; }
-      .sidebar-heading-title { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
-      .sidebar-heading-dots { color: var(--text-muted); letter-spacing: 2px; cursor: pointer; font-size: 0.8rem; }
-      .sidebar-labels-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
-      .sidebar-label-pill { background: var(--bg-main); border: 1px solid var(--border-color); padding: 0.35rem 0.5rem; border-radius: 0.4rem; display: flex; justify-content: space-between; align-items: center; text-decoration: none; font-size: 0.72rem; transition: background 0.15s ease, border-color 0.15s ease; }
-      .sidebar-label-pill.hidden, .extra-sidebar-tag.hidden { display: none !important; }
-      .sidebar-label-pill:hover { background: var(--sidebar-hover); border-color: #4f46e5; }
-      html.dark .sidebar-label-pill:hover { border-color: #818cf8; }
-      .sidebar-label-name { color: var(--text-main); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .sidebar-label-count { color: var(--text-muted); font-size: 0.65rem; flex-shrink: 0; margin-left: 0.2rem; }
-      
-      #sidebar-toggle-tags-btn, .sidebar-toggle-labels-btn { display: inline-flex; align-items: center; background: transparent; border: none; font-size: 0.825rem; font-weight: 500; color: #4338ca; cursor: pointer; padding: 0.5rem 0 0 0; margin-top: 0.5rem; transition: color 0.15s ease; font-family: inherit; }
-      #sidebar-toggle-tags-btn:hover, .sidebar-toggle-labels-btn:hover { text-decoration: underline; }
-      #sidebar-toggle-tags-btn .extra-count, .sidebar-toggle-labels-btn .extra-count { color: #1d2229; margin-left: 0.35rem; }
-      html.dark #sidebar-toggle-tags-btn, html.dark .sidebar-toggle-labels-btn { color: #818cf8; }
-      html.dark #sidebar-toggle-tags-btn .extra-count, html.dark .sidebar-toggle-labels-btn .extra-count { color: var(--text-muted); }
 
       .sidebar-social-section { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
       .social-icons-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; justify-items: center; }
@@ -382,9 +368,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         </button>
 
         <a href="/" class="brand-logo notranslate" translate="no">
-          <img src="/images/logo.webp" alt="Coshix Logo" class="brand-logo-img" width="32" height="32" loading="eager" fetchpriority="high" />
-          <span class="brand-name">Coshix</span>
-        </a>
+  <img 
+    src="/images/logo.webp" 
+    alt="Coshix Logo" 
+    class="brand-logo-img" 
+    width="32" 
+    height="32" 
+    loading="eager" 
+    fetchpriority="high"
+    onload="this.style.background='transparent'; this.style.color='inherit';" 
+  />
+  <span class="brand-name">Coshix</span>
+</a>
 
         <button id="searchOpenBtnDesktop" class="search-trigger desktop-only" aria-label="Search">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
@@ -511,6 +506,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
           <div class="sidebar-section">
             <a href="/about/" class="sidebar-link" data-path="/about">About</a>
             <a href="/contact/" class="sidebar-link" data-path="/contact">Contact</a>
+            <a href="/authors/" class="sidebar-link" data-path="/authors">Authors</a>
           </div>
 
           <div class="sidebar-social-section">
@@ -566,267 +562,240 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
     </script>
 
     <script define:vars={{ searchData }}>
-      const themeBtn = document.getElementById('themeMenuBtn');
-      const themeMenu = document.getElementById('themeMenu');
-      const langBtn = document.getElementById('langMenuBtn');
-      const langMenu = document.getElementById('langMenu');
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById('themeMenuBtn');
+        const themeMenu = document.getElementById('themeMenu');
+        const langBtn = document.getElementById('langMenuBtn');
+        const langMenu = document.getElementById('langMenu');
 
-      const closeAllMenus = () => {
-        themeMenu?.classList.remove('show');
-        langMenu?.classList.remove('show');
-      };
-
-      themeBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isShowing = themeMenu?.classList.contains('show');
-        closeAllMenus();
-        if (!isShowing) themeMenu?.classList.add('show');
-      });
-
-      langBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isShowing = langMenu?.classList.contains('show');
-        closeAllMenus();
-        if (!isShowing) langMenu?.classList.add('show');
-      });
-
-      document.addEventListener('click', closeAllMenus);
-
-      const options = document.querySelectorAll('.theme-option');
-      const setTheme = (theme) => {
-        localStorage.setItem('theme', theme);
-        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-        
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-
-        options.forEach(opt => {
-          if (opt.getAttribute('data-theme') === theme) {
-            opt.classList.add('active');
-          } else {
-            opt.classList.remove('active');
-          }
-        });
-        closeAllMenus();
-      };
-
-      const currentTheme = localStorage.getItem('theme') || 'system';
-      options.forEach(opt => {
-        if (opt.getAttribute('data-theme') === currentTheme) {
-          opt.classList.add('active');
-        }
-        opt.addEventListener('click', () => setTheme(opt.getAttribute('data-theme')));
-      });
-
-      const langOptions = document.querySelectorAll('.lang-option');
-      const rtlLangs = ["ar", "fa", "ur", "he", "ps", "yi", "sd", "ug"];
-      const defaultLanguage = 'en';
-
-      const setLanguage = (langCode) => {
-        localStorage.setItem('user_selected_lang', langCode);
-        
-        langOptions.forEach(opt => {
-          if (opt.getAttribute('data-lang') === langCode) {
-            opt.classList.add('active');
-          } else {
-            opt.classList.remove('active');
-          }
-        });
-
-        if (rtlLangs.includes(langCode.split('-')[0].toLowerCase())) {
-          document.documentElement.dir = 'rtl';
-          document.documentElement.classList.add('Rtl');
-        } else {
-          document.documentElement.dir = 'ltr';
-          document.documentElement.classList.remove('Rtl');
-        }
-
-        const domain = location.hostname;
-        
-        const nukeGoogleTranslateCookies = () => {
-          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
-          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+        const closeAllMenus = () => {
+          themeMenu?.classList.remove('show');
+          langMenu?.classList.remove('show');
         };
 
-        if (langCode === defaultLanguage) {
-          nukeGoogleTranslateCookies();
-          setTimeout(() => {
-            window.location.reload();
-          }, 50);
-          return;
-        }
-        
-        nukeGoogleTranslateCookies();
-        const cookieString = `/en/${langCode}`;
-        document.cookie = `googtrans=${cookieString}; path=/;`;
-        document.cookie = `googtrans=${cookieString}; path=/; domain=${domain};`;
-        document.cookie = `googtrans=${cookieString}; path=/; domain=.${domain};`;
-        
-        const gtSelect = document.querySelector('.goog-te-combo');
-        if (gtSelect) {
-          gtSelect.value = langCode;
-          gtSelect.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-        } else {
-          setTimeout(() => {
-            window.location.reload();
-          }, 50);
-        }
-      };
-
-      const initialLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
-      
-      langOptions.forEach(opt => {
-        if (opt.getAttribute('data-lang') === initialLang) {
-          opt.classList.add('active');
-        }
-        
-        opt.addEventListener('click', (e) => {
-          e.preventDefault();
-          const selectedLang = opt.getAttribute('data-lang');
-          const dynamicallyCurrentLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
-          
-          if (selectedLang !== dynamicallyCurrentLang) {
-            setLanguage(selectedLang);
-          }
+        themeBtn?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isShowing = themeMenu?.classList.contains('show');
           closeAllMenus();
+          if (!isShowing) themeMenu?.classList.add('show');
         });
-      });
 
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      const mobileMenuClose = document.getElementById('mobileMenuClose');
-      const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
+        langBtn?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isShowing = langMenu?.classList.contains('show');
+          closeAllMenus();
+          if (!isShowing) langMenu?.classList.add('show');
+        });
 
-      const openMobileDrawer = () => {
-        mobileDrawerOverlay?.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      };
+        document.addEventListener('click', closeAllMenus);
 
-      const closeMobileDrawer = () => {
-        mobileDrawerOverlay?.classList.remove('show');
-        document.body.style.overflow = '';
-      };
-
-      mobileMenuToggle?.addEventListener('click', openMobileDrawer);
-      mobileMenuClose?.addEventListener('click', closeMobileDrawer);
-      mobileDrawerOverlay?.addEventListener('click', (e) => {
-        if (e.target === mobileDrawerOverlay) closeMobileDrawer();
-      });
-
-      const highlightActiveLinks = () => {
-        let currentPath = decodeURIComponent(window.location.pathname).replace(/\/$/, "") || "/";
-        const links = document.querySelectorAll(".sidebar-link");
-
-        links.forEach(link => {
-          const pathAttr = link.getAttribute("data-path");
-          const linkPath = (pathAttr || link.getAttribute("href"))?.replace(/\/$/, "") || "/";
+        const options = document.querySelectorAll('.theme-option');
+        const setTheme = (theme) => {
+          localStorage.setItem('theme', theme);
+          const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
           
-          if (linkPath === currentPath || (linkPath !== "/" && currentPath.startsWith(linkPath))) {
-            link.classList.add("active");
+          if (isDark) {
+            document.documentElement.classList.add('dark');
           } else {
-            link.classList.remove("active");
+            document.documentElement.classList.remove('dark');
           }
-        });
-      };
 
-      if (document.readyState === 'loading') {
-        document.addEventListener("DOMContentLoaded", highlightActiveLinks);
-      } else {
+          options.forEach(opt => {
+            if (opt.getAttribute('data-theme') === theme) {
+              opt.classList.add('active');
+            } else {
+              opt.classList.remove('active');
+            }
+          });
+          closeAllMenus();
+        };
+
+        const currentTheme = localStorage.getItem('theme') || 'system';
+        options.forEach(opt => {
+          if (opt.getAttribute('data-theme') === currentTheme) {
+            opt.classList.add('active');
+          }
+          opt.addEventListener('click', () => setTheme(opt.getAttribute('data-theme')));
+        });
+
+        const langOptions = document.querySelectorAll('.lang-option');
+        const rtlLangs = ["ar", "fa", "ur", "he", "ps", "yi", "sd", "ug"];
+        const defaultLanguage = 'en';
+
+        const setLanguage = (langCode) => {
+          localStorage.setItem('user_selected_lang', langCode);
+          
+          langOptions.forEach(opt => {
+            if (opt.getAttribute('data-lang') === langCode) {
+              opt.classList.add('active');
+            } else {
+              opt.classList.remove('active');
+            }
+          });
+
+          if (rtlLangs.includes(langCode.split('-')[0].toLowerCase())) {
+            document.documentElement.dir = 'rtl';
+            document.documentElement.classList.add('Rtl');
+          } else {
+            document.documentElement.dir = 'ltr';
+            document.documentElement.classList.remove('Rtl');
+          }
+
+          const domain = location.hostname;
+          
+          const nukeGoogleTranslateCookies = () => {
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+            document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+          };
+
+          if (langCode === defaultLanguage) {
+            nukeGoogleTranslateCookies();
+            setTimeout(() => {
+              window.location.reload();
+            }, 50);
+            return;
+          }
+          
+          nukeGoogleTranslateCookies();
+          const cookieString = `/en/${langCode}`;
+          document.cookie = `googtrans=${cookieString}; path=/;`;
+          document.cookie = `googtrans=${cookieString}; path=/; domain=${domain};`;
+          document.cookie = `googtrans=${cookieString}; path=/; domain=.${domain};`;
+          
+          const gtSelect = document.querySelector('.goog-te-combo');
+          if (gtSelect) {
+            gtSelect.value = langCode;
+            gtSelect.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+          } else {
+            setTimeout(() => {
+              window.location.reload();
+            }, 50);
+          }
+        };
+
+        const initialLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
+        
+        langOptions.forEach(opt => {
+          if (opt.getAttribute('data-lang') === initialLang) {
+            opt.classList.add('active');
+          }
+          
+          opt.addEventListener('click', (e) => {
+            e.preventDefault();
+            const selectedLang = opt.getAttribute('data-lang');
+            const dynamicallyCurrentLang = localStorage.getItem('user_selected_lang') || defaultLanguage;
+            
+            if (selectedLang !== dynamicallyCurrentLang) {
+              setLanguage(selectedLang);
+            }
+            closeAllMenus();
+          });
+        });
+
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenuClose = document.getElementById('mobileMenuClose');
+        const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
+
+        const openMobileDrawer = () => {
+          mobileDrawerOverlay?.classList.add('show');
+          document.body.style.overflow = 'hidden';
+        };
+
+        const closeMobileDrawer = () => {
+          mobileDrawerOverlay?.classList.remove('show');
+          document.body.style.overflow = '';
+        };
+
+        mobileMenuToggle?.addEventListener('click', openMobileDrawer);
+        mobileMenuClose?.addEventListener('click', closeMobileDrawer);
+        mobileDrawerOverlay?.addEventListener('click', (e) => {
+          if (e.target === mobileDrawerOverlay) closeMobileDrawer();
+        });
+
+        const highlightActiveLinks = () => {
+          let currentPath = decodeURIComponent(window.location.pathname).replace(/\/$/, "") || "/";
+          const links = document.querySelectorAll(".sidebar-link");
+
+          links.forEach(link => {
+            const pathAttr = link.getAttribute("data-path");
+            const linkPath = (pathAttr || link.getAttribute("href"))?.replace(/\/$/, "") || "/";
+            
+            if (linkPath === currentPath || (linkPath !== "/" && currentPath.startsWith(linkPath))) {
+              link.classList.add("active");
+            } else {
+              link.classList.remove("active");
+            }
+          });
+        };
+
         highlightActiveLinks();
-      }
 
-      const sidebarToggleLabelsBtn = document.getElementById('sidebar-toggle-tags-btn');
-      const extraSidebarLabels = document.querySelectorAll('.extra-sidebar-tag');
-      if (sidebarToggleLabelsBtn && extraSidebarLabels.length > 0) {
-        sidebarToggleLabelsBtn.addEventListener('click', () => {
-          const isHidden = extraSidebarLabels[0].classList.contains('hidden');
-          const extraCount = sidebarToggleLabelsBtn.getAttribute('data-extra');
+        const searchModal = document.getElementById('searchModal');
+        const searchOpenBtnDesktop = document.getElementById('searchOpenBtnDesktop');
+        const searchOpenBtnMobile = document.getElementById('searchOpenBtnMobile');
+        const searchCloseBtn = document.getElementById('searchCloseBtn');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
 
-          if (isHidden) {
-            extraSidebarLabels.forEach(tag => {
-              tag.classList.remove('hidden');
-              tag.style.display = 'flex';
-            });
-            sidebarToggleLabelsBtn.innerHTML = 'Show less';
-          } else {
-            extraSidebarLabels.forEach(tag => {
-              tag.classList.add('hidden');
-              tag.style.display = 'none';
-            });
-            sidebarToggleLabelsBtn.innerHTML = `Show more <span class="extra-count">(+${extraCount})</span>`;
+        const openSearch = () => {
+          searchModal?.classList.add('show');
+          setTimeout(() => searchInput?.focus(), 50);
+        };
+
+        const closeSearch = () => {
+          searchModal?.classList.remove('show');
+          if (searchInput) searchInput.value = '';
+          if (searchResults) searchResults.innerHTML = '<p class="search-placeholder-text">Type a keyword to search posts...</p>';
+        };
+
+        searchOpenBtnDesktop?.addEventListener('click', openSearch);
+        searchOpenBtnMobile?.addEventListener('click', openSearch);
+        searchCloseBtn?.addEventListener('click', closeSearch);
+
+        searchModal?.addEventListener('click', (e) => {
+          if (e.target === searchModal) closeSearch();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if (searchModal?.classList.contains('show')) {
+              closeSearch();
+            } else {
+              openSearch();
+            }
+          }
+          if (e.key === 'Escape') {
+            closeSearch();
+            closeMobileDrawer();
           }
         });
-      }
 
-      const searchModal = document.getElementById('searchModal');
-      const searchOpenBtnDesktop = document.getElementById('searchOpenBtnDesktop');
-      const searchOpenBtnMobile = document.getElementById('searchOpenBtnMobile');
-      const searchCloseBtn = document.getElementById('searchCloseBtn');
-      const searchInput = document.getElementById('searchInput');
-      const searchResults = document.getElementById('searchResults');
-
-      const openSearch = () => {
-        searchModal?.classList.add('show');
-        setTimeout(() => searchInput?.focus(), 50);
-      };
-
-      const closeSearch = () => {
-        searchModal?.classList.remove('show');
-        if (searchInput) searchInput.value = '';
-        if (searchResults) searchResults.innerHTML = '<p class="search-placeholder-text">Type a keyword to search posts...</p>';
-      };
-
-      searchOpenBtnDesktop?.addEventListener('click', openSearch);
-      searchOpenBtnMobile?.addEventListener('click', openSearch);
-      searchCloseBtn?.addEventListener('click', closeSearch);
-
-      searchModal?.addEventListener('click', (e) => {
-        if (e.target === searchModal) closeSearch();
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-          e.preventDefault();
-          if (searchModal?.classList.contains('show')) {
-            closeSearch();
-          } else {
-            openSearch();
+        searchInput?.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          if (!query) {
+            searchResults.innerHTML = '<p class="search-placeholder-text">Type a keyword to search posts...</p>';
+            return;
           }
-        }
-        if (e.key === 'Escape') {
-          closeSearch();
-          closeMobileDrawer();
-        }
-      });
 
-      searchInput?.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        if (!query) {
-          searchResults.innerHTML = '<p class="search-placeholder-text">Type a keyword to search posts...</p>';
-          return;
-        }
+          const filtered = searchData.filter(post => 
+            post.title.toLowerCase().includes(query) || post.category.toLowerCase().includes(query)
+          );
 
-        const filtered = searchData.filter(post => 
-          post.title.toLowerCase().includes(query) || post.category.toLowerCase().includes(query)
-        );
+          if (filtered.length === 0) {
+            searchResults.innerHTML = '<p class="search-placeholder-text">No articles found matching your query.</p>';
+            return;
+          }
 
-        if (filtered.length === 0) {
-          searchResults.innerHTML = '<p class="search-placeholder-text">No articles found matching your query.</p>';
-          return;
-        }
+          searchResults.innerHTML = filtered.map(post => `
+            <a href="${post.url}" class="search-result-item">
+              <div class="search-result-meta">${post.category} · ${post.date}</div>
+              <div class="search-result-title">${post.title}</div>
+            </a>
+          `).join('');
+        });
 
-        searchResults.innerHTML = filtered.map(post => `
-          <a href="${post.url}" class="search-result-item">
-            <div class="search-result-meta">${post.category} · ${post.date}</div>
-            <div class="search-result-title">${post.title}</div>
-          </a>
-        `).join('');
-      });
-
-      document.addEventListener("DOMContentLoaded", () => {
         const lazyImages = document.querySelectorAll("img[data-src]");
 
         if ("IntersectionObserver" in window) {
@@ -853,9 +822,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
             img.src = img.dataset.src;
           });
         }
-      });
 
-      document.addEventListener("DOMContentLoaded", () => {
         const codeBlocks = document.querySelectorAll("pre");
 
         codeBlocks.forEach((block) => {
@@ -888,9 +855,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
 
           block.appendChild(button);
         });
-      });
 
-      document.addEventListener("DOMContentLoaded", () => {
         const backToTopBtn = document.getElementById("backToTopBtn");
 
         window.addEventListener("scroll", () => {
