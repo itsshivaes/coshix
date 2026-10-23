@@ -898,7 +898,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
     color: var(--text-main);
     padding: 0.85rem 1rem; 
     display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer; user-select: none; background: var(--bg-main);
+    cursor: pointer; user-select: none; background: var(--bg-main)!important;
     transition: background 0.2s ease;
   }
   .toc-header:hover { background: var(--sidebar-hover); }
@@ -1186,5 +1186,6 @@ const formatSidebarDate = (dateStr: string | Date) => {
     .post-card { padding: 1rem 0.25rem; background: transparent !important; border: none !important; box-shadow: none !important; }
     .post-title { font-size: 1.4rem; }
     .share-buttons { grid-template-columns: 1fr; }
+    .toc-header { background: var(--bg-card) !important; }
   }
 </style>
