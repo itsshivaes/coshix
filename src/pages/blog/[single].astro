@@ -1148,7 +1148,17 @@ const formatSidebarDate = (dateStr: string | Date) => {
 
   @media (max-width: 768px) {
     .post-page-wrapper { padding: 0; }
-    .post-card { padding: 1.25rem 0.75rem; border: none; border-radius: 0; box-shadow: none; background: transparent !important; }
+    
+    /* Completely remove background, border, and shadow from post card and TOC on mobile */
+    .post-card, 
+    .toc-container { 
+      background: transparent !important; 
+      border: none !important; 
+      box-shadow: none !important; 
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+
     .post-title { font-size: 1.5rem; margin-top: 0; }
     
     .post-meta {
@@ -1172,7 +1182,8 @@ const formatSidebarDate = (dateStr: string | Date) => {
     .share-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
   }
   @media (max-width: 480px) {
-    .post-card { padding: 1rem 0.25rem; background: transparent !important; }
+    html.dark .post-card { background: transparent !important; border: none !important; box-shadow: none !important; }    
+    .post-card { padding: 1rem 0.25rem; background: transparent !important; border: none !important; box-shadow: none !important; }
     .post-title { font-size: 1.4rem; }
     .share-buttons { grid-template-columns: 1fr; }
   }
