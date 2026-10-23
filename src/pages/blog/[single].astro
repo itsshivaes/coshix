@@ -425,7 +425,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
         a.addEventListener('click', (e) => {
           e.preventDefault();
           heading.scrollIntoView({ behavior: 'smooth' });
-          history.pushState(null, null, '#' + heading.id); 
+          history.pushState(null, '', '#' + heading.id); 
         });
 
         li.appendChild(a);
@@ -454,22 +454,25 @@ const formatSidebarDate = (dateStr: string | Date) => {
       relatedWidget.style.display = 'block';
     }
 
-    // 4. Mac OS Style Code Blocks Wrapper & Syntax Marker
+    // 4. Mac OS Style Code Blocks Wrapper & Syntax Marker (Fixed Regex Escape)
     const codeBlocks = contentBody?.querySelectorAll('pre');
     codeBlocks?.forEach(pre => {
       const codeElement = pre.querySelector('code');
       if (!codeElement) return;
 
       let html = codeElement.innerHTML;
-      html = html.replace(/[hl:blue](.*?)\[\/hl\]/g, '<span class="code-hl blue">$1</span>');
-      html = html.replace(/[hl:red](.*?)\[\/hl\]/g, '<span class="code-hl red">$1</span>');
-      html = html.replace(/[hl:green](.*?)\[\/hl\]/g, '<span class="code-hl green">$1</span>');
-      html = html.replace(/[ul:blue](.*?)\[\/ul\]/g, '<span class="code-ul blue">$1</span>');
-      html = html.replace(/[ul:red](.*?)\[\/ul\]/g, '<span class="code-ul red">$1</span>');
-      html = html.replace(/[ul:green](.*?)\[\/ul\]/g, '<span class="code-ul green">$1</span>');
-      html = html.replace(/[ul:yellow](.*?)\[\/ul\]/g, '<span class="code-ul yellow">$1</span>');
-      html = html.replace(/[badge:blue](.*?)\[\/badge\]/g, '<span class="code-badge blue">$1</span>');
-      html = html.replace(/[badge:red](.*?)\[\/badge\]/g, '<span class="code-badge red">$1</span>');
+      
+      // Fixed with escaped square brackets so they match properly
+      html = html.replace(/\[hl:blue\](.*?)\[\/hl\]/g, '<span class="code-hl blue">$1</span>');
+      html = html.replace(/\[hl:red\](.*?)\[\/hl\]/g, '<span class="code-hl red">$1</span>');
+      html = html.replace(/\[hl:green\](.*?)\[\/hl\]/g, '<span class="code-hl green">$1</span>');
+      html = html.replace(/\[ul:blue\](.*?)\[\/ul\]/g, '<span class="code-ul blue">$1</span>');
+      html = html.replace(/\[ul:red\](.*?)\[\/ul\]/g, '<span class="code-ul red">$1</span>');
+      html = html.replace(/\[ul:green\](.*?)\[\/ul\]/g, '<span class="code-ul green">$1</span>');
+      html = html.replace(/\[ul:yellow\](.*?)\[\/ul\]/g, '<span class="code-ul yellow">$1</span>');
+      html = html.replace(/\[badge:blue\](.*?)\[\/badge\]/g, '<span class="code-badge blue">$1</span>');
+      html = html.replace(/\[badge:red\](.*?)\[\/badge\]/g, '<span class="code-badge red">$1</span>');
+      
       codeElement.innerHTML = html;
 
       if (pre.parentElement.classList.contains('macos-code-wrapper')) return;
@@ -519,7 +522,6 @@ const formatSidebarDate = (dateStr: string | Date) => {
     const extraSidebarTags = document.querySelectorAll('.post-extra-sidebar-tag');
     if (sidebarToggleBtn && extraSidebarTags.length > 0) {
       sidebarToggleBtn.addEventListener('click', () => {
-        // We look at the first element to determine current state (using classList is safer here)
         const isHidden = extraSidebarTags[0].classList.contains('hidden');
         const extraCount = sidebarToggleBtn.getAttribute('data-extra');
         
@@ -534,7 +536,7 @@ const formatSidebarDate = (dateStr: string | Date) => {
             tag.classList.add('hidden');
             tag.style.display = 'none';
           });
-          sidebarToggleBtn.innerHTML = `Show more <span class="extra-count">(+${extraCount})</span>`;
+          sidebarToggleBtn.innerHTML = `Show more <span class="extra-count">(+{extraCount})</span>`;
         }
       });
     }
@@ -826,7 +828,6 @@ const formatSidebarDate = (dateStr: string | Date) => {
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid var(--border-color);
-    /* Skeleton Loading Background */
     background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
     background-size: 200% 100%;
     animation: skeleton-shimmer 1.5s infinite linear;
@@ -935,7 +936,6 @@ const formatSidebarDate = (dateStr: string | Date) => {
     margin: 1.5rem 0 !important; 
     border-radius: 0.5rem !important; 
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    /* Skeleton Loading Background */
     background: linear-gradient(90deg, var(--sidebar-hover) 25%, var(--border-color) 50%, var(--sidebar-hover) 75%);
     background-size: 200% 100%;
     animation: skeleton-shimmer 1.5s infinite linear;
@@ -978,7 +978,6 @@ const formatSidebarDate = (dateStr: string | Date) => {
   
   .content-body pre { position: static !important; background: transparent !important; padding: 1.25rem !important; margin: 0 !important; border: none !important; border-radius: 0 !important; overflow-x: auto !important; max-width: 100% !important; }
   
-  /* FIXED EXPLICIT TEXT COLOR FOR CODE BLOCKS */
   .content-body pre code { 
     background: transparent !important; padding: 0 !important; border: none !important; word-break: normal; white-space: pre !important; 
     -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 

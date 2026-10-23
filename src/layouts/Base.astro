@@ -208,8 +208,35 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       .search-result-meta { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: #4f46e5; margin-bottom: 0.2rem; letter-spacing: 0.05em; }
       .search-result-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
 
-      .icon-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); width: 38px; height: 38px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; }
+      .icon-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); width: 38px; height: 38px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; position: relative; }
       .icon-btn:hover { background: var(--sidebar-hover); color: var(--text-main); }
+
+      /* Dynamic Theme Icons Visibility */
+      .sun-icon, .moon-icon { display: none; }
+      html.dark .moon-icon { display: block; }
+      html:not(.dark) .sun-icon { display: block; }
+
+      /* System Theme 'A' badge indicator */
+      .theme-system-badge {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        font-size: 9px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.5px;
+        color: #4f46e5;
+        background: var(--bg-card);
+        padding: 1px 2px;
+        border-radius: 3px;
+        display: none;
+      }
+      html.dark .theme-system-badge {
+        color: #818cf8;
+      }
+      .icon-btn.system-theme .theme-system-badge {
+        display: block;
+      }
 
       .mobile-drawer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 1000; justify-content: flex-start; animation: fadeInOverlay 0.2s ease; }
       .mobile-drawer-overlay.show { display: flex; }
@@ -233,7 +260,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       .dropdown-option.active .check-icon { visibility: visible; }
 
       .dashboard-container { display: grid; grid-template-columns: 240px 1fr; align-items: start; width: 100%; min-width: 0 !important; }
-      
       .sidebar { background-color: var(--sidebar-bg); backdrop-filter: saturate(180%) blur(20px); border-right: 1px solid var(--border-color); min-height: calc(100vh - 65px); position: sticky; top: 65px; display: flex; flex-direction: column; overflow-y: auto; z-index: 40; }
       html[dir="rtl"] .sidebar, html.Rtl .sidebar { border-right: none; border-left: 1px solid var(--border-color); }
       .sidebar-inner { padding: 1.5rem 0.75rem; display: flex; flex-direction: column; flex: 1; }
@@ -317,14 +343,28 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
       }
     </style>
     
+    <!-- Instant Theme and System Preference Sync (Zero Flash) -->
     <script is:inline>
       const savedTheme = localStorage.getItem('theme') || 'system';
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (savedTheme === 'dark' || (savedTheme === 'system' && systemPrefersDark)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      const systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      const applyTheme = (theme) => {
+        const isDark = theme === 'dark' || (theme === 'system' && systemQuery.matches);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      };
+
+      applyTheme(savedTheme);
+
+      // Real-time listener for system theme changes
+      systemQuery.addEventListener('change', () => {
+        if ((localStorage.getItem('theme') || 'system') === 'system') {
+          applyTheme('system');
+        }
+      });
 
       const savedLang = localStorage.getItem('user_selected_lang') || 'en';
       const rtlLangs = ["ar", "fa", "ur", "he", "ps", "yi", "sd", "ug"];
@@ -368,18 +408,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         </button>
 
         <a href="/" class="brand-logo notranslate" translate="no">
-  <img 
-    src="/images/logo.webp" 
-    alt="Coshix Logo" 
-    class="brand-logo-img" 
-    width="32" 
-    height="32" 
-    loading="eager" 
-    fetchpriority="high"
-    onload="this.style.background='transparent'; this.style.color='inherit';" 
-  />
-  <span class="brand-name">Coshix</span>
-</a>
+          <img 
+            src="/images/logo.webp" 
+            alt="Coshix Logo" 
+            class="brand-logo-img" 
+            width="32" 
+            height="32" 
+            loading="eager" 
+            fetchpriority="high"
+            onload="this.style.background='transparent'; this.style.color='inherit';" 
+          />
+          <span class="brand-name">Coshix</span>
+        </a>
 
         <button id="searchOpenBtnDesktop" class="search-trigger desktop-only" aria-label="Search">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
@@ -410,7 +450,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
 
         <div class="dropdown-container">
           <button id="themeMenuBtn" class="icon-btn" aria-label="Toggle theme">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
+            <!-- Sun SVG (shown in Light mode) -->
+            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
+            <!-- Moon SVG (shown in Dark mode) -->
+            <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <span class="theme-system-badge">A</span>
           </button>
           <div id="themeMenu" class="dropdown-menu">
             <div class="dropdown-menu-header">Appearance</div>
@@ -591,14 +635,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         document.addEventListener('click', closeAllMenus);
 
         const options = document.querySelectorAll('.theme-option');
+        const systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
         const setTheme = (theme) => {
           localStorage.setItem('theme', theme);
-          const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          const isDark = theme === 'dark' || (theme === 'system' && systemQuery.matches);
           
           if (isDark) {
             document.documentElement.classList.add('dark');
           } else {
             document.documentElement.classList.remove('dark');
+          }
+
+          if (theme === 'system') {
+            themeBtn?.classList.add('system-theme');
+          } else {
+            themeBtn?.classList.remove('system-theme');
           }
 
           options.forEach(opt => {
@@ -612,6 +664,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://coshix.i
         };
 
         const currentTheme = localStorage.getItem('theme') || 'system';
+        if (currentTheme === 'system') {
+          themeBtn?.classList.add('system-theme');
+        }
+
+        // Live system changes listener
+        systemQuery.addEventListener('change', () => {
+          if ((localStorage.getItem('theme') || 'system') === 'system') {
+            if (systemQuery.matches) {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+          }
+        });
+
         options.forEach(opt => {
           if (opt.getAttribute('data-theme') === currentTheme) {
             opt.classList.add('active');
